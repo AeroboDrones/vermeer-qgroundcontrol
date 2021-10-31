@@ -164,6 +164,10 @@ ApplicationWindow {
         showTool(qsTr("Application Settings"), "AppSettings.qml", "/res/QGCLogoWhite")
     }
 
+    function showVerMeerLogIn() {
+        showTool(qsTr("Vermeer Login"), "AppSettings.qml", "/vermeer/vermeerLogoBlackPng")
+    }
+
     //-------------------------------------------------------------------------
     //-- Global simple message dialog
 
@@ -337,6 +341,22 @@ ApplicationWindow {
                             if (!mainWindow.preventViewSwitch()) {
                                 toolSelectDialog.close()
                                 mainWindow.showSettingsTool()
+                            }
+                        }
+                    }
+
+                    SubMenuButton {
+                        id:                 vermeerButton
+                        height:             _toolButtonHeight
+                        Layout.fillWidth:   true
+                        text:               qsTr("Vermeer Login")
+                        imageResource:      "/vermeer/vermeerLogoBlackPng"
+                        imageColor:         "transparent"
+                        visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
+                        onClicked: {
+                            if (!mainWindow.preventViewSwitch()) {
+                                toolSelectDialog.hideDialog()
+                                mainWindow.showVerMeerLogIn()
                             }
                         }
                     }
