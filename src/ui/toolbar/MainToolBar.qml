@@ -69,7 +69,7 @@ Rectangle {
             Layout.preferredHeight: viewButtonRow.height
             icon.source:            "/res/QGCLogoFull"
             logo:                   true
-            onClicked:              mainWindow.showToolSelectDialog()
+            onClicked:              mainWindow.showToolSelectDialog() // this is responsible showing the three Tools stuff
         }
 
         MainStatusIndicator {

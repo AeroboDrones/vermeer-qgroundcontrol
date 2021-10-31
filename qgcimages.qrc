@@ -197,4 +197,9 @@
         <file alias="ZoomMinus.svg">src/FlightMap/Images/ZoomMinus.svg</file>
         <file alias="ZoomPlus.svg">src/FlightMap/Images/ZoomPlus.svg</file>
     </qresource>
+    <qresource prefix="/vermeer">
+        <file alias="vermeerLogoBlackSmall">src/ui/toolbar/Images/vermeer/vermeerLogoBlackSmall.svg</file>
+        <file alias="vermeerLogoBlackBig">src/ui/toolbar/Images/vermeer/vermeerLogoBlackBig.svg</file>
+        <file alias="vermeerLogoBlackPng">src/ui/toolbar/Images/vermeer/vermeerLogoBlackPng.png</file>
+    </qresource>
 </RCC>
