@@ -19,8 +19,8 @@ Rectangle {
     readonly property real _verticalMargin:     _defaultTextHeight / 2
     readonly property real _buttonHeight:       ScreenTools.isTinyScreen ? ScreenTools.defaultFontPixelHeight * 3 : ScreenTools.defaultFontPixelHeight * 2
 
-    property var middleY: height /2
-    property var middleX: width / 2
+    property int middleY: height /2
+    property int middleX: width / 2
 
 
     // vermeer logo
@@ -34,6 +34,7 @@ Rectangle {
         Image {
             id: vermeerLogo
             source: "/vermeer/vermeerLogoBlackPng"
+            anchors.centerIn: parent
 
             height: parent.height / 2
             width: parent.width / 2
@@ -52,13 +53,70 @@ Rectangle {
         color: "black"
         x: parent.width / 2
 
-        Text {
-            id: signIn
-            text: qsTr("Sign in")
+        Rectangle {
+            id: vermeerSendJsonButton
             color: "white"
+            height: parent.height / 16
+            width: parent.width / 4
+            x: parent.width / 2
+            y: parent.height / 8
 
-            x: vermeerSignIn.width / 2
-            y: vermeerSignIn.height / 2
+            MouseArea {
+                id: signInMouseArea
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton
+
+                onClicked: {
+
+                    if(mouse.button === Qt.LeftButton)
+                    {
+                        console.log("sending json")
+                    }
+
+                }
+            }
+
+            Text {
+                id: vermeerSignInText
+                text: qsTr("Send Json")
+                color: "black"
+                font.pointSize: 35
+                anchors.centerIn: parent
+            }
+
+        }
+
+        Rectangle {
+            id: vermeerConnectButton
+            color: "white"
+            height: parent.height / 16
+            width: parent.width / 4
+            x: parent.width / 2
+            y: parent.height / 4
+
+            MouseArea {
+                id: connectMouseArea
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton
+
+                onClicked: {
+
+                    if(mouse.button === Qt.LeftButton)
+                    {
+                        console.log("connect to mqtt")
+                    }
+
+                }
+            }
+
+            Text {
+                id: vermeerConnectButtonText
+                text: qsTr("Connect to Jetson")
+                color: "black"
+                font.pointSize: 35
+                anchors.centerIn: parent
+            }
+
         }
     }
 
