@@ -27,12 +27,14 @@ public:
     QJsonObject readJsonFile(QString jsonFilePath);
 
 signals:
+    void displayNotification(QVariant data);
 
 public slots:
 
     void sendJson(QVariant filePath);
     void connectToCompanionComputer(QVariant sourceIpAddress,QVariant destinationIpAddress);
     void disconnectFromCompanionComputer();
+    void readyRead();
 
 private:
     QUdpSocket socket;
@@ -40,6 +42,7 @@ private:
     bool isConnected = false;
     QString sourceIp;
     QString destinationIp;
+    QString notificationData;
 
 };
 
