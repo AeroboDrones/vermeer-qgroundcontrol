@@ -22,8 +22,13 @@ Rectangle {
     property int middleY: height /2
     property int middleX: width / 2
 
+    property date currentDate: new Date()
+
     VermeerLogInPage{
         id: vermeerLogInPageClass
+        onDisplayNotification: {
+         vermeerNotificationTextInput.text += currentDate.toLocaleDateString() +":"+ currentDate.toLocaleTimeString() + " : " + data + "\n"
+        }
     }
 
     // vermeer logo
@@ -69,7 +74,6 @@ Rectangle {
                 acceptedButtons: Qt.LeftButton
 
                 onClicked: {
-
                     if(mouse.button === Qt.LeftButton)
                     {
                         console.log("sending json")
@@ -82,7 +86,7 @@ Rectangle {
                 id: vermeerSignInText
                 text: qsTr("Send Json")
                 color: "black"
-                font.pointSize: 35
+                font.pointSize: 20
                 anchors.centerIn: parent
             }
         }
@@ -113,7 +117,7 @@ Rectangle {
                 id: vermeerConnectButtonText
                 text: qsTr("Connect to Jetson")
                 color: "black"
-                font.pointSize: 20
+                font.pointSize: 10
                 anchors.centerIn: parent
             }
 
@@ -135,7 +139,7 @@ Rectangle {
                 onClicked: {
                     if(mouse.button === Qt.LeftButton)
                     {
-                        console.log("disconnecting to companion computer")
+                        console.log("disconnecting to companion computer\n")
                         vermeerLogInPageClass.disconnectFromCompanionComputer()
                     }
                 }
@@ -145,7 +149,7 @@ Rectangle {
                 id: vermeerDisconnectButtonText
                 text: qsTr("Disconnect from Jetson")
                 color: "black"
-                font.pointSize: 20
+                font.pointSize: 10
                 anchors.centerIn: parent
             }
 
@@ -180,7 +184,7 @@ Rectangle {
 
         Rectangle {
             id: vermeerTextInputForDestinationIpAddress
-            width: parent.width/2
+            width: parent.width / 2
             height: parent.height / 64
             border.color: "green"
             border.width: 1
@@ -189,6 +193,21 @@ Rectangle {
 
             TextInput {
                 id: ipAddressDestination
+                anchors.fill: parent
+            }
+        }
+
+        Rectangle {
+            id: vermeerNotificationRectangle
+            width: parent.width
+            height: parent.height / 4
+            border.color: "red"
+            border.width: 3
+            y: parent.height / 2
+            x: 0
+
+            TextArea {
+                id: vermeerNotificationTextInput
                 anchors.fill: parent
             }
         }
