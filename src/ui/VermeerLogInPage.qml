@@ -84,9 +84,72 @@ Rectangle {
 
             Text {
                 id: vermeerSignInText
-                text: qsTr("Send Json")
+                text: qsTr("Send Mission File")
                 color: "black"
-                font.pointSize: 20
+                font.pointSize: 10
+                anchors.centerIn: parent
+            }
+        }
+
+
+        Rectangle {
+            id: vermeerSendKeyFrameMission
+            color: "white"
+            height: parent.height / 16
+            width: parent.width / 4
+            x: parent.width / 8
+            y: parent.height * .40
+
+            MouseArea {
+                id: vermeerSendKeyFrameMouseArea
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton
+
+                onClicked: {
+                    if(mouse.button === Qt.LeftButton)
+                    {
+                        console.log("sending keyframe mission")
+                        //vermeerLogInPageClass.sendJson(jsonfilePathTextInputField.text)
+                    }
+                }
+            }
+
+            Text {
+                id: vermeerSendKeyFrameMissionText
+                text: qsTr("Send Keyframe Mission")
+                color: "black"
+                font.pointSize: 10
+                anchors.centerIn: parent
+            }
+        }
+
+        Rectangle {
+            id: vermeerExecuteKeyFrameMission
+            color: "white"
+            height: parent.height / 16
+            width: parent.width / 4
+            x: parent.width * 0.50
+            y: parent.height * .40
+
+            MouseArea {
+                id: vermeerExecuteKeyFrameMouseArea
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton
+
+                onClicked: {
+                    if(mouse.button === Qt.LeftButton)
+                    {
+                        console.log("Execute keyframe mission")
+                        //vermeerLogInPageClass.sendJson(jsonfilePathTextInputField.text)
+                    }
+                }
+            }
+
+            Text {
+                id: vermeerExecuteKeyFrameMissionText
+                text: qsTr("Execute Keyframe Mission")
+                color: "black"
+                font.pointSize: 10
                 anchors.centerIn: parent
             }
         }

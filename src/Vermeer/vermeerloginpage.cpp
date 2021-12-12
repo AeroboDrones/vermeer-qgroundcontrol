@@ -1,4 +1,6 @@
 #include "vermeerloginpage.h"
+#include "vermeerkeyframe.h"
+#include "vermeermissionitem.h"
 
 
 #include <QDir>
@@ -30,10 +32,21 @@ QJsonObject VermeerLogInPage::readJsonFile(QString jsonFilePath)
               QString msg = "VermeerLogInPage::readJsonFile: QJsonDocument::fromJson Failed with: " + jsonError.errorString();
               qInfo() << msg;
               emit(displayNotification(msg));
+              // might need better error handling here
           }
      }
 
      return document.object();
+}
+
+VermeerKeyFrame* VermeerLogInPage::getVermeerKeyFrame()
+{
+    return &vermeerKeyFrame;
+}
+
+int VermeerLogInPage::readTestInt()
+{
+    return _testInt;
 }
 
 void VermeerLogInPage::sendJson(QVariant filepath)
@@ -52,6 +65,18 @@ void VermeerLogInPage::sendJson(QVariant filepath)
         QString jsonFilePath = filepath.toString();
 
         QJsonObject jsonObject = readJsonFile(jsonFilePath);
+
+        QJsonArray jsonArray = jsonObject["missionItems"].toArray();
+
+        QJsonDocument jsondoc;
+
+        jsondoc.setArray(jsonArray);
+
+        QString dataToString(jsondoc.toJson());
+
+        qInfo() << dataToString;
+        emit(displayNotification(dataToString));
+
 
         QJsonDocument doc(jsonObject);
 
@@ -109,4 +134,36 @@ void VermeerLogInPage::readyRead()
         notificationData = datagram.data();
         emit(displayNotification(notificationData));
     }
+}
+
+QVariant VermeerLogInPage::getKeyFrameMissionItems(QVariant keyframeJsonFilePath) // this is the one called  in QML - hope to return mission items
+{
+    QVariant vermeerKeyFrameMissionItems;
+    QString fileName(keyframeJsonFilePath.toString());
+    QFile file(fileName);
+
+    if(!QFileInfo::exists(fileName)){
+        QString msg = keyframeJsonFilePath.toString() +  ": does not exist";
+        qInfo() << msg;
+        emit(displayNotification(msg));
+    }
+    else {
+        QString jsonFilePath = keyframeJsonFilePath.toString();
+        QJsonObject jsonObject = readJsonFile(jsonFilePath);
+
+        //auto vermeerKeyFrame = new VermeerKeyFrame();
+
+        vermeerKeyFrame.toVermeerKeyFrameFromJson(jsonObject);
+
+        qInfo() << "number of mission items: " << vermeerKeyFrame.missionItems.count();
+
+
+        //auto keyframeMissionItems = vermeerKeyFrame->getKeyFrameMissionItemList();
+
+        //vermeerKeyFrameMissionItems =  QVariant::fromValue<QList<VermeerMissionItem>>(vermeerKeyFrame->missionItems);
+
+        //vermeerKeyFrameMissionItems = keyframeMissionItems;
+    }
+
+    return vermeerKeyFrameMissionItems;
 }
