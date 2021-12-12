@@ -549,6 +549,74 @@ Item {
             }
         }
 
+
+        // vermeer custom keyframe
+
+        VermeerLogInPage{
+            id: vermeerLogInPageClass
+            onDisplayNotification: {
+             //vermeerNotificationTextInput.text += currentDate.toLocaleDateString() +":"+ currentDate.toLocaleTimeString() + " : " + data + "\n"
+            }
+
+        }
+
+        QGCButton {
+            text:               qsTr("Upload Keyframe Mission")
+            Layout.fillWidth:   true
+            x: parent.width * 0.70
+//            enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress && _planMasterController.containsItems
+//            visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
+            onClicked: {
+                var coordinate = editorMap.center // so that we have a coordinate object that we can edit
+
+                var keyframeMissionItemList = vermeerLogInPageClass.getKeyFrameMissionItems(jsonfilePathTextInputField.text)
+
+                var vermeerKeyFrame = vermeerLogInPageClass.vermeerKeyFrame
+                // for (var i=0; i<_missionController.visualItems.count; i++) {
+
+                //either that or I pass a string and json it
+
+//                for (var eachMissionItem in keyframeMissionItemList) {
+
+//                    coordinate.latitude = eachMissionItem.latitudeDeg
+//                    coordinate.longitude = eachMissionItem.longitudeDeg
+//                    coordinate.altitude = eachMissionItem.relativeAltitudeM
+
+//                    coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
+//                    coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
+//                    coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
+
+//                    // call the function that reads the frame json and returns a list of mission items
+//                    // return a list of mission items
+//                    // Send mission to vehicle
+
+
+
+//                     insertSimpleItemAfterCurrent(coordinate)
+
+//                }
+
+
+
+                //_planMasterController.upload()
+            }
+        }
+
+        Rectangle {
+            id: vermeerTextInputForJsonFilePath
+            width: parent.width * 0.60
+            height: parent.height * 0.03
+            border.color: "gray"
+            border.width: 1
+            x: parent.width * 0.05
+
+            TextArea {
+                id: jsonfilePathTextInputField
+                anchors.fill: parent
+                text: "C:\source\Vermeer\sample_keyframe_mission.json"
+            }
+        }
+
         //-----------------------------------------------------------
         // Left tool strip
         ToolStrip {
