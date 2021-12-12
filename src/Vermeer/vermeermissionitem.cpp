@@ -1,6 +1,6 @@
 #include "vermeermissionitem.h"
 
-VermeerMissionItem::VermeerMissionItem() : QObject()
+VermeerMissionItem::VermeerMissionItem()
 {
 
 }

@@ -46,7 +46,13 @@ VermeerKeyFrame* VermeerLogInPage::getVermeerKeyFrame()
 
 int VermeerLogInPage::readTestInt()
 {
+    _testInt = 6;
     return _testInt;
+}
+
+QString VermeerLogInPage::getMissionItemsJson()
+{
+    return keyframeMissionItemsJson;
 }
 
 void VermeerLogInPage::sendJson(QVariant filepath)
@@ -76,7 +82,6 @@ void VermeerLogInPage::sendJson(QVariant filepath)
 
         qInfo() << dataToString;
         emit(displayNotification(dataToString));
-
 
         QJsonDocument doc(jsonObject);
 
@@ -156,6 +161,12 @@ QVariant VermeerLogInPage::getKeyFrameMissionItems(QVariant keyframeJsonFilePath
         vermeerKeyFrame.toVermeerKeyFrameFromJson(jsonObject);
 
         qInfo() << "number of mission items: " << vermeerKeyFrame.missionItems.count();
+
+        //qInfo() << vermeerKeyFrame.getMissionItemsJson(jsonObject);
+
+        keyframeMissionItemsJson = vermeerKeyFrame.getMissionItemsJson(jsonObject);
+
+        // return a string with only the mission items in it
 
 
         //auto keyframeMissionItems = vermeerKeyFrame->getKeyFrameMissionItemList();

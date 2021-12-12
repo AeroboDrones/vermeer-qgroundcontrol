@@ -8,12 +8,16 @@
 class VermeerKeyFrame : public QObject
 {
     Q_OBJECT
+    //Q_PROPERTY(double createdAt READ getCreatedAt)
 public:
     //explicit VermeerKeyFrame(QObject *parent = nullptr);
     VermeerKeyFrame(QObject *parent = nullptr);
 
     void toVermeerKeyFrameFromJson(QJsonObject vermeerKeyFrameJson);
-    QList<std::unique_ptr<VermeerMissionItem>> toMissionItems(QJsonArray missionItemsJson);
+    QList<VermeerMissionItem> toMissionItems(QJsonArray missionItemsJson);
+
+    QString getMissionItemsJson(QJsonObject vermeerKeyFrameJson);
+
 //    QList<QVariant> getKeyFrameMissionItemList();
 
     // maybe make its const
@@ -26,7 +30,7 @@ public:
     QString uid;
     int vehicleType;
 
-    QList<std::unique_ptr<VermeerMissionItem>> missionItems;
+    QList<VermeerMissionItem> missionItems;
 
 signals:
 

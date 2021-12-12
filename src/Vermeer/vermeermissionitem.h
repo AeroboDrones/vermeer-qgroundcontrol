@@ -1,7 +1,7 @@
 #ifndef VERMEERMISSIONITEM_H
 #define VERMEERMISSIONITEM_H
 
-class VermeerMissionItem : public QObject
+class VermeerMissionItem
 {
 
 public:
