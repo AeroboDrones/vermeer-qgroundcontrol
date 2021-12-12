@@ -571,34 +571,26 @@ Item {
 
                 var keyframeMissionItemList = vermeerLogInPageClass.getKeyFrameMissionItems(jsonfilePathTextInputField.text)
 
-                var vermeerKeyFrame = vermeerLogInPageClass.vermeerKeyFrame
-                // for (var i=0; i<_missionController.visualItems.count; i++) {
+                var keyframeMissionItemsJsonList = JSON.parse(vermeerLogInPageClass.missionItemsJson);
 
-                //either that or I pass a string and json it
+                for (var missionItem in keyframeMissionItemsJsonList) {
 
-//                for (var eachMissionItem in keyframeMissionItemList) {
+                    coordinate.latitude = keyframeMissionItemsJsonList[missionItem]["latitudeDeg"]
+                    coordinate.longitude = keyframeMissionItemsJsonList[missionItem]["longitudeDeg"]
 
-//                    coordinate.latitude = eachMissionItem.latitudeDeg
-//                    coordinate.longitude = eachMissionItem.longitudeDeg
-//                    coordinate.altitude = eachMissionItem.relativeAltitudeM
+                    console.log("relativeAltitudeM")
+                    console.log(keyframeMissionItemsJsonList[missionItem]["relativeAltitudeM"])
 
-//                    coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
-//                    coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
-//                    coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
+                    coordinate.altitude = keyframeMissionItemsJsonList[missionItem]["relativeAltitudeM"]
 
-//                    // call the function that reads the frame json and returns a list of mission items
-//                    // return a list of mission items
-//                    // Send mission to vehicle
+                    coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
+                    coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
+                    coordinate.altitude = 42.5
 
+                    insertSimpleItemAfterCurrent(coordinate)
+                }
 
-
-//                     insertSimpleItemAfterCurrent(coordinate)
-
-//                }
-
-
-
-                //_planMasterController.upload()
+                _planMasterController.upload()
             }
         }
 
@@ -613,7 +605,7 @@ Item {
             TextArea {
                 id: jsonfilePathTextInputField
                 anchors.fill: parent
-                text: "C:\source\Vermeer\sample_keyframe_mission.json"
+                text: 'C:\\source\\Vermeer\\sample_keyframe_mission.json'
             }
         }
 

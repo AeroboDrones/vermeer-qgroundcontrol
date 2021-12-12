@@ -28,7 +28,10 @@ class VermeerLogInPage : public QObject
     Q_OBJECT
 
     Q_PROPERTY(VermeerKeyFrame* vermeerKeyFrame READ getVermeerKeyFrame)
-    Q_PROPERTY(int testInt READ readTestInt)
+    Q_PROPERTY(int _testInt READ readTestInt)
+
+    Q_PROPERTY(QString missionItemsJson READ getMissionItemsJson)
+
 
 public:
     explicit VermeerLogInPage(QObject *parent = nullptr);
@@ -36,6 +39,7 @@ public:
 
     VermeerKeyFrame* getVermeerKeyFrame();
     int readTestInt();
+    QString getMissionItemsJson();
 
     // need qproperty
 
@@ -63,8 +67,9 @@ private:
     QString notificationData;
 
     VermeerKeyFrame vermeerKeyFrame;
+    int _testInt;
 
-    int _testInt = 0;
+    QString keyframeMissionItemsJson;
 
 
 };

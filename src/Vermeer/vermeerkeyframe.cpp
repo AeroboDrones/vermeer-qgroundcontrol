@@ -25,9 +25,9 @@ void VermeerKeyFrame::toVermeerKeyFrameFromJson(QJsonObject vermeerKeyFrameJson)
     missionItems = toMissionItems(vermeerKeyFrameJson["missionItems"].toArray());
 }
 
-QList<std::unique_ptr<VermeerMissionItem>> VermeerKeyFrame::toMissionItems(QJsonArray missionItemsJson)
+QList<VermeerMissionItem> VermeerKeyFrame::toMissionItems(QJsonArray missionItemsJson)
 {
-    QList<std::unique_ptr<VermeerMissionItem>> localVermeerMissionItems;
+    QList<VermeerMissionItem> localVermeerMissionItems;
 
 //    for (int idx=0; idx < missionItemsJson.count(); idx++) {
 //         QJsonObject eachMissionItemJson = missionItemsJson[idx].toObject();
@@ -74,4 +74,17 @@ QList<std::unique_ptr<VermeerMissionItem>> VermeerKeyFrame::toMissionItems(QJson
     }
 
     return localVermeerMissionItems;
+}
+
+QString VermeerKeyFrame::getMissionItemsJson(QJsonObject vermeerKeyFrameJson)
+{
+    QJsonArray jsonArray = vermeerKeyFrameJson["missionItems"].toArray();
+
+    QJsonDocument jsondoc;
+
+    jsondoc.setArray(jsonArray);
+
+    QString vermeerMissionItemsJson(jsondoc.toJson());
+
+    return vermeerMissionItemsJson;
 }
