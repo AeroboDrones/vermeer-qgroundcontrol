@@ -232,8 +232,6 @@ void MissionSettingsItem::setCoordinate(const QGeoCoordinate& coordinate)
         _plannedHomePositionMovedByUser = true;
         _plannedHomePositionFromVehicle = false;
         _setCoordinateWorker(coordinate);
-        qInfo() << "setCoordinate";
-        qInfo() << coordinate.altitude();
     }
 }
 
