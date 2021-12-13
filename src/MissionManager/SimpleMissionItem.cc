@@ -861,6 +861,9 @@ void SimpleMissionItem::setCoordinate(const QGeoCoordinate& coordinate)
     if (_missionItem.param5() != coordinate.latitude() || _missionItem.param6() != coordinate.longitude()) {
         _missionItem.setParam5(coordinate.latitude());
         _missionItem.setParam6(coordinate.longitude());
+        // for vermeer
+        qInfo() << "SimpleMissionItem::setCoordinate: " << coordinate.altitude();
+        _missionItem.setParam7(coordinate.altitude());
     }
 }
 

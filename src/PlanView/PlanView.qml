@@ -622,8 +622,6 @@ Item {
             text:               qsTr("Upload Keyframe Mission")
             Layout.fillWidth:   true
             x: parent.width * 0.70
-//            enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress && _planMasterController.containsItems
-//            visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
             onClicked: {
                 var coordinate = editorMap.center // so that we have a coordinate object that we can edit
 
@@ -635,15 +633,11 @@ Item {
 
                     coordinate.latitude = keyframeMissionItemsJsonList[missionItem]["latitudeDeg"]
                     coordinate.longitude = keyframeMissionItemsJsonList[missionItem]["longitudeDeg"]
-
-                    console.log("relativeAltitudeM")
-                    console.log(keyframeMissionItemsJsonList[missionItem]["relativeAltitudeM"])
-
                     coordinate.altitude = keyframeMissionItemsJsonList[missionItem]["relativeAltitudeM"]
 
                     coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
                     coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
-                    coordinate.altitude = 42.5
+                    coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
 
                     insertSimpleItemAfterCurrent(coordinate)
                 }

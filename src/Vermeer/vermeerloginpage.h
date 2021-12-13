@@ -38,12 +38,10 @@ public:
     QJsonObject readJsonFile(QString jsonFilePath);
 
     VermeerKeyFrame* getVermeerKeyFrame();
+
+    // need accesors for the qproperties
     int readTestInt();
     QString getMissionItemsJson();
-
-    // need qproperty
-
-    // need accesor
 
 signals:
     void displayNotification(QVariant data);
@@ -51,7 +49,6 @@ signals:
 public slots:
 
     void sendJson(QVariant filePath);
-    // How to set it on on c++ so QML can access data instead of a function returning data?
 
     void connectToCompanionComputer(QVariant sourceIpAddress,QVariant destinationIpAddress);
     void disconnectFromCompanionComputer();
