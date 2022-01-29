@@ -242,6 +242,8 @@
         <file alias="VideoPageWidget.qml">src/FlightMap/Widgets/VideoPageWidget.qml</file>
         <file alias="VirtualJoystick.qml">src/FlightDisplay/VirtualJoystick.qml</file>
         <file alias="QGroundControl/Controls/QGCRadioButtonOld.qml">src/QmlControls/QGCRadioButtonOld.qml</file>
+        <file alias="VermeerTestPage.qml">src/Vermeer/VermeerTestPage.qml</file>
+        <file alias="VermeerSignInPage.qml">src/Vermeer/VermeerSignInPage.qml</file>
     </qresource>
     <qresource prefix="/json">
         <file alias="ADSBVehicleManager.SettingsGroup.json">src/Settings/ADSBVehicleManager.SettingsGroup.json</file>
@@ -295,5 +297,4 @@
         <file alias="APMArduSubMockLink.params">src/comm/APMArduSubMockLink.params</file>
         <file alias="PX4MockLink.params">src/comm/PX4MockLink.params</file>
     </qresource>
-    <qresource prefix="/"/>
 </RCC>

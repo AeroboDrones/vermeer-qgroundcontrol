@@ -433,6 +433,8 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 #
 
 HEADERS += \
+    src/Vermeer/vermeerfirebasemanager.h \
+    src/Vermeer/vermeeruser.h \
     src/api/QGCCorePlugin.h \
     src/api/QGCOptions.h \
     src/api/QGCSettings.h \
@@ -446,6 +448,8 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 }
 
 SOURCES += \
+    src/Vermeer/vermeerfirebasemanager.cpp \
+    src/Vermeer/vermeeruser.cpp \
     src/api/QGCCorePlugin.cc \
     src/api/QGCOptions.cc \
     src/api/QGCSettings.cc \

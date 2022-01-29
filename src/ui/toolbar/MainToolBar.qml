@@ -250,6 +250,19 @@ Item {
                                                             )
                                                         )
                                                     )
+        MouseArea {
+            id: logoMouseArea
+            anchors.fill: parent
+            onClicked: {
+                console.log("Im pressing the logo")
+
+                if (mainWindow.preventViewSwitch()) {
+                    return
+                }
+                buttonRow.clearAllChecks()
+                mainWindow.showVermeerTestPage()
+            }
+        }
     }
 
     // Small parameter download progress bar
