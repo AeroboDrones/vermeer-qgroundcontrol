@@ -21,23 +21,8 @@ import QGroundControl.ScreenTools   1.0
 import QGroundControl.FlightDisplay 1.0
 import QGroundControl.FlightMap     1.0
 
-/// @brief Native QML top level window
-/// All properties defined here are visible to all QML pages.
-ApplicationWindow {
-    id:             mainWindow
-    minimumWidth:   ScreenTools.isMobile ? Screen.width  : Math.min(ScreenTools.defaultFontPixelWidth * 100, Screen.width)
-    minimumHeight:  ScreenTools.isMobile ? Screen.height : Math.min(ScreenTools.defaultFontPixelWidth * 50, Screen.height)
-    visible:        true
-
-    Component.onCompleted: {
-        //-- Full screen on mobile or tiny screens
-        if(ScreenTools.isMobile || Screen.height / ScreenTools.realPixelDensity < 120) {
-            mainWindow.showFullScreen()
-        } else {
-            width   = ScreenTools.isMobile ? Screen.width  : Math.min(250 * Screen.pixelDensity, Screen.width)
-            height  = ScreenTools.isMobile ? Screen.height : Math.min(150 * Screen.pixelDensity, Screen.height)
-        }
-    }
+Item {
+    id: vermeerSignInQml
 
     VermeerFirebaseManager{
         id: vermeerFirebaseManager
@@ -45,26 +30,24 @@ ApplicationWindow {
             console.log("onDisplayMsgToQml:")
             console.log(data)
 
-            if("fetchFlightPlans" === data){
-                console.log("fetching flight plans")
-                vermeerFirebaseManager.fetchFlightPlans();
+            if("validSignIn" === data){
+                console.log("Valid Credentials")
+                vermeerLoader.source = "VermeerMissionPage.qml"
             }
-            else if("InvalidSignIn") {
+            else if("InvalidSignIn" === data) {
+                console.log("vermeerInvalidCredentials.visible = true")
+                vermeerSigningInQml.z = 0
                 vermeerInvalidCredentials.visible = true
-            }
-            else if("validSignIn") {
-                // call a function that loads the MainRootWindow in C++
             }
         }
     }
-
 
     // error banner
     Rectangle {
         id: vermeerInvalidCredentials
         height: parent.height * .10
         width: parent.width
-        color: "#d7003f"
+        color: "#25050b"
         z: 1
         opacity: 0.90
         visible: false
@@ -72,12 +55,17 @@ ApplicationWindow {
         Text {
             id: vermeerInvalidCredentialsText
             text: qsTr("Invalid Credentials. Please try again.")
-            color: "white"
+            color: "#8b5862"
 
             font.pointSize: 15
             anchors.centerIn: parent
         }
     }
+
+    VermeerSigningInPage{
+        id: vermeerSigningInQml
+    }
+
 
     // vermeer logo
     Rectangle {
@@ -91,7 +79,6 @@ ApplicationWindow {
             id: vermeerLogo
             source: "/vermeer/VermeerSignInLogoLeftPng"
             anchors.centerIn: parent
-
             height: parent.height
             width: parent.width
         }
@@ -136,12 +123,13 @@ ApplicationWindow {
 
             TextInput {
                 id: vermeerEmailAddressTextInput
-                text: qsTr("Email Address")
+                text: qsTr("czarbalangue@gmail.com")
                 color: "#5a5a5a"
                 font.pointSize: 15
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.margins: 20
+                anchors.fill: parent
             }
         }
 
@@ -156,12 +144,13 @@ ApplicationWindow {
 
             TextInput {
                 id: vermeerPasswordTextInput
-                text: qsTr("Password")
+                text: qsTr("aaaaaa")
                 color: "#5a5a5a"
                 font.pointSize: 15
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.margins: 20
+                anchors.fill: parent
             }
         }
 
@@ -180,6 +169,7 @@ ApplicationWindow {
                 onClicked: {
                     console.log("Press Loging In")
                     vermeerFirebaseManager.signIn(vermeerEmailAddressTextInput.text,vermeerPasswordTextInput.text)
+                    vermeerSigningInQml.z = 2
                 }
             }
 

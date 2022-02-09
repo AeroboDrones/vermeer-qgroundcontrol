@@ -244,6 +244,13 @@
         <file alias="QGroundControl/Controls/QGCRadioButtonOld.qml">src/QmlControls/QGCRadioButtonOld.qml</file>
         <file alias="VermeerTestPage.qml">src/Vermeer/VermeerTestPage.qml</file>
         <file alias="VermeerSignInPage.qml">src/Vermeer/VermeerSignInPage.qml</file>
+        <file alias="VermeerSigningInPage.qml">src/Vermeer/VermeerSigningInPage.qml</file>
+        <file alias="VermeerMissionPage.qml">src/Vermeer/VermeerMissionPage.qml</file>
+        <file alias="VermeerMissionPageToolbar.qml">src/Vermeer/VermeerMissionPageToolbar.qml</file>
+        <file alias="VermeerSettingsPage.qml">src/Vermeer/VermeerSettingsPage.qml</file>
+        <file alias="VermeerSettingsToolbar.qml">src/Vermeer/VermeerSettingsToolbar.qml</file>
+        <file alias="VermeerMissionList.qml">src/Vermeer/VermeerMissionList.qml</file>
+        <file alias="VermeerSettingsContentPage.qml">src/Vermeer/VermeerSettingsContentPage.qml</file>
     </qresource>
     <qresource prefix="/json">
         <file alias="ADSBVehicleManager.SettingsGroup.json">src/Settings/ADSBVehicleManager.SettingsGroup.json</file>

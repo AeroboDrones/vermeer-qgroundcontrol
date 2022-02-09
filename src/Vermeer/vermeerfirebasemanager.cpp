@@ -2,14 +2,26 @@
 
 #include <QNetworkRequest>
 #include <QDebug>
-
-#include <QJsonObject>
-#include <QJsonDocument>
+#include <QPointF>
+#include <QQmlEngine>
 
 VermeerFirebaseManager::VermeerFirebaseManager(QObject *parent)
     : QObject{parent}
 {
     networkManager = new QNetworkAccessManager( this );
+
+    if (VermeerFirebaseManager::isConnected == false)
+    {
+        if(!socket.bind(QHostAddress(sourceIp), port)) {
+            QString msg = socket.errorString();
+            qInfo() << "Not Connected" + msg;
+            VermeerFirebaseManager::isConnected = false;
+        }
+        else {
+            VermeerFirebaseManager::isConnected = true;
+            qInfo() << "bound to: " + sourceIp + ":" + QString::number(port);
+        }
+    }
 }
 
 VermeerFirebaseManager::~VermeerFirebaseManager()
@@ -19,41 +31,68 @@ VermeerFirebaseManager::~VermeerFirebaseManager()
 
 void VermeerFirebaseManager::signIn(QVariant emailString, QVariant passwordString)
 {
-    vermeerUser.setEmail(emailString.toString());
-    vermeerUser.setPassword(passwordString.toString());
+    VermeerUser::setEmail(emailString.toString());
+    VermeerUser::setPassword(passwordString.toString());
 
     QJsonObject emailAndPasswordJson;
 
-    emailAndPasswordJson["email"] = vermeerUser.getEmail();
-    emailAndPasswordJson["password"] = vermeerUser.getPassword();
+    emailAndPasswordJson["email"] = VermeerUser::getEmail();
+    emailAndPasswordJson["password"] = VermeerUser::getPassword();
 
     _authenticateWithEmailAndPassword(emailAndPasswordJson, authenticateUrl,networkManager);
 }
 
-void VermeerFirebaseManager::networkReplyReadyRead()
+void VermeerFirebaseManager::fetchFlightPlansReadyRead()
 {
-    emit(displayMsgToQml("reply 1"));
-    qInfo() << "Getting here";
+    QString firebaseMissionsJsonReply = networkReply->readAll();
+    QJsonObject missionJson = _missionToJson(firebaseMissionsJsonReply);
 
-    QString reply = networkReply->readAll();
-
-    qInfo() << "reply: " + reply;
-
-    qInfo() << networkReply->readAll();
-
-    emit(displayMsgToQml("reply"));
+    _setVermeerUserMissionArray(missionJson);
+    VermeerUser::setNumberOfMission(missionJson.count());
+    emit(displayMsgToQml("numberOfMissionItemsChanged"));
 }
 
 void VermeerFirebaseManager::fetchFlightPlans()
 {
-    qInfo() << "fetching flight plans";
+    _fetchFlightPlans(fetchFlightPlansUrl,VermeerUser::getAccessToken(),VermeerUser::getUid());
+}
 
-    qInfo() << "fetchFlightPlansUrl";
-    qInfo() << fetchFlightPlansUrl;
-    qInfo() << "vermeerUser.getAccessToken()";
-    qInfo() << vermeerUser.getAccessToken();
+void VermeerFirebaseManager::sendMission(QVariant missionKey)
+{
+    QString missionContent = VermeerUser::getMissionByKey(missionKey.toString());
 
-    _fetchFlightPlans(fetchFlightPlansUrl,vermeerUser.getAccessToken(),vermeerUser.getUid());
+    QByteArray missionContentByteArray = missionContent.toUtf8();
+
+    QString destinationIp = VermeerUser::getDestinationIpAddress();
+    int destinationPort = VermeerUser::getDestinationPortNumber();
+
+    QNetworkDatagram datagram(missionContentByteArray,QHostAddress(destinationIp),destinationPort);
+
+    qInfo() << "sending: ";
+    qInfo() << missionContent;
+    qInfo() << "VermeerUser::getDestinationAddress("
+               ")" + VermeerUser::getDestinationIpAddress();
+    qInfo() << "VermeerUser::getDestinationPortNumber()";
+    qInfo() << VermeerUser::getDestinationPortNumber();
+
+    socket.writeDatagram(datagram);
+}
+
+void VermeerFirebaseManager::updateSetting(QVariant ipAddress, QVariant portNumber)
+{
+    // need to handle possible error here - make sure ipaddress if a string and portnumber is a number
+    VermeerUser::setDestinationIpAddress(ipAddress.toString());
+    VermeerUser::setDestinationPortNumber(portNumber.toInt());
+}
+
+QVariant VermeerFirebaseManager::getDestinationIpAddress()
+{
+    return QVariant(VermeerUser::getDestinationIpAddress());
+}
+
+QVariant VermeerFirebaseManager::getDestinationPortNumber()
+{
+    return QVariant(VermeerUser::getDestinationPortNumber());
 }
 
 void VermeerFirebaseManager::_authenticateWithEmailAndPassword(QJsonObject emailAndPasswordJson, QString authenticateURL, QNetworkAccessManager *networkManager)
@@ -78,21 +117,23 @@ void VermeerFirebaseManager::_authenticateWithEmailAndPassword(QJsonObject email
             bool isAuthenticationValid = replyJsonObj.contains("access_token") && replyJsonObj.contains("uid") && replyJsonObj.contains("refresh_token");
 
             if(isAuthenticationValid){
-                vermeerUser.setAccessToken(replyJsonObj["access_token"].toString());
-                vermeerUser.setUid(replyJsonObj["uid"].toString());
-                vermeerUser.setRefreshToken(replyJsonObj["refresh_token"].toString());
+                VermeerUser::setAccessToken(replyJsonObj["access_token"].toString());
+                VermeerUser::setUid(replyJsonObj["uid"].toString());
+                VermeerUser::setRefreshToken(replyJsonObj["refresh_token"].toString());
 
-                QVariant msg = "fetchFlightPlans";
+                QVariant msg = "validSignIn";
+                qInfo() << msg;
                 emit(displayMsgToQml(msg));
             } else {
                 QVariant errorMsg = replyJsonObj["message"].toVariant();
-                emit(displayMsgToQml(errorMsg));
+                emit(displayMsgToQml("InvalidSignIn"));
                 qInfo() << errorMsg;
             }
         }
         else {
             QString err = netReply->errorString();
-            emit(displayMsgToQml(err));
+            emit(displayMsgToQml("InvalidSignIn"));
+            qInfo() << err;
         }
     });
 }
@@ -109,13 +150,34 @@ void VermeerFirebaseManager::_fetchFlightPlans(QString fetchFlightPlansUrl, QStr
     fetchFlightPlansUrl.replace("[ACCESS_TOKEN]",accessToken);
     fetchFlightPlansUrl.replace("[UID]",uID);
 
-    qInfo() << "fetchFlightPlansUrl: ";
-    qInfo() << fetchFlightPlansUrl;
-
     QNetworkRequest fetchFlightPlansRequest((QUrl(fetchFlightPlansUrl)));
 
     networkReply = networkManager->get(fetchFlightPlansRequest);
 
     // might change
-    connect(networkReply,&QNetworkReply::readyRead, this,&VermeerFirebaseManager::networkReplyReadyRead);
+    connect(networkReply,&QNetworkReply::readyRead, this,&VermeerFirebaseManager::fetchFlightPlansReadyRead);
 }
+
+QJsonObject VermeerFirebaseManager::_missionToJson(QString firebaseMissionsJsonString)
+{
+    QJsonDocument firebaseMissionsDoc = QJsonDocument::fromJson(firebaseMissionsJsonString.toUtf8());
+    QJsonObject firebaseMissionsJson;
+
+    if(!firebaseMissionsDoc.isNull()) {
+        if(firebaseMissionsDoc.isObject()){
+            firebaseMissionsJson = firebaseMissionsDoc.object();
+        }
+    }
+    else{
+        qInfo() << "VermeerFirebaseManager::missionToJson: ";
+        qInfo() << "firebaseMissionsJson: Invalid Json ";
+    }
+
+    return firebaseMissionsJson;
+}
+
+void VermeerFirebaseManager::_setVermeerUserMissionArray(QJsonObject missionsJson)
+{
+    VermeerUser::setMissionJson(missionsJson);
+}
+

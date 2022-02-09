@@ -1,4 +1,7 @@
+#include <QDebug>
+
 #include "vermeeruser.h"
+#include <QJsonValue>
 
 VermeerUser::VermeerUser(QObject *parent)
     : QObject{parent}
@@ -6,52 +9,103 @@ VermeerUser::VermeerUser(QObject *parent)
 
 }
 
-const QString &VermeerUser::getEmail() const
+const QString &VermeerUser::getEmail()
 {
-    return email;
+    return VermeerUser::email;
 }
 
 void VermeerUser::setEmail(const QString &newEmail)
 {
-    email = newEmail;
+    VermeerUser::email = newEmail;
 }
 
-const QString &VermeerUser::getPassword() const
+const QString &VermeerUser::getPassword()
 {
-    return password;
+    return VermeerUser::password;
 }
 
 void VermeerUser::setPassword(const QString &newPassword)
 {
-    password = newPassword;
+    VermeerUser::password = newPassword;
 }
 
-const QString &VermeerUser::getAccessToken() const
+const QString &VermeerUser::getAccessToken()
 {
-    return accessToken;
+    return VermeerUser::accessToken;
 }
 
 void VermeerUser::setAccessToken(const QString &newAccessToken)
 {
-    accessToken = newAccessToken;
+    VermeerUser::accessToken = newAccessToken;
 }
 
-const QString &VermeerUser::getUid() const
+const QString &VermeerUser::getUid()
 {
-    return uid;
+    return VermeerUser::uid;
 }
 
 void VermeerUser::setUid(const QString &newUid)
 {
-    uid = newUid;
+    VermeerUser::uid = newUid;
 }
 
-const QString &VermeerUser::getRefreshToken() const
+const QString &VermeerUser::getRefreshToken()
 {
-    return refreshToken;
+    return VermeerUser::refreshToken;
 }
 
 void VermeerUser::setRefreshToken(const QString &newRefreshToken)
 {
-    refreshToken = newRefreshToken;
+    VermeerUser::refreshToken = newRefreshToken;
+}
+
+int VermeerUser::readNumberOfMissionItems()
+{
+    return VermeerUser::numberOfMissions;
+}
+
+void VermeerUser::setNumberOfMission(int numberOfMissionItems)
+{
+    VermeerUser::numberOfMissions = numberOfMissionItems;
+}
+
+void VermeerUser::setMissionJson(QJsonObject missionJson)
+{
+    VermeerUser::missionJson = missionJson;
+}
+
+QString VermeerUser::getMissionByKey(QString key)
+{
+    QJsonObject missionJson = VermeerUser::missionJson.value(key).toObject();
+    QJsonDocument doc(missionJson);
+    QString missionString(doc.toJson(QJsonDocument::Compact));
+    return missionString;
+}
+
+QString VermeerUser::readMissionJsonSring()
+{
+    QJsonDocument doc(VermeerUser::missionJson);
+    QString missionJsonString(doc.toJson(QJsonDocument::Compact));
+
+    return missionJsonString;
+}
+
+const QString &VermeerUser::getDestinationIpAddress()
+{
+    return VermeerUser::destinationIpAddress;
+}
+
+void VermeerUser::setDestinationIpAddress(const QString &newDestinationIpAddress)
+{
+    VermeerUser::destinationIpAddress = newDestinationIpAddress;
+}
+
+int VermeerUser::getDestinationPortNumber()
+{
+    return VermeerUser::destinationPortNumber;
+}
+
+void VermeerUser::setDestinationPortNumber(int newDestinationPortNumber)
+{
+    VermeerUser::destinationPortNumber = newDestinationPortNumber;
 }

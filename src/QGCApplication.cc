@@ -102,6 +102,7 @@
 #include "TrajectoryPoints.h"
 #include "QGCImageProvider.h"
 #include "Vermeer/vermeerfirebasemanager.h"
+#include "Vermeer/vermeeruser.h"
 
 #if defined(QGC_ENABLE_PAIRING)
 #include "PairingManager.h"
@@ -507,6 +508,7 @@ void QGCApplication::_initCommon()
     qmlRegisterUncreatableType<LogReplayLink>       (kQGroundControl,                       1, 0, "LogReplayLink",              kRefOnly);
     qmlRegisterType<LogReplayLinkController>        (kQGroundControl,                       1, 0, "LogReplayLinkController");
     qmlRegisterType<VermeerFirebaseManager>         (kQGroundControl,                       1, 0, "VermeerFirebaseManager");
+    qmlRegisterType<VermeerUser>                    (kQGroundControl,                       1, 0, "VermeerUser");
 #if defined(QGC_ENABLE_MAVLINK_INSPECTOR)
     qmlRegisterUncreatableType<MAVLinkChartController> (kQGroundControl,                    1, 0, "MAVLinkChart",               kRefOnly);
 #endif

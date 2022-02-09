@@ -105,7 +105,7 @@ ApplicationWindow {
         analyzeWindow.visible   = false
         flightView.visible      = false
         planViewLoader.visible  = false
-        vermeerTestPageWindow.visible   = false
+        vermeerLoader.visible   = false
         if(isPlanView) {
             toolbar.source  = _planToolbar
         } else {
@@ -142,9 +142,9 @@ ApplicationWindow {
         settingsWindow.visible = true
     }
 
-    function showVermeerTestPage() {
+    function showVermeerSignInPage() {
         viewSwitch(false)
-        vermeerTestPageWindow.visible = true
+        vermeerLoader.visible = true
     }
 
     //-------------------------------------------------------------------------
@@ -391,12 +391,12 @@ ApplicationWindow {
     }
 
     //-------------------------------------------------------------------------
-    /// vermeerTestPage
+    /// vermeerLoader
     Loader {
-        id:             vermeerTestPageWindow
+        id:             vermeerLoader
         anchors.fill:   parent
         visible:        false
-        source:         "VermeerTestPage.qml"
+        source:         "VermeerSignInPage.qml"
     }
 
     //-------------------------------------------------------------------------

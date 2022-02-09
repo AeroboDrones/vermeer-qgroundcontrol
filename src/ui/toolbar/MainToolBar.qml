@@ -260,7 +260,7 @@ Item {
                     return
                 }
                 buttonRow.clearAllChecks()
-                mainWindow.showVermeerTestPage()
+                mainWindow.showVermeerSignInPage()
             }
         }
     }
