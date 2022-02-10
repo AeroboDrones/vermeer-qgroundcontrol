@@ -38,6 +38,8 @@ public slots:
     void updateSetting(QVariant ipAddress, QVariant portNumber);
     QVariant getDestinationIpAddress();
     QVariant getDestinationPortNumber();
+    QVariant getUserEmailAddress();
+    QVariant getUserPassword();
 
 
 private:

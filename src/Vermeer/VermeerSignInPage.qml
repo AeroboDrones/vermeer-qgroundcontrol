@@ -42,6 +42,11 @@ Item {
         }
     }
 
+    Component.onCompleted: {
+        vermeerEmailAddressTextInput.text = vermeerFirebaseManager.getUserEmailAddress()
+        vermeerPasswordTextInput.text = vermeerFirebaseManager.getUserPassword()
+    }
+
     // error banner
     Rectangle {
         id: vermeerInvalidCredentials

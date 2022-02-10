@@ -30,14 +30,14 @@ Item {
             console.log("onDisplayMsgToQml:" + data)
 
             if("numberOfMissionItemsChanged"===data){
-
                 if(vermmerUser.numberOfMissions > 0){
                     noMissionAvailablePage.visible = false
                     vermeerMissionListsView.visible = true
 
                     var missionJson = JSON.parse(vermmerUser.missionJsonString)
                     for (var missionKey in missionJson){
-                        missionModel.append({"mission":missionKey})
+                        missionModel.append({"missionName":missionJson[missionKey]["name"],
+                                            "missionKey":missionKey})
                     }
                 }
                 else{
@@ -112,7 +112,7 @@ Item {
                         font.pointSize: 20
                         font.bold: true
                         color: "white"
-                        text: qsTr("Mission#" + mission)
+                        text: qsTr(missionName)
                     }
                 }
 
@@ -141,7 +141,7 @@ Item {
                         id: uploadButtonMouseArea
                         anchors.fill: parent
                         onClicked: {
-                            vermeerFirebaseManager.sendMission(mission)
+                            vermeerFirebaseManager.sendMission(missionKey)
                         }
                     }
                 }

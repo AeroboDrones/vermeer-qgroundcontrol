@@ -95,6 +95,16 @@ QVariant VermeerFirebaseManager::getDestinationPortNumber()
     return QVariant(VermeerUser::getDestinationPortNumber());
 }
 
+QVariant VermeerFirebaseManager::getUserEmailAddress()
+{
+    return QVariant(VermeerUser::getEmail());
+}
+
+QVariant VermeerFirebaseManager::getUserPassword()
+{
+    return QVariant(VermeerUser::getPassword());
+}
+
 void VermeerFirebaseManager::_authenticateWithEmailAndPassword(QJsonObject emailAndPasswordJson, QString authenticateURL, QNetworkAccessManager *networkManager)
 {
     bool returnValue = false;
