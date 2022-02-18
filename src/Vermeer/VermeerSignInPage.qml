@@ -27,11 +27,10 @@ Item {
     VermeerFirebaseManager{
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
-            console.log("onDisplayMsgToQml:")
-            console.log(data)
-
+            console.log("vermeerSignInQml:" + data)
             if("validSignIn" === data){
                 console.log("Valid Credentials")
+                vermeerFirebaseManager.saveRefreshToken()
                 vermeerLoader.source = "VermeerMissionPage.qml"
             }
             else if("InvalidSignIn" === data) {
@@ -39,10 +38,25 @@ Item {
                 vermeerSigningInQml.z = 0
                 vermeerInvalidCredentials.visible = true
             }
+            else if("InvalidRefreshToken" === data) {
+                console.log("InvalidRefreshToken")
+                vermeerSigningInQml.z = 0
+            }
         }
     }
 
     Component.onCompleted: {
+
+        if(!vermeerFirebaseManager.isSignOutButtonPressed()){
+            console.log("vermeerSignInQml: sign in with refresh token")
+            var isRefreshTokenExist = vermeerFirebaseManager.isRefreshTokenExist()
+
+            if(isRefreshTokenExist) {
+                vermeerFirebaseManager.signInWithRefreshToken()
+                vermeerSigningInQml.z = 2
+            }
+        }
+        vermeerFirebaseManager.setSignOutFlag(false)
         vermeerEmailAddressTextInput.text = vermeerFirebaseManager.getUserEmailAddress()
         vermeerPasswordTextInput.text = vermeerFirebaseManager.getUserPassword()
     }
@@ -167,23 +181,28 @@ Item {
             x: parent.width * .10
             y: parent.height * .65
 
-            MouseArea {
-                id: vermeerLogInButtonMouseArea
-                anchors.fill: parent
-
-                onClicked: {
-                    console.log("Press Loging In")
-                    vermeerFirebaseManager.signIn(vermeerEmailAddressTextInput.text,vermeerPasswordTextInput.text)
-                    vermeerSigningInQml.z = 2
-                }
-            }
-
             Text {
                 id: vermeerLogInButtonText
                 text: qsTr("Login")
                 color: "White"
                 font.pointSize: 15
                 anchors.centerIn: parent
+            }
+
+            MouseArea {
+                id: vermeerLogInButtonMouseArea
+                anchors.fill: parent
+                onPressed: {
+                    vermeerLogInButtonText.color = "#d7003f"
+                    vermeerLogInButton.color = "white"
+                }
+                onReleased: {
+                    vermeerLogInButtonText.color = "white"
+                    vermeerLogInButton.color = "#d7003f"
+                    console.log("vermeerSignInQml : Loging In")
+                    vermeerFirebaseManager.signIn(vermeerEmailAddressTextInput.text,vermeerPasswordTextInput.text)
+                    vermeerSigningInQml.z = 2
+                }
             }
         }
     }

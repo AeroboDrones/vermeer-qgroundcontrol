@@ -157,8 +157,15 @@ Item {
         MouseArea {
             id: updateSettingButtonMouseArea
             anchors.fill: parent
-            onClicked: {
-                console.log("update settings")
+            onPressed: {
+                updateSettingButtonText.color = "#d7003f"
+                updateSettingButton.color = "white"
+            }
+            onReleased: {
+                updateSettingButtonText.color = "white"
+                updateSettingButton.color = "#d7003f"
+
+                console.log("updating settings")
                 vermeerFirebaseManager.updateSetting(ipAddressRectangleTextInput.text,portNumberRectangleTextInput.text)
             }
         }

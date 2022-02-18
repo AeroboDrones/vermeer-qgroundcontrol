@@ -27,6 +27,13 @@ Rectangle {
     width: parent.width
     color: "#161618"
 
+    VermeerFirebaseManager{
+        id: vermeerFirebaseManager
+        onDisplayMsgToQml: {
+            console.log("vermeerMssionPageToolBarQml:" + data)
+        }
+    }
+
     Text {
         id: vermeerMissionText
         text: qsTr("MISSIONS")
@@ -38,6 +45,72 @@ Rectangle {
         anchors.leftMargin: parent.width * 0.05
         anchors.topMargin: parent.width * 0.05
     }
+
+    // testing refresh token
+    Rectangle {
+        id: vermerDeleteRttest
+        visible: false // set to true for testing refresh token
+        width: parent.width * 0.15
+        height: parent.height * 0.70
+        anchors.right: vermeerSettingsButton.left
+        anchors.rightMargin: parent.width * 0.001
+        anchors.topMargin: parent.width * 0.05
+        anchors.verticalCenter: parent.verticalCenter
+        border.width: 5
+        border.color: "white"
+        color: Qt.rgba(0,0,0,0)
+
+        Text {
+            id: vermerDeleteRttestText
+            text: qsTr("Delete RT")
+            font.pointSize: 15
+            font.bold: true
+            color: "white"
+            anchors.centerIn: parent
+        }
+
+        MouseArea {
+            id:vermerDeleteRttestMouseArea
+            anchors.fill: parent
+            onClicked: {
+                //vermeerFirebaseManager.deleteRefreshToken()
+                //vermeerFirebaseManager.socketDisconnect()
+            }
+        }
+    }
+
+    Rectangle {
+        id: vermeerMakeRefreshTokenInvalid
+        visible: false // set to true for testing refresh token
+        width: parent.width * 0.15
+        height: parent.height * 0.70
+        anchors.right: vermerDeleteRttest.left
+        anchors.rightMargin: parent.width * 0.001
+        anchors.topMargin: parent.width * 0.05
+        anchors.verticalCenter: parent.verticalCenter
+        border.width: 5
+        border.color: "white"
+        color: Qt.rgba(0,0,0,0)
+
+        Text {
+            id: vermeerMakeRefreshTokenInvalidText
+            text: qsTr("make RT Invalid")
+            font.pointSize: 15
+            font.bold: true
+            color: "white"
+            anchors.centerIn: parent
+        }
+
+        MouseArea {
+            id:vermeerMakeRefreshTokenInvalidMouseArea
+            anchors.fill: parent
+            onClicked: {
+                vermeerFirebaseManager.makeRtInvalid()
+                //vermeerFirebaseManager.socketConnect()
+            }
+        }
+    }
+    // end for testing refresh token
 
     Rectangle {
         id: vermeerSettingsButton
@@ -90,9 +163,15 @@ Rectangle {
 
         MouseArea {
             id:vermeerSignOutButtonMouseArea
-            anchors.fill: parent
-            onClicked: {
-                console.log("vermeerSignOutButtonMouseArea: going back to SignInPage")
+            anchors.fill: parent           
+            onPressed: {
+                vermeerSignOutButtonText.color = "black"
+                vermeerSignOutButton.color = "white"
+            }
+            onReleased: {
+                vermeerSignOutButtonText.color = "white"
+                vermeerSignOutButton.color = "black"
+                vermeerFirebaseManager.setSignOutFlag(true)
                 vermeerLoader.source = "VermeerSignInPage.qml"
             }
         }

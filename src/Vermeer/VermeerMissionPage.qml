@@ -24,6 +24,14 @@ import QGroundControl.FlightMap     1.0
 Item {
     id: vermeerMissionPageQml
 
+
+    VermeerFirebaseManager{
+        id: vermeerFirebaseManager
+        onDisplayMsgToQml: {
+            console.log("vermeerMissionPageQml:" + data)
+        }
+    }
+
     Rectangle {
         id: vermeerMissionPageBackground
         height: parent.height

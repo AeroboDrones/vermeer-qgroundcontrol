@@ -60,8 +60,15 @@ Rectangle {
 
         MouseArea {
             id: vermeerGoBackButtonMouseArea
-            anchors.fill: parent
-            onClicked: {
+            anchors.fill: parent           
+            onPressed: {
+                vermeerGoBackButtonText.color = "black"
+                vermeerGoBackButton.color = "white"
+            }
+
+            onReleased: {
+                vermeerGoBackButtonText.color = "white"
+                vermeerGoBackButton.color = "black"
                 vermeerLoader.source = "VermeerMissionPage.qml"
             }
         }

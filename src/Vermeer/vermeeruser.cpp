@@ -6,7 +6,6 @@
 VermeerUser::VermeerUser(QObject *parent)
     : QObject{parent}
 {
-
 }
 
 const QString &VermeerUser::getEmail()
@@ -109,3 +108,26 @@ void VermeerUser::setDestinationPortNumber(int newDestinationPortNumber)
 {
     VermeerUser::destinationPortNumber = newDestinationPortNumber;
 }
+
+int VermeerUser::getExpiresIn()
+{
+    return expiresIn;
+}
+
+void VermeerUser::setExpiresIn(int newExpiresIn)
+{
+    expiresIn = newExpiresIn;
+}
+
+bool VermeerUser::getSignOutButtonPressed()
+{
+    return signOutButtonPressed;
+}
+
+void VermeerUser::setSignOutButtonPressed(bool newSignOutButtonPressed)
+{
+    signOutButtonPressed = newSignOutButtonPressed;
+}
+
+
+
