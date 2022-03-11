@@ -27,8 +27,35 @@ Item {
     property string ipAddress: "192.168.1.97"
     property int portNumber: 5555
 
+    function showInvalidSettingsPage(){
+        invalidSettingsPage.visible = true
+        invalidSettingsPage.z = 1
+
+    }
+
+    function showSettingsPage(){
+        invalidSettingsPage.visible = false
+        invalidSettingsPage.z = 0
+        successfulSettingsUpdatePage.visible = false
+        successfulSettingsUpdatePage.z = 0
+    }
+
+    function showSuccessfulSettingsUpdate(){
+        successfulSettingsUpdatePage.visible = true
+        successfulSettingsUpdatePage.z = 1
+    }
+
     VermeerFirebaseManager{
         id: vermeerFirebaseManager
+        onDisplayMsgToQml: {
+            if("InvalidIpAddress" === data){
+                showInvalidSettingsPage()
+            }
+
+            if("SettingsUpdatedSuccessfuly" === data){
+                showSuccessfulSettingsUpdate()
+            }
+        }
     }
 
     Component.onCompleted: {
@@ -38,6 +65,108 @@ Item {
         ipAddressRectangleTextInput.text = vermeerFirebaseManager.getDestinationIpAddress()
         portNumberRectangleTextInput.text = vermeerFirebaseManager.getDestinationPortNumber()
     }
+
+    Rectangle {
+        id: invalidSettingsPage
+        height: parent.height
+        width: parent.width
+        color: "#161618"
+        anchors.centerIn: parent
+        visible: false
+
+        Text {
+            id: invalidSettingsPageText
+            text: "Invalid Ip Address"
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -100
+            anchors.bottom: sucsessfulBackButton.top
+            color: "white"
+            font.pointSize: 25
+            font.bold: true
+        }
+
+        Rectangle {
+            id: invalidSettingsPageBackButton
+            width: 250
+            height: 60
+            anchors.centerIn: parent
+            color:"#d7003f"
+
+             Text {
+                id: invalidSettingsPageGoBackButtonText
+                text: qsTr("Go Back")
+                color: "white"
+                anchors.centerIn: parent
+             }
+
+             MouseArea {
+                 id: sucsessfulBackButtonMouseArea
+                 anchors.fill: parent
+                 onPressed: {
+                     invalidSettingsPageGoBackButtonText.color = "#d7003f"
+                     invalidSettingsPageBackButton.color = "white"
+
+                 }
+                 onReleased: {
+                    invalidSettingsPageGoBackButtonText.color = "white"
+                    invalidSettingsPageBackButton.color = "#d7003f"
+                    showSettingsPage()
+                 }
+             }
+        }
+    }
+
+    Rectangle {
+        id: successfulSettingsUpdatePage
+        height: parent.height
+        width: parent.width
+        color: "#161618"
+        anchors.centerIn: parent
+        visible: false
+
+        Text {
+            id: successfulSettingsUpdatePageText
+            text: "Settings Updated Successfuly"
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -100
+            anchors.bottom: sucsessfulBackButton.top
+            color: "white"
+            font.pointSize: 25
+            font.bold: true
+        }
+
+        Rectangle {
+            id: successfulSettingsUpdatePageBackButton
+            width: 250
+            height: 60
+            anchors.centerIn: parent
+            color:"#d7003f"
+
+             Text {
+                id: successfulSettingsUpdatePageGoBackButtonText
+                text: qsTr("Go Back")
+                color: "white"
+                anchors.centerIn: parent
+             }
+
+             MouseArea {
+                 id: successfulSettingsUpdatePageBackButtonMouseArea
+                 anchors.fill: parent
+                 onPressed: {
+                     successfulSettingsUpdatePageGoBackButtonText.color = "#d7003f"
+                     successfulSettingsUpdatePageBackButton.color = "white"
+
+                 }
+                 onReleased: {
+                    successfulSettingsUpdatePageGoBackButtonText.color = "white"
+                    successfulSettingsUpdatePageBackButton.color = "#d7003f"
+                    showSettingsPage()
+                 }
+             }
+        }
+    }
+
+
 
     Rectangle {
         id: ipAdddressBlock
@@ -131,6 +260,8 @@ Item {
                 anchors.leftMargin: 20
                 anchors.topMargin: 25
                 color: "white"
+                validator: IntValidator {bottom: 0; top: 65353}
+                inputMethodHints: Qt.ImhDigitsOnly
             }
         }
     }

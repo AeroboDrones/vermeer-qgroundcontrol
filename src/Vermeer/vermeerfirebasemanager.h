@@ -72,7 +72,7 @@ private:
     QUdpSocket socket;
     quint16 port{5656};
 
-    QString sourceIp{"192.168.1.196"};
+    QString sourceIp{"0.0.0.0"};
     QString destinationIp;
 
     QNetworkAccessManager * networkManager;

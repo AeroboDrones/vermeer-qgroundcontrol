@@ -16,16 +16,6 @@ VermeerFirebaseManager::VermeerFirebaseManager(QObject *parent)
     connect(&socket,&QUdpSocket::readyRead,this,&VermeerFirebaseManager::udpReadyRead);
 
     networkManager = new QNetworkAccessManager( this );
-
-//    if(!socket.bind(QHostAddress(sourceIp), port)) {
-//        QString msg = socket.errorString();
-//        qInfo() << "VermeerFirebaseManager: Not Connected" + msg;
-//        VermeerFirebaseManager::isConnected = false;
-//    }
-//    else {
-//        VermeerFirebaseManager::isConnected = true;
-//        qInfo() << "VermeerFirebaseManager: bound to: " + sourceIp + ":" + QString::number(port);
-//    }
 }
 
 VermeerFirebaseManager::~VermeerFirebaseManager()
@@ -59,6 +49,7 @@ bool VermeerFirebaseManager::isSignOutButtonPressed()
 void VermeerFirebaseManager::fetchFlightPlansReadyRead()
 {
     QString firebaseMissionsJsonReply = networkReply->readAll();
+
     QJsonObject missionJson = _missionToJson(firebaseMissionsJsonReply);
 
     _setVermeerUserMissionArray(missionJson);
@@ -91,7 +82,7 @@ void VermeerFirebaseManager::udpReadyRead()
                 msg = "missionUploadedSuccessfuly";
         }
         else if("Mission Completed" == messagePayload) {
-               // not sure what to display
+               // not sure what to display just yet
         }
         qInfo() << msg;
         emit(displayMsgToQml(msg));
@@ -118,10 +109,17 @@ void VermeerFirebaseManager::sendMission(QVariant missionKey)
 }
 
 void VermeerFirebaseManager::updateSetting(QVariant ipAddress, QVariant portNumber)
-{
-    // need to handle possible error here - make sure ipaddress if a string and portnumber is a number
-    VermeerUser::setDestinationIpAddress(ipAddress.toString());
-    VermeerUser::setDestinationPortNumber(portNumber.toInt());
+{   
+    auto ipaddress = QHostAddress(ipAddress.toString());
+
+    if(!ipaddress.isNull()){
+        VermeerUser::setDestinationIpAddress(ipAddress.toString());
+        VermeerUser::setDestinationPortNumber(portNumber.toInt());
+        emit(displayMsgToQml("SettingsUpdatedSuccessfuly"));
+    }
+    else{
+        emit(displayMsgToQml("InvalidIpAddress"));
+    }
 }
 
 void VermeerFirebaseManager::saveRefreshToken()
@@ -371,7 +369,7 @@ void VermeerFirebaseManager::_fetchFlightPlans(QString fetchFlightPlansUrl, QStr
 
     networkReply = networkManager->get(fetchFlightPlansRequest);
 
-    connect(networkReply,&QNetworkReply::readyRead, this,&VermeerFirebaseManager::fetchFlightPlansReadyRead);
+    connect(networkReply,&QNetworkReply::finished, this,&VermeerFirebaseManager::fetchFlightPlansReadyRead);
 }
 
 QJsonObject VermeerFirebaseManager::_missionToJson(QString firebaseMissionsJsonString)
