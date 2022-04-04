@@ -24,46 +24,98 @@ import QGroundControl.FlightMap     1.0
 Item {
     id: vermeerSignInQml
 
+    property string invalidCredentialMessage: "Invalid Credentials. Please try again."
+    property string invalidRefreshToken: "Invalid Refresh Token. Please sign in."
+    property string noNetworkConnectionMessage: "No Network Connection."
+    property string cantLogInNoInternetConnection: "Can't Log in. No Internet Connection."
+
+    function showSignInPage() {
+        vermeerSignInQml.visible = true
+        vermeerSignInQml.z = 2
+    }
+
+    function showSigningInPage() {
+        vermeerSigningInQml.visible = true
+        vermeerSigningInQml.z = 2
+    }
+
+    function pushBackSigningInPage() {
+        vermeerSigningInQml.visible = false
+        vermeerSigningInQml.z = 0
+    }
+
+    function showErrorBanner(msg) {
+        vermeerSignInPageErrorBanner.visible = true
+        vermeerSignInPageErrorBannerText.text = msg
+    }
+
+    function loadPage(pageString) {
+        vermeerLoader.source = pageString
+    }
+
     VermeerFirebaseManager{
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
             console.log("vermeerSignInQml:" + data)
-            if("validSignIn" === data){
+            if("validSignIn" === data) {
                 console.log("Valid Credentials")
                 vermeerFirebaseManager.saveRefreshToken()
-                vermeerLoader.source = "VermeerMissionPage.qml"
+                loadPage("VermeerMissionPage.qml")
             }
             else if("InvalidSignIn" === data) {
-                console.log("vermeerInvalidCredentials.visible = true")
-                vermeerSigningInQml.z = 0
-                vermeerInvalidCredentials.visible = true
+                console.log("vermeerSignInPageErrorBanner.visible = true")
+                pushBackSigningInPage()
+                showErrorBanner(invalidCredentialMessage);
             }
             else if("InvalidRefreshToken" === data) {
                 console.log("InvalidRefreshToken")
-                vermeerSigningInQml.z = 0
+                pushBackSigningInPage()
+                showErrorBanner(invalidRefreshToken);
+            }
+            else if("ValidOfflineSignIn" === data) {
+                loadPage("VermeerMissionPage.qml")
+            }
+            else if("NoInternetConnection" === data){
+                pushBackSigningInPage()
+                showSignInPage()
+                showErrorBanner(cantLogInNoInternetConnection)
             }
         }
     }
 
     Component.onCompleted: {
 
-        if(!vermeerFirebaseManager.isSignOutButtonPressed()){
-            console.log("vermeerSignInQml: sign in with refresh token")
+        var hasInternetConnection = vermeerFirebaseManager.hasInternetConnection()
+
+        if (!hasInternetConnection){
+            showErrorBanner(noNetworkConnectionMessage)
+        }
+
+        if(!vermeerFirebaseManager.isSignOutButtonPressed()) {
             var isRefreshTokenExist = vermeerFirebaseManager.isRefreshTokenExist()
+            console.log("isRefreshTokenExist: " + isRefreshTokenExist)
 
             if(isRefreshTokenExist) {
-                vermeerFirebaseManager.signInWithRefreshToken()
-                vermeerSigningInQml.z = 2
+                if(hasInternetConnection) {
+                    vermeerFirebaseManager.signInWithRefreshToken()
+                    showSigningInPage()
+                } else {
+                    vermeerFirebaseManager.signInOffline()
+                    showSigningInPage()
+                }
             }
         }
+
         vermeerFirebaseManager.setSignOutFlag(false)
-        vermeerEmailAddressTextInput.text = vermeerFirebaseManager.getUserEmailAddress()
-        vermeerPasswordTextInput.text = vermeerFirebaseManager.getUserPassword()
+        vermeerEmailAddressTextInput.text = "czarbalangue@gmail.com"
+        vermeerPasswordTextInput.text = "aaaaaa"
+
+        //vermeerEmailAddressTextInput.text = vermeerFirebaseManager.getUserEmailAddress()
+        //vermeerPasswordTextInput.text = vermeerFirebaseManager.getUserPassword()
     }
 
-    // error banner
     Rectangle {
-        id: vermeerInvalidCredentials
+        id: vermeerSignInPageErrorBanner
         height: parent.height * .10
         width: parent.width
         color: "#25050b"
@@ -72,10 +124,9 @@ Item {
         visible: false
 
         Text {
-            id: vermeerInvalidCredentialsText
-            text: qsTr("Invalid Credentials. Please try again.")
+            id: vermeerSignInPageErrorBannerText
+            text: qsTr("...")
             color: "#8b5862"
-
             font.pointSize: 15
             anchors.centerIn: parent
         }
@@ -111,7 +162,6 @@ Item {
         color: "#161618"
         x: parent.width / 2
 
-
         Rectangle {
             id: vermeerSignInText
             color: "#161618"
@@ -130,7 +180,6 @@ Item {
                 anchors.left: parent.left
             }
         }
-
 
         Rectangle {
             id: vermeerEmailAddress
@@ -199,9 +248,9 @@ Item {
                 onReleased: {
                     vermeerLogInButtonText.color = "white"
                     vermeerLogInButton.color = "#d7003f"
-                    console.log("vermeerSignInQml : Loging In")
+                    console.log("Loging In Button Released")
+                    showSigningInPage()
                     vermeerFirebaseManager.signIn(vermeerEmailAddressTextInput.text,vermeerPasswordTextInput.text)
-                    vermeerSigningInQml.z = 2
                 }
             }
         }

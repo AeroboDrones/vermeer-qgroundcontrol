@@ -85,7 +85,13 @@ QString VermeerUser::readMissionJsonSring()
 {
     QJsonDocument doc(VermeerUser::missionJson);
     QString missionJsonString(doc.toJson(QJsonDocument::Compact));
+    return missionJsonString;
+}
 
+QString VermeerUser::getMissionList()
+{
+    QJsonDocument doc(VermeerUser::missionJson);
+    QString missionJsonString(doc.toJson(QJsonDocument::Compact));
     return missionJsonString;
 }
 

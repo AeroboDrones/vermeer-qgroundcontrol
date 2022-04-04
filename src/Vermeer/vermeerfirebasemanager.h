@@ -34,11 +34,15 @@ signals:
 public slots:
 
     void signIn(QVariant emailString, QVariant passwordString);
+    void signInWithRefreshToken();
+    void signInOffline();
     void setSignOutFlag(bool signOutFlag);
     bool isSignOutButtonPressed();
     void authenticateWithRefreshTokenReadyRead();
     void authenticateWithEmailAndPasswordReadyRead();
     void fetchFlightPlansReadyRead();
+    void saveMissionListToMissionFile();
+    void loadMissioListsFromMissionFile();
     void udpReadyRead();
     void fetchFlightPlans();
     void sendMission(QVariant missionIndex);
@@ -46,7 +50,9 @@ public slots:
     void saveRefreshToken();
     bool isRefreshTokenExist();
     bool isSettingValid();
-    void signInWithRefreshToken();
+    bool hasInternetConnection();
+    void checkInternetConnection();
+    void loadExpiresInFromFile();
     QVariant getDestinationIpAddress();
     QVariant getDestinationPortNumber();
     QVariant getUserEmailAddress();
@@ -55,11 +61,12 @@ public slots:
     void accessTokenTimedOut();
     void accessTokenStartTimer();
     void accessTokenStopTimer();
+    void bindSocket();
+    void deleteRefreshToken();
 
     // only used for testing
-    void deleteRefreshToken();
     void makeRtInvalid();
-    void bindSocket();
+
 
 private:
 
@@ -67,7 +74,7 @@ private:
     const QString authenticateWithRefreshTokenUrl = "https://us-central1-vermeer-production.cloudfunctions.net/rest/api/v1/oauth/refresh";
     const QString checkAuthenticationStatus = "https://us-central1-vermeer-production.cloudfunctions.net/rest/api/v1/oauth/authStatus";
     const QString fetchFlightPlansUrl = "https://vermeer-production.firebaseio.com/FlightPlans/userReadable/[UID]/Astro.json?auth=[ACCESS_TOKEN]";
-    const QString refreshTokenFileName = "refreshTokenFile.txt";
+    const QString refreshTokenFileName = "refreshTokenFile.txt"; // to be deleted
 
     QUdpSocket socket;
     quint16 port{5656};
@@ -83,10 +90,11 @@ private:
     void _authenticateWithRefreshToken(QJsonObject refreshTokenJson, QString authenticateRefreshTokenUrl,
                                        QNetworkAccessManager *networkManager);
     void _fetchFlightPlans(QString fetchFlightPlansUrl,QString accessToken, QString uID);
-    QJsonObject _missionToJson(QString firebaseMissionsJsonString);
-    void _setVermeerUserMissionArray(QJsonObject firebaseMissionsJson);
+    QJsonObject _missionToJson(QString missionsJsonString);
 
     QTimer accessTokenTimer;
+    QTimer checkInternetConnectionTimer;
+    int checkInternetConnectionIntervalSeconds{3};
 };
 
 #endif // VERMEERFIREBASEMANAGER_H

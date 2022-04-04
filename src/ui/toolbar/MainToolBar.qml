@@ -50,6 +50,7 @@ Item {
     }
 
     QGCFlickable {
+        id: toolBarFlickable
         anchors.fill:       parent
         contentWidth:       toolbarRow.width
         flickableDirection: Flickable.HorizontalFlick
@@ -186,6 +187,21 @@ Item {
                     }
                 }
 
+                QGCToolBarButton {
+                    id:                 vermeerButton
+                    Layout.fillHeight:  true
+                    icon.source:        "/vermeer/VermeerLogoClear"
+                    visible:            QGroundControl.corePlugin.showAdvancedUI
+                    onClicked: {
+                        if (mainWindow.preventViewSwitch()) {
+                            return
+                        }
+                        buttonRow.clearAllChecks()
+                        checked = true
+                        mainWindow.showVermeerSignInPage()
+                    }
+                }
+
                 Item {
                     Layout.fillHeight:  true
                     width:              ScreenTools.defaultFontPixelWidth / 2
@@ -219,6 +235,7 @@ Item {
     //-------------------------------------------------------------------------
     //-- Branding Logo
     Image {
+        id: brandImage
         anchors.right:          parent.right
         anchors.top:            parent.top
         anchors.bottom:         parent.bottom
@@ -250,18 +267,14 @@ Item {
                                                             )
                                                         )
                                                     )
-        MouseArea {
-            id: logoMouseArea
-            anchors.fill: parent
-            onClicked: {
-                console.log("Im pressing the logo")
 
-                if (mainWindow.preventViewSwitch()) {
-                    return
-                }
-                buttonRow.clearAllChecks()
-                mainWindow.showVermeerSignInPage()
-            }
+        ScrollBar.horizontal: ScrollBar {
+
+                parent: brandImage.parent
+                anchors.top: brandImage.top
+                anchors.left: brandImage.right
+                anchors.bottom: brandImage.bottom
+                policy: ScrollBar.AsNeeded
         }
     }
 
@@ -363,5 +376,5 @@ Item {
             color:                  qgcPal.colorRed
         }
     }
-
 }
+

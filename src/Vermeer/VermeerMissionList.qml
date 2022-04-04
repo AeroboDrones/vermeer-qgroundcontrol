@@ -43,6 +43,24 @@ Item {
         vermeerMissionAlreadyRunning.visible = false
     }
 
+    function handleNumberMissionChanged() {
+        if(vermmerUser.numberOfMissions > 0) {
+            noMissionAvailablePage.visible = false
+            vermeerMissionListsView.visible = true
+
+            var missionJson = JSON.parse(vermmerUser.missionJsonString)
+            for (var missionKey in missionJson){
+                missionModel.append({"missionName":missionJson[missionKey]["name"],
+                                    "missionKey":missionKey})
+            }
+        }
+        else{
+            noMissionAvailablePageText.visible = true
+            noMissionAvailablePage.visible = true
+            vermeerMissionListsView.visible = false
+        }
+    }
+
     VermeerUser {
         id: vermmerUser
     }
@@ -52,27 +70,18 @@ Item {
         onDisplayMsgToQml: {
             console.log("vermeerMissionList:" + data)
 
-            if("numberOfMissionItemsChanged"===data){
-                if(vermmerUser.numberOfMissions > 0){
-                    noMissionAvailablePage.visible = false
-                    vermeerMissionListsView.visible = true
-
-                    var missionJson = JSON.parse(vermmerUser.missionJsonString)
-                    for (var missionKey in missionJson){
-                        missionModel.append({"missionName":missionJson[missionKey]["name"],
-                                            "missionKey":missionKey})
-                    }
-                }
-                else{
-                    noMissionAvailablePageText.visible = true
-                    noMissionAvailablePage.visible = true
-                    vermeerMissionListsView.visible = false
-                }
+            if("numberOfMissionItemsChanged"===data) {
+                handleNumberMissionChanged()
+                vermeerFirebaseManager.saveMissionListToMissionFile()
             }
 
             if("accessTokenTimedOut"===data){
                 console.log("Access token timedout signing in with refresh token")
-                vermeerFirebaseManager.signInWithRefreshToken()
+                if(vermeerFirebaseManager.hasInternetConnection()) {
+                    vermeerFirebaseManager.signInWithRefreshToken()
+                } else {
+                    vermeerFirebaseManager.loadMissioListsFromMissionFile(); // again? maybe idk
+                }
             }
 
             if("missionUploadedSuccessfuly"===data){
@@ -94,12 +103,19 @@ Item {
     }
 
     Component.onCompleted: {
-        console.log("Starting the access token timer")
-        vermeerFirebaseManager.accessTokenStartTimer();
+        if(vermeerFirebaseManager.hasInternetConnection()) {
+            console.log("Starting the access token timer")
+            vermeerFirebaseManager.accessTokenStartTimer();
+        }
+        else {
+            console.log("Setting Expires in from file")
+            vermeerFirebaseManager.loadExpiresInFromFile() // Not sure what to do when the timer for refresh token expires
+            console.log("Starting the access token timer")
+            vermeerFirebaseManager.accessTokenStartTimer();
+        }
 
-        console.log("checking setting")
         isSettingsValid = vermeerFirebaseManager.isSettingValid()
-        console.log(isSettingsValid)
+        console.log("is seting valid: " + isSettingsValid)
     }
 
     Rectangle {
@@ -112,8 +128,14 @@ Item {
         visible: true
 
         Component.onCompleted: {
-            console.log("fetchFlightPlans:")
-            vermeerFirebaseManager.fetchFlightPlans();
+
+            if(vermeerFirebaseManager.hasInternetConnection()){
+                console.log("vermeerMissionList: noMissionAvailablePage: fetchFlightPlans")
+                vermeerFirebaseManager.fetchFlightPlans()
+            } else {
+                console.log("vermeerMissionList: noMissionAvailablePage: load mission list from file:")
+                vermeerFirebaseManager.loadMissioListsFromMissionFile()
+            }
         }
 
         Text {
@@ -122,7 +144,7 @@ Item {
             anchors.centerIn: parent
             color: "white"
             font.pointSize: 20
-            font.bold: true
+            font.bold: truefetchFlightPlans
             visible: false
         }
     }

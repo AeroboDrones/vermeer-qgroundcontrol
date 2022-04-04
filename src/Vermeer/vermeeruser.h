@@ -36,6 +36,7 @@ public:
     static void setMissionJson(QJsonObject missionJson);
     static QString getMissionByKey(QString index);
     static QString readMissionJsonSring();
+    static QString getMissionList();
 
     static const QString &getDestinationIpAddress();
     static void setDestinationIpAddress(const QString &newDestinationIpAddress);

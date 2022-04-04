@@ -24,7 +24,6 @@ import QGroundControl.FlightMap     1.0
 Item {
     id: vermeerMissionPageQml
 
-
     VermeerFirebaseManager{
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
@@ -37,13 +36,12 @@ Item {
         height: parent.height
         width: parent.width
         color: "#161618"
-
     }
 
     // Mission Page Tool Bar
     VermeerMissionPageToolbar {
         id: vermeerMssionPageToolBarQml
-        z: 1
+         z: 1
     }
 
     VermeerMissionList {
@@ -55,5 +53,4 @@ Item {
             bottom: parent.bottom
         }
     }
-
 }

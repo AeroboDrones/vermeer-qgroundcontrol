@@ -189,12 +189,16 @@
         <file alias="Yield.svg">src/ui/toolbar/Images/Yield.svg</file>
         <file alias="ZoomMinus.svg">src/FlightMap/Images/ZoomMinus.svg</file>
         <file alias="ZoomPlus.svg">src/FlightMap/Images/ZoomPlus.svg</file>
-        <file alias="Vermeer/BrandImage">src/Vermeer/vermeerLogoWithNameBottom.png</file>
+        <file alias="BrandImage">src/Vermeer/vermeerLogoWithNameBottom.png</file>
+        <file alias="VermeerLogoBlackSquareSvg">src/Vermeer/VermmerLogoBlackSquare.svg</file>
+        <file alias="Vermeer/BrandImage">src/Vermeer/vermeerLogoBlackSmall.png</file>
     </qresource>
     <qresource prefix="/vermeer">
         <file alias="VermeerLogoBlackPng">src/Vermeer/vermeerLogoBlackPng.png</file>
         <file alias="vermeerName">src/Vermeer/VermeerName.png</file>
         <file alias="VermeerSignInLogoLeftPng">src/Vermeer/VermeerSignInLogoLeft.png</file>
         <file alias="VermeerSigningInCircle.png">src/Vermeer/signingInCircle.png</file>
+        <file alias="VermeerLogoBlackSmall">src/Vermeer/vermeerLogoBlackSmall.png</file>
+        <file alias="VermeerLogoClear">src/Vermeer/VermeerLogoClear.png</file>
     </qresource>
 </RCC>

@@ -31,7 +31,18 @@ Rectangle {
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
             console.log("vermeerMssionPageToolBarQml:" + data)
+            if("NoInternet"===data){
+                onlineStatusCircle.color = "red"
+            }
+            else if ("HasInternet"===data) {
+                 onlineStatusCircle.color = "green"
+            }
         }
+    }
+
+    Component.onCompleted: {
+        console.log("vermeerMssionPageToolBarQml: Component.onCompleted:")
+        loggedInUser.text = vermeerFirebaseManager.getUserEmailAddress()
     }
 
     Text {
@@ -46,6 +57,27 @@ Rectangle {
         anchors.topMargin: parent.width * 0.05
     }
 
+    Rectangle {
+        id: onlineStatusCircle
+        width: 100
+        height: 100
+        anchors.left: vermeerMissionText.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: 50
+        border.color: "green"
+        border.width: 5
+        color: "green"
+        radius: width
+
+    }
+
+    Text {
+        id: loggedInUser
+        color: "white"
+        font.pointSize: 15
+        font.bold: true
+        anchors.centerIn: parent
+    }
     // testing refresh token
     Rectangle {
         id: vermerDeleteRttest
@@ -172,6 +204,7 @@ Rectangle {
                 vermeerSignOutButtonText.color = "white"
                 vermeerSignOutButton.color = "black"
                 vermeerFirebaseManager.setSignOutFlag(true)
+                vermeerFirebaseManager.deleteRefreshToken()
                 vermeerLoader.source = "VermeerSignInPage.qml"
             }
         }
