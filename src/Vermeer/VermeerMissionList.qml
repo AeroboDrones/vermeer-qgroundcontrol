@@ -47,8 +47,8 @@ Item {
         if(vermmerUser.numberOfMissions > 0) {
             noMissionAvailablePage.visible = false
             vermeerMissionListsView.visible = true
-
             var missionJson = JSON.parse(vermmerUser.missionJsonString)
+            missionModel.clear()
             for (var missionKey in missionJson){
                 missionModel.append({"missionName":missionJson[missionKey]["name"],
                                     "missionKey":missionKey})
@@ -61,43 +61,80 @@ Item {
         }
     }
 
+    function handleLogIn() {
+        if(vermeerFirebaseManager.hasInternetConnection()) {
+            vermeerFirebaseManager.signInWithRefreshToken()
+        } else {
+            vermeerFirebaseManager.loadMissioListsFromMissionFile();
+        }
+    }
+
+    function showReloadMissionPage(){
+        reloadMission.visible = true
+        reloadMission.z = 2
+    }
+
+    function disableSigningInPage(){
+        reloadMission.visible = false
+        reloadMission.z = 0
+    }
+
+    function handleMissionLists(){
+        if(vermeerFirebaseManager.hasInternetConnection()){
+            vermeerFirebaseManager.loadUserEmailFromFile()
+            console.log("vermeerMissionList: noMissionAvailablePage: fetchFlightPlans")
+            vermeerFirebaseManager.fetchFlightPlans()
+        } else {
+            console.log("vermeerMissionList: noMissionAvailablePage: load mission list from file:")
+            vermeerFirebaseManager.loadMissioListsFromMissionFile()
+        }
+    }
+
+    function handleMissionUploadedSuccessfully(){
+        console.log("missionUploadedSuccessfuly")
+        disableAllView()
+        vermeerMissionUploadSuccessful.visible = true
+    }
+
+    function handleMissionUploadedUnsuccessfuly(){
+        disableAllView()
+        vermeerMissionUploadUnSuccessful.visible = true
+    }
+
+    function handleMissionAlreadyRunning() {
+        disableAllView()
+        vermeerMissionAlreadyRunning.visible = true
+    }
+
     VermeerUser {
         id: vermmerUser
+    }
+
+    VermeerMIssionReloadPage {
+        id: reloadMission
     }
 
     VermeerFirebaseManager {
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
-            console.log("vermeerMissionList:" + data)
-
             if("numberOfMissionItemsChanged"===data) {
                 handleNumberMissionChanged()
                 vermeerFirebaseManager.saveMissionListToMissionFile()
+                disableSigningInPage()
+            }
+
+            if ("invalidAccessToken"===data) {
+                console.log("invalid access token")
             }
 
             if("accessTokenTimedOut"===data){
-                console.log("Access token timedout signing in with refresh token")
                 if(vermeerFirebaseManager.hasInternetConnection()) {
+                    console.log("Access token timedout signing in with refresh token")
                     vermeerFirebaseManager.signInWithRefreshToken()
                 } else {
-                    vermeerFirebaseManager.loadMissioListsFromMissionFile(); // again? maybe idk
+                    console.log("Access token timedout, No Internet, Loading missions from file")
+                    vermeerFirebaseManager.loadMissioListsFromMissionFile();
                 }
-            }
-
-            if("missionUploadedSuccessfuly"===data){
-                console.log("missionUploadedSuccessfuly")
-                disableAllView()
-                vermeerMissionUploadSuccessful.visible = true
-            }
-
-            if("missionUploadedUnsuccessfuly"===data){
-                disableAllView()
-                vermeerMissionUploadUnSuccessful.visible = true
-            }
-
-            if("missionAlreadyRunning"===data){
-                disableAllView()
-                vermeerMissionAlreadyRunning.visible = true
             }
         }
     }
@@ -128,14 +165,7 @@ Item {
         visible: true
 
         Component.onCompleted: {
-
-            if(vermeerFirebaseManager.hasInternetConnection()){
-                console.log("vermeerMissionList: noMissionAvailablePage: fetchFlightPlans")
-                vermeerFirebaseManager.fetchFlightPlans()
-            } else {
-                console.log("vermeerMissionList: noMissionAvailablePage: load mission list from file:")
-                vermeerFirebaseManager.loadMissioListsFromMissionFile()
-            }
+            handleMissionLists()
         }
 
         Text {
@@ -144,7 +174,7 @@ Item {
             anchors.centerIn: parent
             color: "white"
             font.pointSize: 20
-            font.bold: truefetchFlightPlans
+            font.bold: true
             visible: false
         }
     }
@@ -445,6 +475,7 @@ Item {
             }
         }
 
+
         ScrollView {
             anchors.fill: parent
             ListView {
@@ -452,6 +483,16 @@ Item {
                 width: parent.width
                 model: missionModel
                 delegate: missionItemDelegate
+                onFlickStarted: {
+                    if(atYBeginning){
+                        showReloadMissionPage()
+                        if(vermeerFirebaseManager.hasInternetConnection()){
+                            vermeerFirebaseManager.fetchFlightPlans() // which then send a validSignIn and does a fetchFlightPlans
+                        } else {
+                            vermeerFirebaseManager.loadMissioListsFromMissionFile()
+                        }
+                    }
+                }
             }
         }
     }

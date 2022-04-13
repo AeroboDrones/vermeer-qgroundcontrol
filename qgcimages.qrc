@@ -200,5 +200,8 @@
         <file alias="VermeerSigningInCircle.png">src/Vermeer/signingInCircle.png</file>
         <file alias="VermeerLogoBlackSmall">src/Vermeer/vermeerLogoBlackSmall.png</file>
         <file alias="VermeerLogoClear">src/Vermeer/VermeerLogoClear.png</file>
+        <file alias="VermeerReloadMissionCircle.png">src/Vermeer/reloadMissionCircle.png</file>
+        <file alias="VermeerOfflineWifiIcon.png">src/Vermeer/vermeerOfflineWifi.png</file>
+        <file alias="VermeerOnlineWifiIcon.png">src/Vermeer/vermeerOnlineWifi.png</file>
     </qresource>
 </RCC>

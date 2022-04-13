@@ -24,12 +24,6 @@ import QGroundControl.FlightMap     1.0
 Item {
     id: vermeerMissionPageQml
 
-    VermeerFirebaseManager{
-        id: vermeerFirebaseManager
-        onDisplayMsgToQml: {
-            console.log("vermeerMissionPageQml:" + data)
-        }
-    }
 
     Rectangle {
         id: vermeerMissionPageBackground
@@ -41,7 +35,17 @@ Item {
     // Mission Page Tool Bar
     VermeerMissionPageToolbar {
         id: vermeerMssionPageToolBarQml
-         z: 1
+        onShowLogPage: {
+            console.log("vermeerMissionPageQml: onShowLogPage ")
+            vermeerMissionList.visible = false;
+            vermeerTelemLogMissionPage.visible = true
+        }
+
+        onShowMissionPage: {
+            console.log("vermeerMissionPageQml: onShowMissionPage ")
+            vermeerMissionList.visible = true;
+            vermeerTelemLogMissionPage.visible = false
+        }
     }
 
     VermeerMissionList {
@@ -51,6 +55,29 @@ Item {
             top: vermeerMssionPageToolBarQml.bottom
             left: parent.left
             bottom: parent.bottom
+        }
+    }
+
+    VermeerTelemLogMissionPage {
+        id: vermeerTelemLogMissionPage
+        visible: false
+        anchors{
+            right: parent.right
+            top: vermeerMssionPageToolBarQml.bottom
+            left: parent.left
+            bottom: parent.bottom
+        }
+
+        onMissionUploadedSuccessfully:{
+            vermeerMissionList.handleMissionUploadedSuccessfully()
+        }
+
+        onMissionUploadedUnsuccessfully: {
+            vermeerMissionList.handleMissionUploadedUnsuccessfuly()
+        }
+
+        onMissionAlreadyRunning: {
+            vermeerMissionList.handleMissionAlreadyRunning()
         }
     }
 }

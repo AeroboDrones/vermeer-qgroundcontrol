@@ -56,12 +56,20 @@ Item {
     VermeerFirebaseManager{
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
-            console.log("vermeerSignInQml:" + data)
-            if("validSignIn" === data) {
+            if("validEmailAndPassSignIn" === data) {
+                console.log("vermeerSignInQml:" + data)
                 console.log("Valid Credentials")
                 vermeerFirebaseManager.saveRefreshToken()
                 loadPage("VermeerMissionPage.qml")
             }
+            else if ("validRefreshTokenSignIn" === data){
+                console.log("vermeerSignInQml:" + data)
+                console.log("Valid RefreshToken")
+                vermeerFirebaseManager.loadUserEmailFromFile()
+                vermeerFirebaseManager.saveRefreshToken()
+                loadPage("VermeerMissionPage.qml")
+            }
+
             else if("InvalidSignIn" === data) {
                 console.log("vermeerSignInPageErrorBanner.visible = true")
                 pushBackSigningInPage()
@@ -250,7 +258,7 @@ Item {
                     vermeerLogInButton.color = "#d7003f"
                     console.log("Loging In Button Released")
                     showSigningInPage()
-                    vermeerFirebaseManager.signIn(vermeerEmailAddressTextInput.text,vermeerPasswordTextInput.text)
+                    vermeerFirebaseManager.signInWithEmailAndPassword(vermeerEmailAddressTextInput.text,vermeerPasswordTextInput.text)
                 }
             }
         }

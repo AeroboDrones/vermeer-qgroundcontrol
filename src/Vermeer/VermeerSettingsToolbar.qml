@@ -27,6 +27,18 @@ Rectangle {
     width: parent.width
     color: "#161618"
 
+//    function showTelemLogPage() {
+//        vermeerLoader.source = "VermeerTelemLogPage.qml"
+//    }
+
+//    function showIpAddressPage(){
+//        vermeerLoader.source = "VermeerSettingsPage.qml"
+//    }
+
+    VermeerFirebaseManager{
+        id: vermeerFirebaseManager
+    }
+
     Text {
         id: vermeerMissionText
         text: qsTr("SETTINGS")
@@ -38,6 +50,76 @@ Rectangle {
         anchors.leftMargin: parent.width * 0.05
         anchors.topMargin: parent.width * 0.05
     }
+
+//    Rectangle {
+//        id: vermeerIpAddressButton
+//        width: parent.width * 0.15
+//        height: parent.height * 0.70
+//        anchors.right: vermeerLogDetailsButton.left
+//        anchors.rightMargin: parent.width * 0.05
+//        anchors.topMargin: parent.width * 0.05
+//        anchors.verticalCenter: parent.verticalCenter
+//        color: "#161618"
+
+//        Text {
+//            id: vermeerIpAddressButtonText
+//            text: qsTr("IP ADDRESS")
+//            font.pointSize: 15
+//            font.bold: true
+//            color: "white"
+//            anchors.centerIn: parent
+//        }
+
+//        MouseArea {
+//            id: vermeerIpAddressButtonMouseArea
+//            anchors.fill: parent
+//            onPressed: {
+//                vermeerIpAddressButtonText.color = "black"
+//                vermeerIpAddressButton.color = "white"
+//            }
+
+//            onReleased: {
+//                vermeerIpAddressButtonText.color = "white"
+//                vermeerIpAddressButton.color = "#161618"
+//                showIpAddressPage()
+//            }
+//        }
+//    }
+
+//    Rectangle {
+//        id: vermeerLogDetailsButton
+//        width: parent.width * 0.15
+//        height: parent.height * 0.70
+//        anchors.right: vermeerGoBackButton.left
+//        anchors.rightMargin: parent.width * 0.05
+//        anchors.topMargin: parent.width * 0.05
+//        anchors.verticalCenter: parent.verticalCenter
+//        color: "#161618"
+
+//        Text {
+//            id: vermeerLogDetailsButtonText
+//            text: qsTr("TELEM LOGS")
+//            font.pointSize: 15
+//            font.bold: true
+//            color: "white"
+//            anchors.centerIn: parent
+//        }
+
+//        MouseArea {
+//            id: vermeerLogDetailsButtonMouseArea
+//            anchors.fill: parent
+//            onPressed: {
+//                vermeerLogDetailsButtonText.color = "black"
+//                vermeerLogDetailsButton.color = "white"
+//            }
+
+//            onReleased: {
+//                vermeerLogDetailsButtonText.color = "white"
+//                vermeerLogDetailsButton.color = "#161618"
+//                showTelemLogPage()
+//            }
+//        }
+//    }
 
     Rectangle {
         id: vermeerGoBackButton

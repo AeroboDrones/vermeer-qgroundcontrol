@@ -135,5 +135,15 @@ void VermeerUser::setSignOutButtonPressed(bool newSignOutButtonPressed)
     signOutButtonPressed = newSignOutButtonPressed;
 }
 
+bool VermeerUser::getInternetAccessReaquired()
+{
+    return internetAccessReaquired;
+}
+
+void VermeerUser::setInternetAccessReaquired(bool newInternetAccessReaquired)
+{
+    internetAccessReaquired = newInternetAccessReaquired;
+}
+
 
 

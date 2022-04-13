@@ -30,7 +30,6 @@ Item {
     function showInvalidSettingsPage(){
         invalidSettingsPage.visible = true
         invalidSettingsPage.z = 1
-
     }
 
     function showSettingsPage(){
@@ -59,9 +58,6 @@ Item {
     }
 
     Component.onCompleted: {
-        console.log("getDestinationIpAddress" + vermeerFirebaseManager.getDestinationIpAddress())
-        console.log("getDestinationPortNumber" + vermeerFirebaseManager.getDestinationPortNumber())
-
         ipAddressRectangleTextInput.text = vermeerFirebaseManager.getDestinationIpAddress()
         portNumberRectangleTextInput.text = vermeerFirebaseManager.getDestinationPortNumber()
     }
@@ -79,7 +75,7 @@ Item {
             text: "Invalid Ip Address"
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -100
-            anchors.bottom: sucsessfulBackButton.top
+            anchors.bottom: invalidSettingsPageBackButton.top
             color: "white"
             font.pointSize: 25
             font.bold: true
@@ -129,7 +125,7 @@ Item {
             text: "Settings Updated Successfuly"
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -100
-            anchors.bottom: sucsessfulBackButton.top
+            anchors.bottom: successfulSettingsUpdatePageBackButton.top
             color: "white"
             font.pointSize: 25
             font.bold: true
@@ -165,8 +161,6 @@ Item {
              }
         }
     }
-
-
 
     Rectangle {
         id: ipAdddressBlock

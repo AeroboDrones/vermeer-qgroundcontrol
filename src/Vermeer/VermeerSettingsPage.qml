@@ -29,14 +29,14 @@ Item {
         height: parent.height
         width: parent.width
         color: "#161618"
-
     }
 
     VermeerSettingsToolbar {
         id: vermeerSettingsPageToolBarQml
     }
 
-    VermeerSettingsContentPage{
+    // this is the ipAddress page
+    VermeerSettingsContentPage {
         id: vermeerSettingsContentPage
         anchors{
             right: parent.right

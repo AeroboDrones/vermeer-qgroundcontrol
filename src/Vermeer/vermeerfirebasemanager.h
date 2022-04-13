@@ -30,10 +30,12 @@ public:
 
 signals:
     void displayMsgToQml(QVariant data);
+    void sendNotificationsToQml(QVariant data);
+    void missionUdpReply(QVariant data);
 
 public slots:
 
-    void signIn(QVariant emailString, QVariant passwordString);
+    void signInWithEmailAndPassword(QVariant emailString, QVariant passwordString);
     void signInWithRefreshToken();
     void signInOffline();
     void setSignOutFlag(bool signOutFlag);
@@ -53,6 +55,11 @@ public slots:
     bool hasInternetConnection();
     void checkInternetConnection();
     void loadExpiresInFromFile();
+    void loadUserEmailFromFile();
+    bool isInternetReacquired();
+    void setInternetReqacquiaredFlag(bool value);
+    void showLogPage();
+    void showMissionPage();
     QVariant getDestinationIpAddress();
     QVariant getDestinationPortNumber();
     QVariant getUserEmailAddress();
@@ -65,7 +72,7 @@ public slots:
     void deleteRefreshToken();
 
     // only used for testing
-    void makeRtInvalid();
+    void makeRtInvalid(); // to be deleted
 
 
 private:
@@ -74,10 +81,11 @@ private:
     const QString authenticateWithRefreshTokenUrl = "https://us-central1-vermeer-production.cloudfunctions.net/rest/api/v1/oauth/refresh";
     const QString checkAuthenticationStatus = "https://us-central1-vermeer-production.cloudfunctions.net/rest/api/v1/oauth/authStatus";
     const QString fetchFlightPlansUrl = "https://vermeer-production.firebaseio.com/FlightPlans/userReadable/[UID]/Astro.json?auth=[ACCESS_TOKEN]";
+
     const QString refreshTokenFileName = "refreshTokenFile.txt"; // to be deleted
 
     QUdpSocket socket;
-    quint16 port{5656};
+    quint16 port{14556};
 
     QString sourceIp{"0.0.0.0"};
     QString destinationIp;
@@ -95,6 +103,7 @@ private:
     QTimer accessTokenTimer;
     QTimer checkInternetConnectionTimer;
     int checkInternetConnectionIntervalSeconds{3};
+    bool hasNoInternetPreviously{false};
 };
 
 #endif // VERMEERFIREBASEMANAGER_H
