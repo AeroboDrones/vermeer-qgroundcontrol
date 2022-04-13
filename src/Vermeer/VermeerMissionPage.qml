@@ -35,6 +35,7 @@ Item {
     // Mission Page Tool Bar
     VermeerMissionPageToolbar {
         id: vermeerMssionPageToolBarQml
+        z: 1 // this is so that the upload button do not overlap on the tool bar
         onShowLogPage: {
             console.log("vermeerMissionPageQml: onShowLogPage ")
             vermeerMissionList.visible = false;

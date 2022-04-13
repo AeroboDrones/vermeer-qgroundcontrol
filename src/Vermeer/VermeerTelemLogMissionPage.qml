@@ -27,7 +27,7 @@ Item {
     property date currentDate: new Date()
 
     Component.onCompleted: {
-        console.log("vermeerTelemLogPage: bindSocket()")
+        console.log("vermeerTelemLogMissionPage: bindSocket()")
         vermeerFirebaseManager.bindSocket()
     }
 
@@ -47,6 +47,9 @@ Item {
             if("missionUploadedSuccessfuly"===data){
                 console.log("vermeerTelemLogMissionPage: emit missionUploadedSuccessfully signal")
                 vermeerTelemLogMissionPage.missionUploadedSuccessfully()
+
+                // we need to clear the log page
+                telemLogMissionPageTextArea.text = ""
             }
 
             if("missionUploadedUnsuccessfuly"===data){

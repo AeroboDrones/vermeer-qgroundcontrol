@@ -62,7 +62,7 @@ private:
     inline static QString refreshToken;
     inline static int numberOfMissions;
     inline static QJsonObject missionJson;
-    inline static QString destinationIpAddress{"192.168.1.98"};
+    inline static QString destinationIpAddress{"192.168.144.30"};
     inline static int destinationPortNumber{14555};
     inline static bool signOutButtonPressed;
     inline static bool isAccessTokenTimeOut;
