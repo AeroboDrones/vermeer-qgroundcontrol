@@ -44,14 +44,20 @@ Item {
         successfulSettingsUpdatePage.z = 1
     }
 
+    VermeerLogManager{
+        id: vermeerLogManager
+    }
+
     VermeerFirebaseManager{
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
             if("InvalidIpAddress" === data){
+                vermeerLogManager.log("SettingsPage: Invalid Ip Address Setting")
                 showInvalidSettingsPage()
             }
 
             if("SettingsUpdatedSuccessfuly" === data){
+                vermeerLogManager.log("SettingsPage: IP Address updated successfuly successfuly")
                 showSuccessfulSettingsUpdate()
             }
         }
@@ -106,6 +112,7 @@ Item {
                  onReleased: {
                     invalidSettingsPageGoBackButtonText.color = "white"
                     invalidSettingsPageBackButton.color = "#d7003f"
+                    vermeerLogManager.log("SettingsPage: Invalid settings back button pressed")
                     showSettingsPage()
                  }
              }
@@ -156,6 +163,7 @@ Item {
                  onReleased: {
                     successfulSettingsUpdatePageGoBackButtonText.color = "white"
                     successfulSettingsUpdatePageBackButton.color = "#d7003f"
+                    vermeerLogManager.log("SettingsPage: Successful update back button pressed")
                     showSettingsPage()
                  }
              }
@@ -289,8 +297,9 @@ Item {
             onReleased: {
                 updateSettingButtonText.color = "white"
                 updateSettingButton.color = "#d7003f"
-
                 console.log("updating settings")
+                var logMsg = "SettingsPage: Ipaddress updated with" + ipAddressRectangleTextInput.text + ":" + portNumberRectangleTextInput.text
+                vermeerLogManager.log(logMsg)
                 vermeerFirebaseManager.updateSetting(ipAddressRectangleTextInput.text,portNumberRectangleTextInput.text)
             }
         }

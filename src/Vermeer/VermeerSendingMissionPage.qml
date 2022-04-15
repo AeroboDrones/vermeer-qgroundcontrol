@@ -22,20 +22,20 @@ import QGroundControl.FlightDisplay 1.0
 import QGroundControl.FlightMap     1.0
 
 Rectangle {
-    id: vermeerReloadPage
+    id: vermeerSendingMissionPage
     height: parent.height
     width: parent.width
     color: "#161618"
 
     Rectangle {
-        id: missionReloadRectanlge
+        id: vermeerSendingMissionPageRectangle
         height: parent.height * .30
         width: parent.width
         anchors.centerIn: parent
         color: "#161618"
         Text {
-            id: missionReloadRectanlgeText
-            text: qsTr("Reloading Missions...")
+            id: vermeerSendingMissionPageText
+            text: qsTr("Sending Mission...")
             color: "white"
             font.pointSize: 30
             font.bold: true
@@ -45,17 +45,17 @@ Rectangle {
     }
 
     Image {
-        id: vermeerReloadMissionLogo
-        source: "/vermeer/VermeerReloadMissionCircle.png"
+        id: vermeerSendingMissionIcon
+        source: "/vermeer/VermeerReloadMissionCircle.png" // should be change to a image for sending a mission
         width: parent.width * 0.08
         fillMode: Image.PreserveAspectFit
         anchors.centerIn: parent
 
         RotationAnimation{
             id: imageRotationAnimation
-            target: vermeerReloadMissionLogo
+            target: vermeerSendingMissionIcon
             loops: Animation.Infinite
-            from: vermeerReloadMissionLogo.rotation
+            from: vermeerSendingMissionIcon.rotation
             to: 360
             direction: RotationAnimation.Clockwise
             duration: 3000

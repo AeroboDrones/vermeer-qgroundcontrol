@@ -50,6 +50,10 @@ Rectangle {
         vermeerSignOutDisabledButton.visible = false
     }
 
+    VermeerLogManager{
+        id: vermeerLogManager
+    }
+
     VermeerFirebaseManager {
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
@@ -70,7 +74,18 @@ Rectangle {
     }
 
     Component.onCompleted: {
+
         loggedInUser.text = vermeerFirebaseManager.getUserEmailAddress()
+
+        if(vermeerFirebaseManager.hasInternetConnection()){
+            enableOnlineWifiIcon()
+            enableSignOutButton()
+        } else {
+            enableOfflineWifiIcon()
+            disableSignOutButton()
+        }
+
+        vermeerLogManager.log("MissionPage: mission page loaded")
     }
 
     Text {
@@ -222,6 +237,7 @@ Rectangle {
             anchors.fill: parent
             onPressed: {
                 missionListLogPageToggleButton.color = "#d7003f"
+                vermeerLogManager.log("MissionPage: MissionPageToggle pressed")
             }
 
             onReleased: {
@@ -229,10 +245,12 @@ Rectangle {
 
                 if("Mission List" === missionListLogPageToggleButtonText.text) {
                     missionListLogPageToggleButtonText.text = "Logs"
+                    vermeerLogManager.log("MissionPage: Switching to mission page")
                     vermeerMssionPageToolBarQml.showMissionPage()
                 }
                 else if ("Logs" === missionListLogPageToggleButtonText.text) {
                     missionListLogPageToggleButtonText.text = "Mission List"
+                    vermeerLogManager.log("MissionPage: Switching to log page")
                     vermeerMssionPageToolBarQml.showLogPage()
                 }
             }
@@ -263,6 +281,7 @@ Rectangle {
             id:vermeerSettingsButtonMouseArea
             anchors.fill: parent
             onClicked: {
+                vermeerLogManager.log("MissionPage: setting button clicked")
                 vermeerLoader.source = "VermeerSettingsPage.qml"
             }
         }
@@ -301,6 +320,7 @@ Rectangle {
                 vermeerSignOutButton.color = "black"
                 vermeerFirebaseManager.setSignOutFlag(true)
                 vermeerFirebaseManager.deleteRefreshToken()
+                vermeerLogManager.log("MissionPage: Sign out button pressed")
                 vermeerLoader.source = "VermeerSignInPage.qml"
             }
         }
@@ -325,6 +345,14 @@ Rectangle {
             font.bold: true
             color: "white"
             anchors.centerIn: parent
+        }
+
+        MouseArea {
+            id: vermeerSignOutDisabledButtonMouseArea
+            anchors.fill: parent
+            onClicked: {
+                vermeerLogManager.log("MissionPage: Disabled Sign Out Button Pressed")
+            }
         }
     }
 

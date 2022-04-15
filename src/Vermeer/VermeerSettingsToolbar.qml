@@ -31,6 +31,10 @@ Rectangle {
         id: vermeerFirebaseManager
     }
 
+    VermeerLogManager {
+        id: vermeerLogManager
+    }
+
     Text {
         id: vermeerMissionText
         text: qsTr("SETTINGS")
@@ -73,6 +77,7 @@ Rectangle {
             onReleased: {
                 vermeerGoBackButtonText.color = "white"
                 vermeerGoBackButton.color = "black"
+                vermeerLogManager.log("SettingsPage: GoBack Button Pressed ")
                 vermeerLoader.source = "VermeerMissionPage.qml"
             }
         }

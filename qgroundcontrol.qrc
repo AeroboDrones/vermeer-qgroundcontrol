@@ -251,8 +251,9 @@
         <file alias="VermeerSettingsToolbar.qml">src/Vermeer/VermeerSettingsToolbar.qml</file>
         <file alias="VermeerMissionList.qml">src/Vermeer/VermeerMissionList.qml</file>
         <file alias="VermeerSettingsContentPage.qml">src/Vermeer/VermeerSettingsContentPage.qml</file>
-        <file alias="VermeerMIssionReloadPage.qml">src/Vermeer/VermeerMissionReloadPage.qml</file>
+        <file alias="VermeerMissionReloadPage.qml">src/Vermeer/VermeerMissionReloadPage.qml</file>
         <file alias="VermeerTelemLogMissionPage.qml">src/Vermeer/VermeerTelemLogMissionPage.qml</file>
+        <file alias="VermeerSendingMissionPage.qml">src/Vermeer/VermeerSendingMissionPage.qml</file>
     </qresource>
     <qresource prefix="/json">
         <file alias="ADSBVehicleManager.SettingsGroup.json">src/Settings/ADSBVehicleManager.SettingsGroup.json</file>

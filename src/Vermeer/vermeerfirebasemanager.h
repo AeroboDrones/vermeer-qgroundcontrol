@@ -60,6 +60,7 @@ public slots:
     void setInternetReqacquiaredFlag(bool value);
     void showLogPage();
     void showMissionPage();
+    void sendSignalSendingMissionTimedOut();
     QVariant getDestinationIpAddress();
     QVariant getDestinationPortNumber();
     QVariant getUserEmailAddress();
@@ -70,10 +71,11 @@ public slots:
     void accessTokenStopTimer();
     void bindSocket();
     void deleteRefreshToken();
+    void sendingMissionTimeoutStart();
+    void sendingMissionTimeoutStop();
 
     // only used for testing
     void makeRtInvalid(); // to be deleted
-
 
 private:
 
@@ -102,7 +104,9 @@ private:
 
     QTimer accessTokenTimer;
     QTimer checkInternetConnectionTimer;
+    QTimer sendingMissionTimeout;
     int checkInternetConnectionIntervalSeconds{3};
+    int sendingMissionTimeoutDelaySeconds{5};
     bool hasNoInternetPreviously{false};
 };
 

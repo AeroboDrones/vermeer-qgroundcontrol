@@ -53,6 +53,10 @@ Item {
         vermeerLoader.source = pageString
     }
 
+    VermeerLogManager{
+        id: vermeerLogManager
+    }
+
     VermeerFirebaseManager{
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
@@ -95,7 +99,7 @@ Item {
 
         var hasInternetConnection = vermeerFirebaseManager.hasInternetConnection()
 
-        if (!hasInternetConnection){
+        if (!hasInternetConnection) {
             showErrorBanner(noNetworkConnectionMessage)
         }
 
@@ -105,9 +109,11 @@ Item {
 
             if(isRefreshTokenExist) {
                 if(hasInternetConnection) {
+                    vermeerLogManager.log("SignInPage: refresh token exist and we have internet, signing in with refresh token")
                     vermeerFirebaseManager.signInWithRefreshToken()
                     showSigningInPage()
                 } else {
+                    vermeerLogManager.log("SignInPage: refresh token exist and we don't have internet, signing in offline")
                     vermeerFirebaseManager.signInOffline()
                     showSigningInPage()
                 }
@@ -143,7 +149,6 @@ Item {
     VermeerSigningInPage{
         id: vermeerSigningInQml
     }
-
 
     // vermeer logo
     Rectangle {
@@ -209,7 +214,6 @@ Item {
             }
         }
 
-
         Rectangle {
             id: vermeerPassword
             color: "#282828"
@@ -257,6 +261,10 @@ Item {
                     vermeerLogInButtonText.color = "white"
                     vermeerLogInButton.color = "#d7003f"
                     console.log("Loging In Button Released")
+
+                    var logMsg = "SignInPage: Signing is as " + vermeerEmailAddressTextInput.text;
+                    vermeerLogManager.log(logMsg)
+
                     showSigningInPage()
                     vermeerFirebaseManager.signInWithEmailAndPassword(vermeerEmailAddressTextInput.text,vermeerPasswordTextInput.text)
                 }

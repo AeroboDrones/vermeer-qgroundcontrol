@@ -434,6 +434,7 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 
 HEADERS += \
     src/Vermeer/vermeerfirebasemanager.h \
+    src/Vermeer/vermeerlogmanager.h \
     src/Vermeer/vermeermissionlistmanager.h \
     src/Vermeer/vermeerrefreshtoken.h \
     src/Vermeer/vermeeruser.h \
@@ -451,6 +452,7 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 
 SOURCES += \
     src/Vermeer/vermeerfirebasemanager.cpp \
+    src/Vermeer/vermeerlogmanager.cpp \
     src/Vermeer/vermeermissionlistmanager.cpp \
     src/Vermeer/vermeerrefreshtoken.cpp \
     src/Vermeer/vermeeruser.cpp \

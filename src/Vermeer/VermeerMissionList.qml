@@ -29,18 +29,26 @@ Item {
 
     function goBackButtonView() {
         vermeerMissionListsView.visible = true
+
         noMissionAvailablePage.visible = false
-        vermeerMissionUploadSuccessful.visible = false
-        vermeerMissionUploadUnSuccessful.visible = false
+        vermeerReceivedMissionJson.visible = false
+        vermeerMissionUploadUnSuccessful.visible = false // not sure what to do yet
         vermeerMissionAlreadyRunning.visible = false
+        vermeerHomePositionReceived.visible = false
+        vermeerMissionCompleted.visible = false
+        vermeerMissionCurrupted.visible = false
     }
 
     function disableAllView() {
         vermeerMissionListsView.visible = false
         noMissionAvailablePage.visible = false
-        vermeerMissionUploadSuccessful.visible = false
-        vermeerMissionUploadUnSuccessful.visible = false
+        vermeerReceivedMissionJson.visible = false
+        vermeerMissionUploadUnSuccessful.visible = false // not sure what to do yet
         vermeerMissionAlreadyRunning.visible = false
+        vermeerHomePositionReceived.visible = false
+        vermeerMissionCompleted.visible = false
+        vermeerMissionCurrupted.visible = false
+        disableSendingMissionPage()
     }
 
     function handleNumberMissionChanged() {
@@ -69,12 +77,23 @@ Item {
         }
     }
 
+    function showSendingMissionPage() {
+        vermeerSendingMissionPage.visible = true
+        vermeerSendingMissionPage.z = 2
+    }
+
+    function disableSendingMissionPage() {
+        vermeerSendingMissionPage.visible = false
+        vermeerSendingMissionPage.z = 0
+    }
+
     function showReloadMissionPage(){
+        vermeerLogManager.log("showReloadMissionPage")
         reloadMission.visible = true
         reloadMission.z = 2
     }
 
-    function disableSigningInPage(){
+    function disableReloadPage(){
         reloadMission.visible = false
         reloadMission.z = 0
     }
@@ -90,28 +109,55 @@ Item {
         }
     }
 
-    function handleMissionUploadedSuccessfully(){
-        console.log("missionUploadedSuccessfuly")
+    function handleReceivedMissionJson(){
+        console.log("receivedMissionJson")
         disableAllView()
-        vermeerMissionUploadSuccessful.visible = true
+        vermeerFirebaseManager.sendingMissionTimeoutStop()
+        vermeerReceivedMissionJson.visible = true
     }
 
     function handleMissionUploadedUnsuccessfuly(){
         disableAllView()
+        vermeerFirebaseManager.sendingMissionTimeoutStop()
         vermeerMissionUploadUnSuccessful.visible = true
     }
 
     function handleMissionAlreadyRunning() {
         disableAllView()
+        vermeerFirebaseManager.sendingMissionTimeoutStop()
         vermeerMissionAlreadyRunning.visible = true
+    }
+
+    function handleMissionCompleted() {
+        disableAllView()
+        vermeerMissionCompleted.visible = true
+    }
+
+    function handleMissionCorrupted() {
+        disableAllView()
+        vermeerFirebaseManager.sendingMissionTimeoutStop()
+        vermeerMissionCurrupted.visible = true
+    }
+
+    function handleHomePositionReceived() {
+        disableAllView()
+        vermeerHomePositionReceived.visible = true
     }
 
     VermeerUser {
         id: vermmerUser
     }
 
-    VermeerMIssionReloadPage {
+    VermeerLogManager{
+        id: vermeerLogManager
+    }
+
+    VermeerMissionReloadPage {
         id: reloadMission
+    }
+
+    VermeerSendingMissionPage{
+        id: vermeerSendingMissionPage
     }
 
     VermeerFirebaseManager {
@@ -120,14 +166,14 @@ Item {
             if("numberOfMissionItemsChanged"===data) {
                 handleNumberMissionChanged()
                 vermeerFirebaseManager.saveMissionListToMissionFile()
-                disableSigningInPage()
+                disableReloadPage()
             }
 
             if ("invalidAccessToken"===data) {
                 console.log("invalid access token")
             }
 
-            if("accessTokenTimedOut"===data){
+            if("accessTokenTimedOut"===data) {
                 if(vermeerFirebaseManager.hasInternetConnection()) {
                     console.log("Access token timedout signing in with refresh token")
                     vermeerFirebaseManager.signInWithRefreshToken()
@@ -135,6 +181,11 @@ Item {
                     console.log("Access token timedout, No Internet, Loading missions from file")
                     vermeerFirebaseManager.loadMissioListsFromMissionFile();
                 }
+            }
+
+            if ("sendingMissionTimedOut" === data){
+                console.log("vermeerMissionList: sendingMissionTimedOut")
+                handleMissionUploadedUnsuccessfuly();
             }
         }
     }
@@ -177,52 +228,258 @@ Item {
             font.bold: true
             visible: false
         }
-    }
-
-    Rectangle {
-        id: vermeerMissionUploadSuccessful
-        height: parent.height
-        width: parent.width
-        color: "#161618"
-        anchors.centerIn: parent
-        visible: false
-
-        Text {
-            id: vermeerMissionUploadSuccessfulText
-            text: vermeerMissionName + " Uploaded Successfully"
-            anchors.centerIn: parent
-            anchors.verticalCenterOffset: -100
-            anchors.bottom: sucsessfulBackButton.top
-            color: "white"
-            font.pointSize: 25
-            font.bold: true
-        }
 
         Rectangle {
-            id: sucsessfulBackButton
+            id: noMissionAvailablePageReloadButton
             width: 250
             height: 60
             anchors.centerIn: parent
             color:"#d7003f"
 
              Text {
-                id: successfulGoBackButtonText
+                id: noMissionAvailablePageReloadButtonText
+                text: qsTr("Reload Mission")
+                color: "white"
+                anchors.centerIn: parent
+             }
+
+             MouseArea {
+                 id: noMissionAvailablePageReloadButtonMouseArea
+                 anchors.fill: parent
+                 onPressed: {
+                     noMissionAvailablePageReloadButtonText.color = "#d7003f"
+                     noMissionAvailablePageReloadButton.color = "white"
+                     vermeerLogManager.log("noMissionAvailablePageReloadButton pressed")
+
+                 }
+                 onReleased: {
+                    noMissionAvailablePageReloadButtonText.color = "white"
+                    noMissionAvailablePageReloadButton.color = "#d7003f"
+                    handleMissionLists()
+                 }
+             }
+        }
+    }
+
+    Rectangle {
+        id: vermeerHomePositionReceived
+        height: parent.height
+        width: parent.width
+        color: "#161618"
+        anchors.centerIn: parent
+        visible: false
+
+
+        TextMetrics {
+            id: vermeerHomePositionReceivedTextMetrics
+            font.pixelSize: 50
+            text: vermeerMissionName + " Home Position received. Ready to upload mission"
+        }
+
+        Text {
+            id: vermeerHomePositionReceivedText
+            text: vermeerHomePositionReceivedTextMetrics.text
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -100
+            anchors.bottom: vermeerHomePositionReceivedBackButton.top
+            color: "white"
+            font.bold: true
+        }
+
+        Rectangle {
+            id: vermeerHomePositionReceivedBackButton
+            width: 250
+            height: 60
+            anchors.centerIn: parent
+            color:"#d7003f"
+
+             Text {
+                id: vermeerHomePositionReceivedBackButtonText
                 text: qsTr("Go Back")
                 color: "white"
                 anchors.centerIn: parent
              }
 
              MouseArea {
-                 id: sucsessfulBackButtonMouseArea
+                 id: vermeerHomePositionReceivedBackButtonMouseArea
                  anchors.fill: parent
                  onPressed: {
-                     successfulGoBackButtonText.color = "#d7003f"
-                     sucsessfulBackButton.color = "white"
+                     vermeerHomePositionReceivedBackButtonText.color = "#d7003f"
+                     vermeerHomePositionReceivedBackButton.color = "white"
+                     vermeerLogManager.log("vermeerHomePositionReceivedBackButton pressed")
 
                  }
                  onReleased: {
-                    successfulGoBackButtonText.color = "white"
-                    sucsessfulBackButton.color = "#d7003f"
+                    vermeerHomePositionReceivedBackButtonText.color = "white"
+                    vermeerHomePositionReceivedBackButton.color = "#d7003f"
+                    goBackButtonView()
+                 }
+             }
+        }
+    }
+
+    Rectangle {
+        id: vermeerMissionCurrupted
+        height: parent.height
+        width: parent.width
+        color: "#161618"
+        anchors.centerIn: parent
+        visible: false
+
+        TextMetrics {
+            id: vermeerMissionCurruptedTextMetrics
+            font.pixelSize: 50
+            text: vermeerMissionName + "Mission Currupted"
+        }
+
+        Text {
+            id: vermeerMissionCurruptedText
+            text: vermeerMissionCurruptedTextMetrics.text
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -100
+            anchors.bottom: vermeerMissionCurruptedBackButton.top
+            color: "white"
+            font.bold: true
+        }
+
+        Rectangle {
+            id: vermeerMissionCurruptedBackButton
+            width: 250
+            height: 60
+            anchors.centerIn: parent
+            color:"#d7003f"
+
+             Text {
+                id: vermeerMissionCurruptedBackButtonText
+                text: qsTr("Go Back")
+                color: "white"
+                anchors.centerIn: parent
+             }
+
+             MouseArea {
+                 id: vermeerMissionCurruptedBackButtonMouseArea
+                 anchors.fill: parent
+                 onPressed: {
+                     vermeerMissionCurruptedBackButtonText.color = "#d7003f"
+                     vermeerMissionCurruptedBackButton.color = "white"
+                     vermeerLogManager.log("vermeerMissionCurruptedBackButton pressed")
+
+                 }
+                 onReleased: {
+                    vermeerMissionCurruptedBackButtonText.color = "white"
+                    vermeerMissionCurruptedBackButton.color = "#d7003f"
+                    goBackButtonView()
+                 }
+             }
+        }
+    }
+
+    Rectangle {
+        id: vermeerMissionCompleted
+        height: parent.height
+        width: parent.width
+        color: "#161618"
+        anchors.centerIn: parent
+        visible: false
+
+        TextMetrics {
+            id: vermeerMissionCompletedTextMetrics
+            font.pixelSize: 50
+            text: vermeerMissionName + "Mission Completed"
+        }
+
+        Text {
+            id: vermeerMissionCompletedText
+            text: vermeerMissionCompletedTextMetrics.text
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -100
+            anchors.bottom: vermeerMissionCompletedBackButton.top
+            color: "white"
+            font.bold: true
+        }
+
+        Rectangle {
+            id: vermeerMissionCompletedBackButton
+            width: 250
+            height: 60
+            anchors.centerIn: parent
+            color:"#d7003f"
+
+             Text {
+                id: vermeerMissionCompletedBackButtonText
+                text: qsTr("Go Back")
+                color: "white"
+                anchors.centerIn: parent
+             }
+
+             MouseArea {
+                 id: vermeerMissionCompletedBackButtonMouseArea
+                 anchors.fill: parent
+                 onPressed: {
+                     vermeerMissionCompletedBackButtonText.color = "#d7003f"
+                     vermeerMissionCompletedBackButton.color = "white"
+                     vermeerLogManager.log("vermeerMissionCompletedBackButton pressed")
+
+                 }
+                 onReleased: {
+                    vermeerMissionCompletedBackButtonText.color = "white"
+                    vermeerMissionCompletedBackButton.color = "#d7003f"
+                    goBackButtonView()
+                 }
+             }
+        }
+    }
+
+    Rectangle {
+        id: vermeerReceivedMissionJson
+        height: parent.height
+        width: parent.width
+        color: "#161618"
+        anchors.centerIn: parent
+        visible: false
+
+        TextMetrics {
+            id: vermeerReceivedMissionJsonTextMetrics
+            font.pixelSize: 50
+            text: vermeerMissionName + " Received Mission JSON"
+        }
+
+        Text {
+            id: vermeerReceivedMissionJsonText
+            text: vermeerReceivedMissionJsonTextMetrics.text
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -100
+            anchors.bottom: vermeerReceivedMissionJsonBackButton.top
+            color: "white"
+            font.bold: true
+        }
+
+        Rectangle {
+            id: vermeerReceivedMissionJsonBackButton
+            width: 250
+            height: 60
+            anchors.centerIn: parent
+            color:"#d7003f"
+
+             Text {
+                id: vermeerReceivedMissionJsonBackButtonText
+                text: qsTr("Go Back")
+                color: "white"
+                anchors.centerIn: parent
+             }
+
+             MouseArea {
+                 id: vermeerReceivedMissionJsonBackButtonMouseArea
+                 anchors.fill: parent
+                 onPressed: {
+                     vermeerReceivedMissionJsonBackButtonText.color = "#d7003f"
+                     vermeerReceivedMissionJsonBackButton.color = "white"
+                     vermeerLogManager.log("vermeerReceivedMissionJsonBackButton pressed")
+
+                 }
+                 onReleased: {
+                    vermeerReceivedMissionJsonBackButtonText.color = "white"
+                    vermeerReceivedMissionJsonBackButton.color = "#d7003f"
                     goBackButtonView()
                  }
              }
@@ -237,14 +494,19 @@ Item {
         anchors.centerIn: parent
         visible: false
 
+        TextMetrics {
+            id: vermeerMissionUploadUnSuccessfulTextMetrics
+            font.pixelSize: 50
+            text: vermeerMissionName + " Mission upload failed"
+        }
+
         Text {
             id: vermeerMissionUploadUnSuccessfulText
-            text: vermeerMissionName + " Failed to Upload"
+            text: vermeerMissionUploadUnSuccessfulTextMetrics.text
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -100
             anchors.bottom: unsucsessfulBackButton.top
             color: "white"
-            font.pointSize: 25
             font.bold: true
         }
 
@@ -268,6 +530,7 @@ Item {
                  onPressed: {
                     unsuccessfulGoBackButtonText.color = "#d7003f"
                     unsucsessfulBackButton.color = "white"
+                    vermeerLogManager.log("unsucsessfulBackButton pressed")
                  }
                  onReleased: {
                     unsuccessfulGoBackButtonText.color = "white"
@@ -286,14 +549,21 @@ Item {
         anchors.centerIn: parent
         visible: false
 
+        TextMetrics {
+            id: vermeerMissionAlreadyRunningTextMetrics
+            font.pixelSize: 50
+            text: vermeerMissionName + " Mission already running, mission file ignored"
+        }
+
         Text {
             id: vermeerMissionAlreadyRunningText
-            text: vermeerMissionName + " Mission already running, mission file ignored"
+            width: vermeerMissionAlreadyRunningTextMetrics.width
+            height: vermeerMissionAlreadyRunningTextMetrics.height
+            text: vermeerMissionAlreadyRunningTextMetrics.text
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -100
             anchors.bottom: vermeerMissionAlreadyRunningBackButton.top
             color: "white"
-            font.pointSize: 25
             font.bold: true
         }
 
@@ -317,6 +587,7 @@ Item {
                  onPressed: {
                      vermeerMissionAlreadyRunningGoBackButtonText.color = "#d7003f"
                      vermeerMissionAlreadyRunningBackButton.color = "white"
+                     vermeerLogManager.log("vermeerMissionAlreadyRunningBackButton pressed")
                  }
                  onReleased: {
                     vermeerMissionAlreadyRunningGoBackButtonText.color = "white"
@@ -335,14 +606,19 @@ Item {
         anchors.centerIn: parent
         visible: false
 
+        TextMetrics {
+            id: vermeerSettingInvalidTextMetrics
+            font.pixelSize: 50
+            text: "Settings are invalid check Destination IP address and Port Number"
+        }
+
         Text {
             id: vermeerSettingInvalidText
-            text: "Settings are invalid check Destination IP address and Port Number"
+            text: vermeerSettingInvalidTextMetrics.text
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -100
-            anchors.bottom: vermeerMissionAlreadyRunningBackButton.top
+            anchors.bottom: vermeerSettingInvalidGoBackButton.top
             color: "white"
-            font.pointSize: 20
             font.bold: true
         }
 
@@ -366,6 +642,7 @@ Item {
                  onPressed: {
                      vermeerSettingInvalidGoBackButtonText.color = "#d7003f"
                      vermeerSettingInvalidGoBackButton.color = "white"
+                     vermeerLogManager.log("vermeerSettingInvalidGoBackButton pressed")
                  }
                  onReleased: {
                     vermeerSettingInvalidGoBackButtonText.color = "white"
@@ -447,6 +724,9 @@ Item {
                             // binding to local host allows us to recieve the notification
                             // from the drone side
                             vermeerFirebaseManager.bindSocket()
+
+                            var logMsg = missionName + " upload button pressed"
+                            vermeerLogManager.log(logMsg)
                         }
                         onReleased: {
                             // do we need a loading screen?
@@ -455,7 +735,13 @@ Item {
                             vermeerMissionName = missionName
 
                             if(isSettingsValid){
+                                console.log("vermeerSendingMissionPage")
+                                showSendingMissionPage()
+                                vermeerFirebaseManager.sendingMissionTimeoutStart()
                                 vermeerFirebaseManager.sendMission(missionKey)
+
+                                var logMsg = missionName + " upload button released"
+                                vermeerLogManager.log(logMsg)
                             }
                             else {
                                 disableAllView()
@@ -475,7 +761,6 @@ Item {
             }
         }
 
-
         ScrollView {
             anchors.fill: parent
             ListView {
@@ -486,9 +771,11 @@ Item {
                 onFlickStarted: {
                     if(atYBeginning){
                         showReloadMissionPage()
-                        if(vermeerFirebaseManager.hasInternetConnection()){
+                        if(vermeerFirebaseManager.hasInternetConnection()) {
+                            vermeerLogManager.log("we have internet connection, fetching flight plans")
                             vermeerFirebaseManager.fetchFlightPlans() // which then send a validSignIn and does a fetchFlightPlans
                         } else {
+                            vermeerLogManager.log("No internet connection, loading mission from file")
                             vermeerFirebaseManager.loadMissioListsFromMissionFile()
                         }
                     }

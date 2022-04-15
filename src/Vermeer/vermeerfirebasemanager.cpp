@@ -21,6 +21,9 @@ VermeerFirebaseManager::VermeerFirebaseManager(QObject *parent)
     connect(&accessTokenTimer,&QTimer::timeout,this,&VermeerFirebaseManager::accessTokenTimedOut);
     connect(&socket,&QUdpSocket::readyRead,this,&VermeerFirebaseManager::udpReadyRead);
     networkManager = new QNetworkAccessManager( this );
+
+    sendingMissionTimeout.setInterval(1000 * sendingMissionTimeoutDelaySeconds);
+    connect(&sendingMissionTimeout,&QTimer::timeout,this,&VermeerFirebaseManager::sendSignalSendingMissionTimedOut);
 }
 
 VermeerFirebaseManager::~VermeerFirebaseManager()
@@ -111,14 +114,17 @@ void VermeerFirebaseManager::udpReadyRead()
         if("Mission already running, mission file ignored" == messagePayload) {
                 msg  = "missionAlreadyRunning";
         }
-        else if("Received Keyframe Mission" == messagePayload) {
-                msg = "missionUploadedSuccessfuly";
-        }
-        else if("Received AoI Mission" == messagePayload) {
-                msg = "missionUploadedSuccessfuly";
+        else if("Received Mission JSON" == messagePayload) {
+                msg = "receivedMissionJson";
         }
         else if("Mission Completed" == messagePayload) {
-               // not sure what to display just yet
+                msg = "missionCompleted";
+        }
+        else if("Mission JSON Corrupted" == messagePayload) {
+               msg = "missionCurrupted";
+        }
+        else if("Home Position received. Ready to upload mission" == messagePayload) {
+                msg = "homePositionReceived";
         }
         qInfo() << Q_FUNC_INFO << ": " << msg;
 
@@ -218,7 +224,6 @@ void VermeerFirebaseManager::checkInternetConnection()
     if (socket.waitForConnected(2000)) {
         if(hasNoInternetPreviously) {
             hasNoInternetPreviously = false;
-            VermeerUser::setInternetAccessReaquired(true);
         }
         emit(displayMsgToQml("HasInternet"));
     }
@@ -257,7 +262,13 @@ void VermeerFirebaseManager::showLogPage()
 
 void VermeerFirebaseManager::showMissionPage()
 {
-     emit(displayMsgToQml("ShowMissionList"));
+    emit(displayMsgToQml("ShowMissionList"));
+}
+
+void VermeerFirebaseManager::sendSignalSendingMissionTimedOut()
+{
+    qInfo() << Q_FUNC_INFO;
+    emit(displayMsgToQml("sendingMissionTimedOut"));
 }
 
 void VermeerFirebaseManager::signInWithRefreshToken()
@@ -383,6 +394,18 @@ void VermeerFirebaseManager::deleteRefreshToken()
     if(vermeerRefreshToken.deleteRefreshToken()) {
         qInfo() << Q_FUNC_INFO << ": refresh token deleted";
     }
+}
+
+void VermeerFirebaseManager::sendingMissionTimeoutStart()
+{
+    qInfo() << Q_FUNC_INFO;
+    sendingMissionTimeout.start();
+}
+
+void VermeerFirebaseManager::sendingMissionTimeoutStop()
+{
+    qInfo() << Q_FUNC_INFO;
+    sendingMissionTimeout.stop();
 }
 
 void VermeerFirebaseManager::makeRtInvalid()

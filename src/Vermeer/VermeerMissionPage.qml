@@ -24,7 +24,6 @@ import QGroundControl.FlightMap     1.0
 Item {
     id: vermeerMissionPageQml
 
-
     Rectangle {
         id: vermeerMissionPageBackground
         height: parent.height
@@ -69,16 +68,24 @@ Item {
             bottom: parent.bottom
         }
 
-        onMissionUploadedSuccessfully:{
-            vermeerMissionList.handleMissionUploadedSuccessfully()
-        }
-
-        onMissionUploadedUnsuccessfully: {
-            vermeerMissionList.handleMissionUploadedUnsuccessfuly()
+        onReceivedMissionJson: {
+            vermeerMissionList.handleReceivedMissionJson()
         }
 
         onMissionAlreadyRunning: {
             vermeerMissionList.handleMissionAlreadyRunning()
+        }
+
+        onMissionCompleted: {
+            vermeerMissionList.handleMissionCompleted()
+        }
+
+        onMissionCurrupted: {
+            vermeerMissionList.handleMissionCorrupted()
+        }
+
+        onHomePositionReceived: {
+            vermeerMissionList.handleHomePositionReceived()
         }
     }
 }
