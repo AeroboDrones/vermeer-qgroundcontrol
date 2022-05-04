@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QFile>
 #include <QDir>
+#include <QTimer>
 
 class VermeerLogManager : public QObject
 {
@@ -18,6 +19,7 @@ public slots:
     void log(QString logMessage);
     QString readAllUlogs();
     bool isFileExist();
+
 private:
     QString filename{"VermeerUserLogs.txt"};
 };

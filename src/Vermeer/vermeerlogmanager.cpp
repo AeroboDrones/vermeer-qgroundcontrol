@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QDateTime>
 
+
 #include "vermeerlogmanager.h"
 
 VermeerLogManager::VermeerLogManager(QObject *parent)

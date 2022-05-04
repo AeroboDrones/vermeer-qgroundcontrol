@@ -10,6 +10,7 @@
 #include "vermeerfirebasemanager.h"
 #include "vermeermissionlistmanager.h"
 #include "vermeerrefreshtoken.h"
+#include "vermeerlogmanager.h"
 
 VermeerFirebaseManager::VermeerFirebaseManager(QObject *parent)
     : QObject{parent}
@@ -219,16 +220,27 @@ bool VermeerFirebaseManager::hasInternetConnection()
 
 void VermeerFirebaseManager::checkInternetConnection()
 {
+    VermeerLogManager vermeerLogManager;
+
     QTcpSocket socket;
     socket.connectToHost("8.8.8.8", 53);
     if (socket.waitForConnected(2000)) {
         if(hasNoInternetPreviously) {
+            setInternetReqacquiaredFlag(true);
+            qInfo() << Q_FUNC_INFO << " Internet Connection Regained";
+            vermeerLogManager.log("System: Internet Connection Regained");
             hasNoInternetPreviously = false;
         }
+        hasInternetPreviously = true;
         emit(displayMsgToQml("HasInternet"));
-    }
-    else {
+    } else {
         hasNoInternetPreviously = true;
+
+        if(hasInternetPreviously){
+            hasInternetPreviously = false;
+            qInfo() << Q_FUNC_INFO << " Internet Connection Lost";
+            vermeerLogManager.log("System: Internet Connection Lost");
+        }
         emit(displayMsgToQml("NoInternet"));
     }
 }

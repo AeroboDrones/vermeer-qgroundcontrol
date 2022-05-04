@@ -108,6 +108,7 @@ private:
     int checkInternetConnectionIntervalSeconds{3};
     int sendingMissionTimeoutDelaySeconds{5};
     bool hasNoInternetPreviously{false};
+    bool hasInternetPreviously{false};
 };
 
 #endif // VERMEERFIREBASEMANAGER_H

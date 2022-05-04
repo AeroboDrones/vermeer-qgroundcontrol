@@ -47,6 +47,19 @@ Rectangle {
         anchors.topMargin: parent.width * 0.05
     }
 
+    Text {
+        id: loggedInUser
+        color: "white"
+        font.pointSize: 15
+        font.bold: true
+        anchors.centerIn: parent
+        visible: true
+    }
+
+    Component.onCompleted: {
+        loggedInUser.text = vermeerFirebaseManager.getUserEmailAddress()
+    }
+
     Rectangle {
         id: vermeerGoBackButton
         width: parent.width * 0.15

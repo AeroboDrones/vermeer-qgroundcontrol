@@ -65,7 +65,7 @@ Rectangle {
                  enableOnlineWifiIcon()
                  enableSignOutButton()
                 if(vermeerFirebaseManager.isInternetReacquired()) {
-                    console.log("Internet access Re-acquired signing in with refresh token")
+                    console.log("vermeerMssionPageToolBarQml: Internet access Re-Gained signing in with refresh token")
                     vermeerFirebaseManager.setInternetReqacquiaredFlag(false)
                     vermeerFirebaseManager.signInWithRefreshToken()
                 }
@@ -74,9 +74,6 @@ Rectangle {
     }
 
     Component.onCompleted: {
-
-        loggedInUser.text = vermeerFirebaseManager.getUserEmailAddress()
-
         if(vermeerFirebaseManager.hasInternetConnection()){
             enableOnlineWifiIcon()
             enableSignOutButton()
@@ -84,7 +81,6 @@ Rectangle {
             enableOfflineWifiIcon()
             disableSignOutButton()
         }
-
         vermeerLogManager.log("MissionPage: mission page loaded")
     }
 
@@ -136,15 +132,6 @@ Rectangle {
             height: parent.height
             width: parent.width
         }
-    }
-
-    Text { // I need to remove this first
-        id: loggedInUser
-        color: "white"
-        font.pointSize: 15
-        font.bold: true
-        anchors.centerIn: parent
-        visible: false
     }
 
     // testing refresh token
