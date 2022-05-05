@@ -1,3 +1,10 @@
+/*
+    Vermeer
+    This class is responsible for managing the refreshtoken file
+    A VermeerRefreshToken gets created when data needs to be extracted, stored or delete the refreshTokenFile.txt file
+    It being used to store other persistence data for conviences sake
+*/
+
 #ifndef VERMEERREFRESHTOKEN_H
 #define VERMEERREFRESHTOKEN_H
 

@@ -1,3 +1,10 @@
+/*
+    Vermeer
+    VermeerUser class is a runtime global data storage that is shared accross the main three pages
+    Since the 3 main pages are managed through a loader which means that when one page is loaded from another page
+    the previous page is destroyed and data is lost. This class helps to store persistent data at runtime
+*/
+
 #ifndef VERMEERUSER_H
 #define VERMEERUSER_H
 

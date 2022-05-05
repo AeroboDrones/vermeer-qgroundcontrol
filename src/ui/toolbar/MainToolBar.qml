@@ -187,6 +187,7 @@ Item {
                     }
                 }
 
+                // Enrty point to vermeer pages
                 QGCToolBarButton {
                     id:                 vermeerButton
                     Layout.fillHeight:  true

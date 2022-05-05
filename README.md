@@ -46,6 +46,11 @@ JAVA_HOME set to java-8-openjdk-amd64
 
 There are three main pages 
 
-* Sign In Page
-* Mission Page
-* Settings Page
+* Sign In Page - VermeerSignInPage.qml
+* Mission Page - VermeerMissionPage.qml
+* Settings Page - VermeerSettingsPage.qml
+
+The entry point to the Vermeer pages is through the vermeer button found in the qgc toolbar which is defined in MainToolBar.qml id=vermeerButton
+It calls showVermeerSignInPage from MainRootWindow.qml
+The three main pages are loaded to a Loader id=vermeerLoader defined in MainRootWindow.qml
+All the c++ files and resource files are found in src/Vermeer

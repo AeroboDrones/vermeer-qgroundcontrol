@@ -1,3 +1,10 @@
+/*
+    Vermeer
+    VermeerFirebaseManager predominently handles the user sign-ins, fetching of missions from vermeer's google firebase,
+    and sending missions to the companion computer. It also handles most of higher level abstraction calls to the
+    other classes.
+*/
+
 #ifndef VERMEERFIREBASEMANAGER_H
 #define VERMEERFIREBASEMANAGER_H
 
@@ -83,8 +90,6 @@ private:
     const QString authenticateWithRefreshTokenUrl = "https://us-central1-vermeer-production.cloudfunctions.net/rest/api/v1/oauth/refresh";
     const QString checkAuthenticationStatus = "https://us-central1-vermeer-production.cloudfunctions.net/rest/api/v1/oauth/authStatus";
     const QString fetchFlightPlansUrl = "https://vermeer-production.firebaseio.com/FlightPlans/userReadable/[UID]/Astro.json?auth=[ACCESS_TOKEN]";
-
-    const QString refreshTokenFileName = "refreshTokenFile.txt"; // to be deleted
 
     QUdpSocket socket;
     quint16 port{14556};
