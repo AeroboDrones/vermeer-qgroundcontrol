@@ -23,3 +23,29 @@ Key Links:
 * [Discussion/Support](https://docs.qgroundcontrol.com/en/Support/Support.html)
 * [Contributing](https://dev.qgroundcontrol.com/en/contribute/)
 * [License](https://github.com/mavlink/qgroundcontrol/blob/master/COPYING.md)
+
+# Vermeer Context
+
+Vermeer specific features are build on top of the existing herelink-V4.0.8 branch of the [CubePilot/qgroundcontrol-herelink](https://github.com/CubePilot/qgroundcontrol-herelink/commits/herelink-v4.0.8) repository
+
+The Vermer application was developed on top of [this](https://github.com/CubePilot/qgroundcontrol-herelink/tree/5440f933278d01f9974ad5410d31246f865ccbd9) commit 
+
+# Pre-requisites 
+
+Qt Creator Version used is Version 6.0.1
+
+Qt Kit version used is Android Qt 5.12.6 Clang armeabia-v7a
+
+building for android-25
+
+ANDROID_NDK_ROOT set to android-ndk-r20b
+
+JAVA_HOME set to java-8-openjdk-amd64
+
+# Vermeer Top Level Design
+
+There are three main pages 
+
+* Sign In Page
+* Mission Page
+* Settings Page
