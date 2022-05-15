@@ -420,21 +420,6 @@ void VermeerFirebaseManager::sendingMissionTimeoutStop()
     sendingMissionTimeout.stop();
 }
 
-void VermeerFirebaseManager::makeRtInvalid()
-{
-     QFile refreshTokenFile(QDir::currentPath() + QDir::separator() + refreshTokenFileName);
-
-     if(!refreshTokenFile.open(QIODevice::WriteOnly)){
-         qWarning() << refreshTokenFile.errorString();
-         return;
-     }
-
-     qInfo() << "makeRtInvalid";
-
-     refreshTokenFile.write("Invalid Refresh Token");
-     refreshTokenFile.close();
-}
-
 void VermeerFirebaseManager::bindSocket()
 {
     qInfo() <<Q_FUNC_INFO << ": closing the socket";

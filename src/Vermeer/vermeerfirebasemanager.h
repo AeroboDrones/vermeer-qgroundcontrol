@@ -81,9 +81,6 @@ public slots:
     void sendingMissionTimeoutStart();
     void sendingMissionTimeoutStop();
 
-    // only used for testing
-    void makeRtInvalid(); // to be deleted
-
 private:
 
     const QString authenticateUrl = "https://us-central1-vermeer-production.cloudfunctions.net/rest/api/v1/oauth/token";
