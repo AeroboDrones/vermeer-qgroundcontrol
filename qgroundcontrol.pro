@@ -433,9 +433,14 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 HEADERS += \
     src/QmlControls/QmlUnitsConversion.h \
     src/Vehicle/VehicleEscStatusFactGroup.h \
+    src/Vermeer/vermeerfirebasemanager.h \
     src/Vermeer/vermeerkeyframe.h \
     src/Vermeer/vermeerloginpage.h \
+    src/Vermeer/vermeerlogmanager.h \
     src/Vermeer/vermeermissionitem.h \
+    src/Vermeer/vermeermissionlistmanager.h \
+    src/Vermeer/vermeerrefreshtoken.h \
+    src/Vermeer/vermeeruser.h \
     src/api/QGCCorePlugin.h \
     src/api/QGCOptions.h \
     src/api/QGCSettings.h \
@@ -449,9 +454,14 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 
 SOURCES += \
     src/Vehicle/VehicleEscStatusFactGroup.cc \
+    src/Vermeer/vermeerfirebasemanager.cpp \
     src/Vermeer/vermeerkeyframe.cpp \
     src/Vermeer/vermeerloginpage.cpp \
+    src/Vermeer/vermeerlogmanager.cpp \
     src/Vermeer/vermeermissionitem.cpp \
+    src/Vermeer/vermeermissionlistmanager.cpp \
+    src/Vermeer/vermeerrefreshtoken.cpp \
+    src/Vermeer/vermeeruser.cpp \
     src/api/QGCCorePlugin.cc \
     src/api/QGCOptions.cc \
     src/api/QGCSettings.cc \

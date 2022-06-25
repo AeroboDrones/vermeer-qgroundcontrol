@@ -201,5 +201,7 @@
         <file alias="vermeerLogoBlackSmall">src/ui/toolbar/Images/vermeer/vermeerLogoBlackSmall.svg</file>
         <file alias="vermeerLogoBlackBig">src/ui/toolbar/Images/vermeer/vermeerLogoBlackBig.svg</file>
         <file alias="vermeerLogoBlackPng">src/ui/toolbar/Images/vermeer/vermeerLogoBlackPng.png</file>
+        <file alias="VermeerSignInLogoLeft.png">src/Vermeer/VermeerSignInLogoLeft.png</file>
+        <file alias="VermeerSigningInCircle.png">src/Vermeer/signingInCircle.png</file>
     </qresource>
 </RCC>

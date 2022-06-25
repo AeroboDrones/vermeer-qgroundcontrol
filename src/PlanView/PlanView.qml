@@ -552,7 +552,7 @@ Item {
 
         // vermeer custom keyframe
 
-        VermeerLogInPage{
+        VermeerSignInPage{
             id: vermeerLogInPageClass
             onDisplayNotification: {
              //vermeerNotificationTextInput.text += currentDate.toLocaleDateString() +":"+ currentDate.toLocaleTimeString() + " : " + data + "\n"
