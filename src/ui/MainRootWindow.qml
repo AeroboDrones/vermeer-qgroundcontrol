@@ -165,7 +165,7 @@ ApplicationWindow {
     }
 
     function showVerMeerLogIn() {
-        showTool(qsTr("Vermeer Login"), "VermeerLogInPage.qml", "/vermeer/vermeerLogoBlackPng")
+        showTool(qsTr("Vermeer Login"), "VermeerSignInPage.qml", "/vermeer/vermeerLogoBlackPng")
     }
 
     //-------------------------------------------------------------------------

@@ -103,6 +103,9 @@
 #include "VehicleLinkManager.h"
 #include "Autotune.h"
 #include "Vermeer/vermeerloginpage.h"
+#include "Vermeer/vermeerfirebasemanager.h"
+#include "Vermeer/vermeeruser.h"
+#include "Vermeer/vermeerlogmanager.h"
 
 #if defined(QGC_ENABLE_PAIRING)
 #include "PairingManager.h"
@@ -478,7 +481,10 @@ void QGCApplication::_initCommon()
     qmlRegisterUncreatableType<LogReplayLink>       (kQGroundControl,                       1, 0, "LogReplayLink",              kRefOnly);
     qmlRegisterUncreatableType<InstrumentValueData> (kQGroundControl,                       1, 0, "InstrumentValueData",        kRefOnly);
     qmlRegisterType<LogReplayLinkController>        (kQGroundControl,                       1, 0, "LogReplayLinkController");
-    qmlRegisterType<VermeerLogInPage>               (kQGroundControl,                       1, 0, "VermeerLogInPage");
+    qmlRegisterType<VermeerLogInPage>               (kQGroundControl,                       1, 0, "VermeerSignInPage");
+    qmlRegisterType<VermeerFirebaseManager>         (kQGroundControl,                       1, 0, "VermeerFirebaseManager");
+    qmlRegisterType<VermeerUser>                    (kQGroundControl,                       1, 0, "VermeerUser");
+    qmlRegisterType<VermeerLogManager>              (kQGroundControl,                       1, 0, "VermeerLogManager");
 #if !defined(QGC_DISABLE_MAVLINK_INSPECTOR)
     qmlRegisterUncreatableType<MAVLinkChartController> (kQGroundControl,                    1, 0, "MAVLinkChart",               kRefOnly);
 #endif
