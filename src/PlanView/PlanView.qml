@@ -27,6 +27,8 @@ import QGroundControl.ShapeFileHelper   1.0
 import QGroundControl.Airspace          1.0
 import QGroundControl.Airmap            1.0
 
+import Qt.labs.folderlistmodel          2.15
+
 Item {
     id: _root
 
@@ -618,31 +620,70 @@ Item {
 
         }
 
+//        QGCButton {
+//            id : uploadKeyFrameBtn
+//            text:               qsTr("Upload Keyframe Mission")
+//            Layout.fillWidth:   true
+//            x: parent.width * 0.70
+//            onClicked: {
+//                var coordinate = editorMap.center // so that we have a coordinate object that we can edit
+
+//                var keyframeMissionItemList = vermeerLogInPageClass.getKeyFrameMissionItems(jsonfilePathTextInputField.text)
+
+//                var keyframeMissionItemsJsonList = JSON.parse(vermeerLogInPageClass.missionItemsJson);
+
+//                for (var missionItem in keyframeMissionItemsJsonList) {
+
+//                    coordinate.latitude = keyframeMissionItemsJsonList[missionItem]["latitudeDeg"]
+//                    coordinate.longitude = keyframeMissionItemsJsonList[missionItem]["longitudeDeg"]
+//                    coordinate.altitude = keyframeMissionItemsJsonList[missionItem]["relativeAltitudeM"]
+
+//                    coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
+//                    coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
+//                    coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
+
+//                    insertSimpleItemAfterCurrent(coordinate)
+//                }
+
+//                _planMasterController.upload()
+//            }
+//        }
+
         QGCButton {
-            text:               qsTr("Upload Keyframe Mission")
+            id:showMissionList
+            text:               qsTr("Send Vermeer Mission")
             Layout.fillWidth:   true
             x: parent.width * 0.70
             onClicked: {
-                var coordinate = editorMap.center // so that we have a coordinate object that we can edit
+                console.log("yup")
+            }
+        }
 
-                var keyframeMissionItemList = vermeerLogInPageClass.getKeyFrameMissionItems(jsonfilePathTextInputField.text)
-
-                var keyframeMissionItemsJsonList = JSON.parse(vermeerLogInPageClass.missionItemsJson);
-
-                for (var missionItem in keyframeMissionItemsJsonList) {
-
-                    coordinate.latitude = keyframeMissionItemsJsonList[missionItem]["latitudeDeg"]
-                    coordinate.longitude = keyframeMissionItemsJsonList[missionItem]["longitudeDeg"]
-                    coordinate.altitude = keyframeMissionItemsJsonList[missionItem]["relativeAltitudeM"]
-
-                    coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
-                    coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
-                    coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
-
-                    insertSimpleItemAfterCurrent(coordinate)
+        QGCButton {
+            text:               qsTr("Show Mission List")
+            Layout.fillWidth:   true
+            x: parent.width * 0.70
+            anchors.top: showMissionList.bottom
+            onClicked: {
+                if(vermeerTextInputForJsonFilePath.visible === true){
+                    vermeerTextInputForJsonFilePath.visible = false
+                } else if (vermeerTextInputForJsonFilePath.visible === false){
+                    vermeerTextInputForJsonFilePath.visible = true
                 }
+            }
+        }
 
-                _planMasterController.upload()
+        QGCButton {
+            text:               qsTr("Show VTLogs")
+            Layout.fillWidth:   true
+            x: parent.width * 0.70
+            anchors.top: showMissionList.bottom
+            onClicked: {
+                if(vermeerTextInputForJsonFilePath.visible === true){
+                    vermeerTextInputForJsonFilePath.visible = false
+                } else if (vermeerTextInputForJsonFilePath.visible === false){
+                    vermeerTextInputForJsonFilePath.visible = true
+                }
             }
         }
 
