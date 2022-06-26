@@ -36,7 +36,7 @@ QString VermeerRefreshToken::getRefreshToken()
 
 int VermeerRefreshToken::getExpiresIn()
 {
-    int expiresIn;
+    int expiresIn{0};
     auto fileContent = _getFileContent();
     QJsonDocument doc = QJsonDocument::fromJson(fileContent.toUtf8());
     QJsonObject json = doc.object();

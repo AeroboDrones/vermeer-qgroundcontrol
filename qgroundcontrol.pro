@@ -437,6 +437,7 @@ HEADERS += \
     src/Vermeer/vermeerkeyframe.h \
     src/Vermeer/vermeerloginpage.h \
     src/Vermeer/vermeerlogmanager.h \
+    src/Vermeer/vermeermissionfilemanager.h \
     src/Vermeer/vermeermissionitem.h \
     src/Vermeer/vermeermissionlistmanager.h \
     src/Vermeer/vermeerrefreshtoken.h \
@@ -458,6 +459,7 @@ SOURCES += \
     src/Vermeer/vermeerkeyframe.cpp \
     src/Vermeer/vermeerloginpage.cpp \
     src/Vermeer/vermeerlogmanager.cpp \
+    src/Vermeer/vermeermissionfilemanager.cpp \
     src/Vermeer/vermeermissionitem.cpp \
     src/Vermeer/vermeermissionlistmanager.cpp \
     src/Vermeer/vermeerrefreshtoken.cpp \

@@ -354,6 +354,41 @@ Item {
         }
     }
 
+    property string    _hideAllVermeerButtonText: qsTr("Show All")
+    property string    _showAllVermeerButtonText: qsTr("Hide All")
+
+    function handleHideShowAllVermeerButtonTextChange(){
+        if(hideShowAllVermeerButton.text === _hideAllVermeerButtonText){
+            hideShowAllVermeerButton.text = _showAllVermeerButtonText
+        }
+        else if(hideShowAllVermeerButton.text === _showAllVermeerButtonText){
+            hideShowAllVermeerButton.text = _hideAllVermeerButtonText
+        }
+    }
+
+    function _showMissionFilePathInput(){
+        vermeerTextInputForJsonFilePath.visible = true
+        vermeerMissionListsView.visible = false
+    }
+
+    function _showMissionList(){
+        vermeerTextInputForJsonFilePath.visible = false
+        vermeerMissionListsView.visible = true
+    }
+
+    function _showVTLogs(){
+
+    }
+
+    function handleMissionRefreshList() {
+        var missionFileNames = vermeerMissionFileManager.getFileNamesJsonArray(jsonfilePathTextInputField.text)
+         var missionJson = JSON.parse(missionFileNames)
+        missionModel.clear()
+        for (var missionJsonIndex in missionJson){
+            missionModel.append({"missionName":missionJson[missionJsonIndex]["filename"]})
+        }
+    }
+
     Item {
         id:             panel
         anchors.fill:   parent
@@ -562,6 +597,18 @@ Item {
 
         }
 
+        VermeerLogManager{
+            id: vermeerLogManager
+        }
+
+        VermeerFirebaseManager{
+            id: vermeerFirebaseManager
+        }
+
+        VermeerMissionFileManager{
+            id: vermeerMissionFileManager
+        }
+
 //        QGCButton {
 //            id : uploadKeyFrameBtn
 //            text:               qsTr("Upload Keyframe Mission")
@@ -591,41 +638,74 @@ Item {
 //            }
 //        }
 
+
+
         QGCButton {
-            id:showMissionList
-            text:               qsTr("Send Vermeer Mission")
+            id: hideShowAllVermeerButton
+            text: qsTr(_hideAllVermeerButtonText)
             Layout.fillWidth:   true
             x: parent.width * 0.70
-            onClicked: {
-                console.log("yup")
+            onPressed: {
+                handleHideShowAllVermeerButtonTextChange()
+                //
+
+                }
+        }
+
+        QGCButton {
+            id:showMissionFilePath
+            text:               qsTr("show mission file path")
+            Layout.fillWidth:   true
+            x: parent.width * 0.70
+            anchors.top: hideShowAllVermeerButton.bottom
+            onPressed: {
+                _showMissionFilePathInput()
             }
         }
 
         QGCButton {
+            id: showMissionList
             text:               qsTr("Show Mission List")
             Layout.fillWidth:   true
             x: parent.width * 0.70
-            anchors.top: showMissionList.bottom
-            onClicked: {
-                if(vermeerTextInputForJsonFilePath.visible === true){
-                    vermeerTextInputForJsonFilePath.visible = false
-                } else if (vermeerTextInputForJsonFilePath.visible === false){
-                    vermeerTextInputForJsonFilePath.visible = true
-                }
+            anchors.top: showMissionFilePath.bottom
+            onPressed: {
+                _showMissionList()
             }
         }
 
         QGCButton {
+            id: showVTlogs
             text:               qsTr("Show VTLogs")
             Layout.fillWidth:   true
             x: parent.width * 0.70
             anchors.top: showMissionList.bottom
             onClicked: {
-                if(vermeerTextInputForJsonFilePath.visible === true){
-                    vermeerTextInputForJsonFilePath.visible = false
-                } else if (vermeerTextInputForJsonFilePath.visible === false){
-                    vermeerTextInputForJsonFilePath.visible = true
-                }
+
+            }
+        }
+
+        QGCButton {
+            id : clearVTlogs
+            text:               qsTr("Clear VTLogs")
+            Layout.fillWidth:   true
+            x: parent.width * 0.70
+            anchors.top: showVTlogs.bottom
+            onClicked: {
+
+            }
+        }
+
+
+        QGCButton {
+            id : refreshMissionListBtn
+            text:               qsTr("Refresh Mission List")
+            Layout.fillWidth:   true
+            x: parent.width * 0.70
+            anchors.top: clearVTlogs.bottom
+            onPressed: {
+                console.log("refreshMissionListBtn pressed")
+                handleMissionRefreshList()
             }
         }
 
@@ -640,9 +720,144 @@ Item {
             TextArea {
                 id: jsonfilePathTextInputField
                 anchors.fill: parent
-                text: 'C:\\source\\Vermeer\\sample_keyframe_mission.json'
+                text: 'C:\\source\\Vermeer\\MIssionJsonFiles'
+                font.pointSize: 10
             }
         }
+
+        Rectangle {
+            id: vermeerMissionListsView
+            height: parent.height * 0.50
+            width: parent.width * 0.60
+            x: parent.width * 0.05
+            color: "#161618"
+            visible: true
+            anchors.top: vermeerTextInputForJsonFilePath.bottom
+
+            ListModel{
+                id: missionModel
+            }
+
+            Component {
+                id: missionItemDelegate
+                Item {
+                    id: missionItemBlock
+                    width: parent.width
+                    height: 200
+                    Rectangle {
+                        id: missionItemRectangle
+                        width: parent.width * 0.50
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.leftMargin: 100
+                        anchors.topMargin:70
+                        color: Qt.rgba(0,0,0,0)
+
+                        Text {
+                            id: missionItemDelegateText
+                            font.pointSize: 20
+                            font.bold: true
+                            color: "white"
+                            text: qsTr(missionName)
+                        }
+                    }
+
+                    Rectangle {
+                        id: uploadButton
+                        width: 200
+                        height: 50
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        color:"#d7003f"
+                        anchors.rightMargin: 100
+                        anchors.topMargin: 50
+                        anchors.bottomMargin: 50
+
+                        Text {
+                            id: uploadButtonText
+                            text: qsTr("Send Mission")
+                            font.pointSize: 15
+                            anchors.centerIn: parent
+                            color: "white"
+                            font.bold: true
+                        }
+
+                        MouseArea {
+                            id: uploadButtonMouseArea
+                            anchors.fill: parent
+                            onPressed: {
+                                uploadButtonText.color = "#d7003f"
+                                uploadButton.color = "white"
+
+                                // I am binding to the broadcast everytime I send a mission
+                                // I get weird behavior when I bind on the constructor
+                                // So I explicitly disconnect then bind
+                                // binding to local host allows us to recieve the notification
+                                // from the drone side
+                                vermeerFirebaseManager.bindSocket()
+
+                                var logMsg = missionName + " upload button pressed"
+                                vermeerLogManager.log(logMsg)
+                            }
+                            onReleased: {
+                                // do we need a loading screen?
+                                uploadButtonText.color = "white"
+                                uploadButton.color = "#d7003f"
+
+                                if(isSettingsValid){
+                                    console.log("vermeerSendingMissionPage")
+                                    showSendingMissionPage()
+                                    vermeerFirebaseManager.sendingMissionTimeoutStart()
+                                    vermeerFirebaseManager.sendMission(missionKey)
+
+                                    var logMsg = missionName + " upload button released"
+                                    vermeerLogManager.log(logMsg)
+                                }
+                                else {
+                                    disableAllView()
+                                    vermeerSettingInvalid.visible = true
+                                }
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        id: line
+                        width: parent.width
+                        height: 5
+                        anchors.bottom: parent.bottom
+                        color:"#262626"
+                    }
+                }
+            }
+
+            ScrollView {
+                anchors.fill: parent
+                ListView {
+                    id: missionItemListView
+                    width: parent.width
+                    model: missionModel
+                    delegate: missionItemDelegate
+//                    onFlickStarted: {
+//                        if(atYBeginning){
+//                            showReloadMissionPage()
+//                            if(vermeerFirebaseManager.hasInternetConnection()) {
+//                                vermeerLogManager.log("we have internet connection, fetching flight plans")
+//                                vermeerFirebaseManager.fetchFlightPlans() // which then send a validSignIn and does a fetchFlightPlans
+//                            } else {
+//                                vermeerLogManager.log("No internet connection, loading mission from file")
+//                                vermeerFirebaseManager.loadMissioListsFromMissionFile()
+//                            }
+//                        }
+//                    }
+                }
+            }
+        }
+
+
 
         //-----------------------------------------------------------
         // Left tool strip
