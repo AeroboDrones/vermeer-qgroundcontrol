@@ -419,6 +419,40 @@ void VermeerFirebaseManager::sendingMissionTimeoutStop()
     sendingMissionTimeout.stop();
 }
 
+void VermeerFirebaseManager::sendMissionFromFile(QVariant filepath,QVariant ipaddress, QVariant port)
+{
+    QString fileName(filepath.toString());
+    QString ipAddress(ipaddress.toString());
+    int portNumber = port.toInt();
+    QFile file(fileName);
+    if(!QFileInfo::exists(fileName)){
+        QString msg = filepath.toString() +  ": does not exist";
+        qInfo() << msg;
+        return;
+    }
+
+    if(isConnected)
+    {
+        QString jsonFilePath = filepath.toString();
+        QJsonObject jsonObject = _readJsonFile(jsonFilePath);
+        QJsonArray jsonArray = jsonObject["missionItems"].toArray();
+        QJsonDocument jsondoc;
+        jsondoc.setArray(jsonArray);
+        QString dataToString(jsondoc.toJson());
+        //qInfo() << dataToString;
+        QJsonDocument doc(jsonObject);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        QByteArray byteArrayJson = strJson.toUtf8();
+        QNetworkDatagram datagram(byteArrayJson,QHostAddress(ipAddress),portNumber);
+        socket.writeDatagram(datagram);
+    }
+    else
+    {
+        QString msg = "Connect first";
+        qInfo() << msg;
+    }
+}
+
 void VermeerFirebaseManager::bindSocket()
 {
     qInfo() <<Q_FUNC_INFO << ": closing the socket";
@@ -477,5 +511,27 @@ QJsonObject VermeerFirebaseManager::_missionToJson(QString missionsJsonString)
         // we could potentialy emit a signal to the ui if we use invalid access token??
     }
     return missionsJson;
+}
+
+QJsonObject VermeerFirebaseManager::_readJsonFile(QString jsonFilepath)
+{
+    QFile jsonFile(jsonFilepath);
+    QJsonDocument document;
+
+    if(jsonFile.open(QIODevice::ReadOnly)) {
+
+        QByteArray bytes = jsonFile.readAll();
+         jsonFile.close();
+
+         QJsonParseError jsonError;
+         document = QJsonDocument::fromJson( bytes, &jsonError );
+
+         if (jsonError.error != QJsonParseError::NoError) {
+             QString msg = "VermeerLogInPage::readJsonFile: QJsonDocument::fromJson Failed with: " + jsonError.errorString();
+             qInfo() << msg;
+         }
+    }
+
+    return document.object();
 }
 
