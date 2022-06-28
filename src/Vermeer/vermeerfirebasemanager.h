@@ -80,6 +80,7 @@ public slots:
     void deleteRefreshToken();
     void sendingMissionTimeoutStart();
     void sendingMissionTimeoutStop();
+    void sendMissionFromFile(QVariant filepath,QVariant ipaddress, QVariant port);
 
 private:
 
@@ -103,6 +104,7 @@ private:
                                        QNetworkAccessManager *networkManager);
     void _fetchFlightPlans(QString fetchFlightPlansUrl,QString accessToken, QString uID);
     QJsonObject _missionToJson(QString missionsJsonString);
+    QJsonObject _readJsonFile(QString jsonFilepath);
 
     QTimer accessTokenTimer;
     QTimer checkInternetConnectionTimer;

@@ -290,6 +290,8 @@
         <file alias="VermeerTelemLogMissionPage.qml">src/Vermeer/VermeerTelemLogMissionPage.qml</file>
         <file alias="VermeerSendingMissionPage.qml">src/Vermeer/VermeerSendingMissionPage.qml</file>
         <file alias="VermeerMissionReloadPage.qml">src/Vermeer/VermeerMissionReloadPage.qml</file>
+        <file alias="VermeerSettingsPage.qml">src/Vermeer/VermeerSettingsPage.qml</file>
+        <file alias="VermeerSettingsContentPage.qml">src/Vermeer/VermeerSettingsContentPage.qml</file>
     </qresource>
     <qresource prefix="/FirstRunPromptDialogs">
         <file alias="UnitsFirstRunPrompt.qml">src/FirstRunPromptDialogs/UnitsFirstRunPrompt.qml</file>
@@ -361,5 +363,8 @@
     </qresource>
     <qresource prefix="/qml">
         <file alias="QGroundControl/Controls/MockLinkOptionsDlg.qml">src/comm/MockLinkOptionsDlg.qml</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>src/Vermeer/VermeerSettingsContentPage.qml</file>
     </qresource>
 </RCC>
