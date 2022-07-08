@@ -27,7 +27,11 @@ Item {
     property string ipAddress: "192.168.1.97"
     property int portNumber: 5555
 
-    function showInvalidSettingsPage(){
+    property string rtspStreamOne: "rtsp://192.168.1.73:8584/vermeer1"
+    property string rtspStreamTwo: "rtsp://192.168.1.73:8584/vermeer2"
+
+    function showInvalidSettingsPage(invalidMsg){
+        invalidSettingsPageText.text = invalidMsg
         invalidSettingsPage.visible = true
         invalidSettingsPage.z = 1
     }
@@ -53,12 +57,17 @@ Item {
         onDisplayMsgToQml: {
             if("InvalidIpAddress" === data){
                 vermeerLogManager.log("SettingsPage: Invalid Ip Address Setting")
-                showInvalidSettingsPage()
+                showInvalidSettingsPage("Invalid Ip Address")
             }
 
             if("SettingsUpdatedSuccessfuly" === data){
                 vermeerLogManager.log("SettingsPage: IP Address updated successfuly successfuly")
                 showSuccessfulSettingsUpdate()
+            }
+
+            if("InvalidRtspUrls" === data){
+                vermeerLogManager.log("SettingsPage: Invalid Rtsp URls")
+                showInvalidSettingsPage("Invalid Rtsp URls")
             }
         }
     }
@@ -267,6 +276,81 @@ Item {
             }
         }
     }
+
+    Rectangle{
+        id: vermeerRTSPSettings
+        height: parent.height * 0.30
+        width: parent.width * 0.70
+        color: "#161618"
+        anchors{
+            left: parent.left
+            top: portNumberBlock.bottom
+        }
+
+        Text {
+            id: vermeerRTSPSettingsText
+            text: qsTr("Vermmer RTSP URLs")
+            color: "white"
+            font.pointSize: 15
+            anchors{
+                left: parent.left
+                top: parent.top
+                topMargin: 20
+                leftMargin: 100
+            }
+        }
+
+        Rectangle {
+            id: vermeerRTSPURLOneRectangle
+            height: parent.height * 0.40
+            width: parent.width * 0.80
+            color: "#282828"
+            anchors{
+                top: vermeerRTSPSettingsText.bottom
+                topMargin: 10
+                left: parent.left
+                leftMargin: 100
+            }
+
+            TextInput{
+                id: vermeerRTSPSettingsRectangleOneTextInput
+                text: rtspStreamOne
+                anchors.fill: parent
+                font.pointSize: 15
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 20
+                anchors.topMargin: 25
+                color: "white"
+            }
+        }
+
+        Rectangle {
+            id: vermeerRTSPURLTwoRectangle
+            height: parent.height * 0.40
+            width: parent.width * 0.80
+            color: "#282828"
+            anchors{
+                top: vermeerRTSPURLOneRectangle.bottom
+                topMargin: 10
+                left: parent.left
+                leftMargin: 100
+            }
+
+            TextInput{
+                id: vermeerRTSPURLTwoRectangleTextInput
+                text: rtspStreamTwo
+                anchors.fill: parent
+                font.pointSize: 15
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 20
+                anchors.topMargin: 25
+                color: "white"
+            }
+        }
+    }
+
 
     Rectangle {
         id: updateSettingButton

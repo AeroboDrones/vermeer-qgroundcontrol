@@ -19,6 +19,8 @@ class VermeerUser : public QObject
     Q_OBJECT
     Q_PROPERTY(int numberOfMissions READ readNumberOfMissionItems)
     Q_PROPERTY(QString missionJsonString READ readMissionJsonSring)
+    Q_PROPERTY(QString rtspUrl1 READ readRtspUrl1)
+    Q_PROPERTY(QString rtspUrl2 READ readRtspUrl2)
 public:
     explicit VermeerUser(QObject *parent = nullptr);
 
@@ -60,6 +62,15 @@ public:
     static bool getInternetAccessReaquired();
     static void setInternetAccessReaquired(bool newInternetAccessReaquired);
 
+    static const QString &getRtspLink1();
+    static void setRtspLink1(const QString &newRtspLink1);
+
+    static const QString &getRtspLink2();
+    static void setRtspLink2(const QString &newRtspLink2);
+
+    static QString readRtspUrl1();
+    static QString readRtspUrl2();
+
 private:
     inline static QString email;
     inline static QString password;
@@ -74,6 +85,8 @@ private:
     inline static bool signOutButtonPressed;
     inline static bool isAccessTokenTimeOut;
     inline static bool internetAccessReaquired;
+    inline static QString rtspLink1{"rtsp://192.168.1.73:8584/vermeer1"};
+    inline static QString rtspLink2{"rtsp://192.168.1.73:8584/vermeer2"};
 };
 
 #endif // VERMEERUSER_H

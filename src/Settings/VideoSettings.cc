@@ -144,6 +144,7 @@ bool VideoSettings::streamConfigured(void)
     }
     //-- Check if it's disabled
     QString vSource = videoSource()->rawValue().toString();
+
     if(vSource == videoSourceNoVideo || vSource == videoDisabled) {
         return false;
     }

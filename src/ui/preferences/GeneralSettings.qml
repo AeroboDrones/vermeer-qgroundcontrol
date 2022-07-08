@@ -61,6 +61,25 @@ Rectangle {
 
     readonly property real _internalWidthRatio: 0.8
 
+    VermeerUser {
+        id: vermeerUser
+    }
+
+    // vermeer
+    property string vermeerRtspUrl:             vermeerUser.rtspUrl1
+
+    VermeerFirebaseManager{
+            id: vermeerFirebaseManager
+            onDisplayMsgToQml: {
+                if("ToggleVideoSource1" === data) {
+                    vermeerRtspUrl = vermeerUser.rtspUrl1
+                }
+                else if ("ToggleVideoSource2" === data){
+                    vermeerRtspUrl = vermeerUser.rtspUrl2
+                }
+            }
+    }
+
         QGCFlickable {
             clip:               true
             anchors.fill:       parent
@@ -1000,7 +1019,8 @@ Rectangle {
                             }
                             FactTextField {
                                 Layout.preferredWidth:  _comboFieldWidth
-                                fact:                   QGroundControl.settingsManager.videoSettings.rtspUrl
+                                //fact:                   QGroundControl.settingsManager.videoSettings.rtspUrl
+                                fact:                   vermeerRtspUrl // well this doesnt work
                                 visible:                _isRTSP && QGroundControl.settingsManager.videoSettings.rtspUrl.visible
                             }
 

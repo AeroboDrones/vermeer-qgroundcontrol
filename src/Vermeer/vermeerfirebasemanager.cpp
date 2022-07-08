@@ -162,6 +162,16 @@ void VermeerFirebaseManager::updateSetting(QVariant ipAddress, QVariant portNumb
     }
 }
 
+void VermeerFirebaseManager::updateRtspUrls(QVariant rtspLink1, QVariant rtspLink2)
+{
+    if(!rtspLink1.toString().isEmpty() && !rtspLink2.toString().isEmpty()){
+        VermeerUser::setRtspLink1(rtspLink1.toString());
+        VermeerUser::setRtspLink2(rtspLink2.toString());
+    } else {
+        emit(displayMsgToQml("InvalidRtspUrls"));
+    }
+}
+
 void VermeerFirebaseManager::saveRefreshToken()
 {
     if (!VermeerUser::getRefreshToken().isEmpty()) {
@@ -281,6 +291,17 @@ void VermeerFirebaseManager::sendSignalSendingMissionTimedOut()
 {
     qInfo() << Q_FUNC_INFO;
     emit(displayMsgToQml("sendingMissionTimedOut"));
+}
+
+void VermeerFirebaseManager::toggleRtspLink(QVariant rtspIndex)
+{
+    int index = rtspIndex.toInt();
+    if(0 == index){
+        emit(displayMsgToQml("ToggleVideoSource1"));
+    }
+    else if (1 == index){
+        emit(displayMsgToQml("ToggleVideoSource2"));
+    }
 }
 
 void VermeerFirebaseManager::signInWithRefreshToken()

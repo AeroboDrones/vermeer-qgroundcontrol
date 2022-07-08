@@ -56,6 +56,7 @@ public slots:
     void fetchFlightPlans();
     void sendMission(QVariant missionIndex);
     void updateSetting(QVariant ipAddress, QVariant portNumber);
+    void updateRtspUrls(QVariant rtspLink1, QVariant rtspLink2);
     void saveRefreshToken();
     bool isRefreshTokenExist();
     bool isSettingValid();
@@ -68,6 +69,7 @@ public slots:
     void showLogPage();
     void showMissionPage();
     void sendSignalSendingMissionTimedOut();
+    void toggleRtspLink(QVariant rtspIndex);
     QVariant getDestinationIpAddress();
     QVariant getDestinationPortNumber();
     QVariant getUserEmailAddress();
