@@ -345,21 +345,21 @@ ApplicationWindow {
                         }
                     }
 
-                    SubMenuButton {
-                        id:                 vermeerButton
-                        height:             _toolButtonHeight
-                        Layout.fillWidth:   true
-                        text:               qsTr("Vermeer Login")
-                        imageResource:      "/vermeer/vermeerLogoBlackPng"
-                        imageColor:         "transparent"
-                        visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
-                        onClicked: {
-                            if (!mainWindow.preventViewSwitch()) {
-                                toolSelectDialog.hideDialog()
-                                mainWindow.showVerMeerLogIn()
-                            }
-                        }
-                    }
+//                    SubMenuButton {
+//                        id:                 vermeerButton
+//                        height:             _toolButtonHeight
+//                        Layout.fillWidth:   true
+//                        text:               qsTr("Vermeer Login")
+//                        imageResource:      "/vermeer/vermeerLogoBlackPng"
+//                        imageColor:         "transparent"
+//                        visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
+//                        onClicked: {
+//                            if (!mainWindow.preventViewSwitch()) {
+//                                toolSelectDialog.hideDialog()
+//                                mainWindow.showVerMeerLogIn()
+//                            }
+//                        }
+//                    }
 
                     ColumnLayout {
                         width:                  innerLayout.width

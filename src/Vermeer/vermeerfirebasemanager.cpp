@@ -107,29 +107,29 @@ void VermeerFirebaseManager::udpReadyRead()
     {
         QNetworkDatagram datagram = socket.receiveDatagram();
         QString notificationJsonString = datagram.data();
-        QJsonDocument doc = QJsonDocument::fromJson(notificationJsonString.toUtf8());
-        QJsonObject notificationJson = doc.object();
-        QString messagePayload = notificationJson["messagePayload"].toString();
-        QString msg = "";
+//        QJsonDocument doc = QJsonDocument::fromJson(notificationJsonString.toUtf8());
+//        QJsonObject notificationJson = doc.object();
+//        QString messagePayload = notificationJson["messagePayload"].toString();
+//        QString msg = "";
 
-        if("Mission already running, mission file ignored" == messagePayload) {
-                msg  = "missionAlreadyRunning";
-        }
-        else if("Received Mission JSON" == messagePayload) {
-                msg = "receivedMissionJson";
-        }
-        else if("Mission Completed" == messagePayload) {
-                msg = "missionCompleted";
-        }
-        else if("Mission JSON Corrupted" == messagePayload) {
-               msg = "missionCurrupted";
-        }
-        else if("Home Position received. Ready to upload mission" == messagePayload) {
-                msg = "homePositionReceived";
-        }
-        qInfo() << Q_FUNC_INFO << ": " << msg;
+//        if("Mission already running, mission file ignored" == messagePayload) {
+//                msg  = "missionAlreadyRunning";
+//        }
+//        else if("Received Mission JSON" == messagePayload) {
+//                msg = "receivedMissionJson";
+//        }
+//        else if("Mission Completed" == messagePayload) {
+//                msg = "missionCompleted";
+//        }
+//        else if("Mission JSON Corrupted" == messagePayload) {
+//               msg = "missionCurrupted";
+//        }
+//        else if("Home Position received. Ready to upload mission" == messagePayload) {
+//                msg = "homePositionReceived";
+//        }
+//        qInfo() << Q_FUNC_INFO << ": " << msg;
 
-        emit(missionUdpReply(msg));
+        //emit(missionUdpReply(msg));
         emit(sendNotificationsToQml(notificationJsonString));
     }
 }
@@ -457,7 +457,6 @@ void VermeerFirebaseManager::bindSocket()
 {
     qInfo() <<Q_FUNC_INFO << ": closing the socket";
     socket.close();
-
     qInfo() << "Binding to the broadcast";
     if(!socket.bind(QHostAddress(sourceIp), port)) {
         QString msg = socket.errorString();

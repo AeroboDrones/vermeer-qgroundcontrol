@@ -364,7 +364,4 @@
     <qresource prefix="/qml">
         <file alias="QGroundControl/Controls/MockLinkOptionsDlg.qml">src/comm/MockLinkOptionsDlg.qml</file>
     </qresource>
-    <qresource prefix="/">
-        <file>src/Vermeer/VermeerSettingsContentPage.qml</file>
-    </qresource>
 </RCC>
