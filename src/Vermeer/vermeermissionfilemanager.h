@@ -12,7 +12,7 @@ public:
 signals:
 
 public slots:
-    QVariant getFileNamesJsonArray(QVariant missionDirectoryPath);
+    QString getFileNamesJsonArray(QString missionDirectoryPath);
 
 
 };
