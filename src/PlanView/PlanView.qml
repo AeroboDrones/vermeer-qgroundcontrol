@@ -399,7 +399,7 @@ Item {
     }
 
     function _clearVTLogs(){
-        vTLogsPageTextArea.text = ""
+        vTLogsModel.clear()
     }
 
     function _showVULogs(){
@@ -663,7 +663,8 @@ Item {
             onSendNotificationsToQml:{
                 var notificationMsg = currentDate.toLocaleDateString() + ":" + currentDate.toLocaleTimeString() + ":" + data + "\n"
                 console.log(notificationMsg)
-                vTLogsPageTextArea.text += notificationMsg
+                vTLogsModel.append({"vTlogLineItem":notificationMsg})
+                vTlogsListView.positionViewAtEnd()
             }
         }
 
@@ -943,13 +944,26 @@ Item {
             x: parent.width * 0.05
             visible: false
 
+            ListModel{
+                id: vTLogsModel
+            }
+
+            Component {
+                id: vTLogsDeligate
+                Text {
+                    text : qsTr(vTlogLineItem)
+                    font.pointSize: 10
+                }
+            }
+
             ScrollView{
                 id: vTLogsPageScrollView
                 anchors.fill: parent
-                Text{
-                    id: vTLogsPageTextArea
-                    //anchors.fill: parent
-                    font.pointSize: 10
+                ListView {
+                    id: vTlogsListView
+                    width: parent.width
+                    model: vTLogsModel
+                    delegate: vTLogsDeligate
                 }
             }
         }
