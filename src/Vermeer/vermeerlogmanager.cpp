@@ -26,7 +26,7 @@ void VermeerLogManager::log(QString logMessage)
     QFile vermeerUserLogs(QDir::currentPath() + QDir::separator() + filename);
     if(vermeerUserLogs.open(QFile::Append)){
         QTextStream logStream(&vermeerUserLogs);
-        logStream << dateTime.toString("yyyy-MM-dd HH:mm:ss")<< ": " << logMessage << endl;
+        logStream << dateTime.toString("yyyy-MM-dd HH:mm:ss")<< ": " << logMessage << Qt::endl;
     }
     qInfo() << Q_FUNC_INFO << " : " << logMessage;
     vermeerUserLogs.close();

@@ -2,7 +2,6 @@
 #define VERMEERKEYFRAME_H
 
 #include "vermeermissionitem.h"
-
 #include <QObject>
 
 class VermeerKeyFrame : public QObject

@@ -15,9 +15,9 @@ VermeerMissionFileManager::VermeerMissionFileManager(QObject *parent)
 
 }
 
-QVariant VermeerMissionFileManager::getFileNamesJsonArray(QVariant missionDirectoryPath)
+QString VermeerMissionFileManager::getFileNamesJsonArray(QString missionDirectoryPath)
 {
-    QString directoryPath(missionDirectoryPath.toString());
+    QString directoryPath(missionDirectoryPath);
     QDir directory(directoryPath);
 
     QJsonArray missionFileNames;
@@ -32,5 +32,5 @@ QVariant VermeerMissionFileManager::getFileNamesJsonArray(QVariant missionDirect
      doc.setArray(missionFileNames);
      QString missionFilenamesJsonString = doc.toJson();
 
-     return QVariant(missionFilenamesJsonString);
+     return missionFilenamesJsonString;
 }

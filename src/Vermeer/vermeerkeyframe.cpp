@@ -1,4 +1,7 @@
 #include "vermeerkeyframe.h"
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 VermeerKeyFrame::VermeerKeyFrame(QObject *parent)
     : QObject{parent}
