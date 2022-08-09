@@ -14,6 +14,7 @@
 #include <QJsonValue>
 #include <QJsonArray>
 
+
 class VermeerUser : public QObject
 {
     Q_OBJECT

@@ -66,15 +66,19 @@ Rectangle {
     }
 
     // vermeer
-    property string vermeerRtspUrl:             vermeerUser.rtspUrl1
+    property Fact vermeerRtspUrl:               vermeerUser.rtspUrl1
+
+    // NOTE
 
     VermeerFirebaseManager{
             id: vermeerFirebaseManager
             onDisplayMsgToQml: {
                 if("ToggleVideoSource1" === data) {
+                    console.log("ToggleVideoSource1")
                     vermeerRtspUrl = vermeerUser.rtspUrl1
                 }
                 else if ("ToggleVideoSource2" === data){
+                    console.log("ToggleVideoSource2")
                     vermeerRtspUrl = vermeerUser.rtspUrl2
                 }
             }
@@ -1019,8 +1023,8 @@ Rectangle {
                             }
                             FactTextField {
                                 Layout.preferredWidth:  _comboFieldWidth
-                                //fact:                   QGroundControl.settingsManager.videoSettings.rtspUrl
-                                fact:                   vermeerRtspUrl // well this doesnt work
+                                fact:                  QGroundControl.settingsManager.videoSettings.rtspUrl
+                                //fact:                   vermeerRtspUrl // well this doesnt work
                                 visible:                _isRTSP && QGroundControl.settingsManager.videoSettings.rtspUrl.visible
                             }
 
