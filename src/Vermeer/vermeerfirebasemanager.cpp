@@ -433,8 +433,7 @@ void VermeerFirebaseManager::sendMissionFromFile(QVariant filepath,QVariant ipad
 
     if(isConnected)
     {
-        QString jsonFilePath = filepath.toString();
-        QJsonObject jsonObject = _readJsonFile(jsonFilePath);
+        QJsonObject jsonObject = _readJsonFile(fileName);
         QJsonArray jsonArray = jsonObject["missionItems"].toArray();
         QJsonDocument jsondoc;
         jsondoc.setArray(jsonArray);
