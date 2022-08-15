@@ -419,9 +419,9 @@ void VermeerFirebaseManager::sendingMissionTimeoutStop()
     sendingMissionTimeout.stop();
 }
 
-void VermeerFirebaseManager::sendMissionFromFile(QVariant filepath,QVariant ipaddress, QVariant port)
+void VermeerFirebaseManager::sendMissionFromFile(QVariant filepath,QVariant ipaddress, QVariant port, QString missionName)
 {
-    QString fileName(filepath.toString());
+    QString fileName(filepath.toString()+QDir::separator()+missionName);
     QString ipAddress(ipaddress.toString());
     int portNumber = port.toInt();
     QFile file(fileName);
