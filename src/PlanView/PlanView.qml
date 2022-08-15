@@ -959,11 +959,11 @@ Item {
                                 uploadButtonText.color = "white"
                                 uploadButton.color = "#d7003f"
                                 console.log("vermeerSendingMissionPage")
-                                var missionFilePath = jsonfilePathTextInputField.text + "\\" + missionName
+                                var missionFilePath = jsonfilePathTextInputField.text
                                 var ipaddress = vermeerIpAddressTextField.text
                                 var portnumber = vermeerPortTextField.text
                                 console.log(missionFilePath)
-                                vermeerFirebaseManager.sendMissionFromFile(missionFilePath,ipaddress,portnumber)
+                                vermeerFirebaseManager.sendMissionFromFile(missionFilePath,ipaddress,portnumber,missionName)
                                 var logMsg = missionName + " upload button released"
                                 vermeerLogManager.log(logMsg)
                             }

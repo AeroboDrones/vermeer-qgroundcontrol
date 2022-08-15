@@ -80,7 +80,7 @@ public slots:
     void deleteRefreshToken();
     void sendingMissionTimeoutStart();
     void sendingMissionTimeoutStop();
-    void sendMissionFromFile(QVariant filepath,QVariant ipaddress, QVariant port);
+    void sendMissionFromFile(QVariant filepath,QVariant ipaddress, QVariant port,QString missionName);
 
 private:
 
