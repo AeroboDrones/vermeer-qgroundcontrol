@@ -719,7 +719,7 @@ Item {
                             uploadButton.color = "white"
 
                             // I am binding to the broadcast everytime I send a mission
-                            // I get weird behavior when I bind on the constructor
+                            // I get wierd behavior when I bind on the constructor
                             // So I explicitly disconnect then bind
                             // binding to local host allows us to recieve the notification
                             // from the drone side
@@ -729,7 +729,6 @@ Item {
                             vermeerLogManager.log(logMsg)
                         }
                         onReleased: {
-                            // do we need a loading screen?
                             uploadButtonText.color = "white"
                             uploadButton.color = "#d7003f"
                             vermeerMissionName = missionName

@@ -61,28 +61,28 @@ Rectangle {
 
     readonly property real _internalWidthRatio: 0.8
 
-    VermeerUser {
-        id: vermeerUser
-    }
+//    VermeerUser {
+//        id: vermeerUser
+//    }
 
-    // vermeer
-    property Fact vermeerRtspUrl:               vermeerUser.rtspUrl1
+//    // vermeer
+//    property Fact vermeerRtspUrl:               vermeerUser.rtspUrl1
 
-    // NOTE
+//    // NOTE
 
-    VermeerFirebaseManager{
-            id: vermeerFirebaseManager
-            onDisplayMsgToQml: {
-                if("ToggleVideoSource1" === data) {
-                    console.log("ToggleVideoSource1")
-                    vermeerRtspUrl = vermeerUser.rtspUrl1
-                }
-                else if ("ToggleVideoSource2" === data){
-                    console.log("ToggleVideoSource2")
-                    vermeerRtspUrl = vermeerUser.rtspUrl2
-                }
-            }
-    }
+//    VermeerFirebaseManager{
+//            id: vermeerFirebaseManager
+//            onDisplayMsgToQml: {
+//                if("ToggleVideoSource1" === data) {
+//                    console.log("ToggleVideoSource1")
+//                    vermeerRtspUrl = vermeerUser.rtspUrl1
+//                }
+//                else if ("ToggleVideoSource2" === data){
+//                    console.log("ToggleVideoSource2")
+//                    vermeerRtspUrl = vermeerUser.rtspUrl2
+//                }
+//            }
+//    }
 
         QGCFlickable {
             clip:               true

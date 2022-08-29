@@ -41,7 +41,8 @@ Item {
         id: vermeerFirebaseManager
         onSendNotificationsToQml: {
             var notificationMsg = currentDate.toLocaleDateString() + ":" + currentDate.toLocaleTimeString() + ":" + data + "\n"
-            telemLogMissionPageTextArea.text += notificationMsg
+            tLogsModel.append({"tLogsLineItem":notificationMsg})
+            tLogsListView.positionViewAtEnd()
         }
 
         // we are doing it here instead of the VermeerMissionList because the onMissionUdpReply signal seems to come here idk why yet...
@@ -94,7 +95,7 @@ Item {
     }
 
     function clearTelemLogPage(){
-        telemLogMissionPageTextArea.text = ""
+        tLogsModel.clear()
     }
 
     function deleteUlogs(){
@@ -108,13 +109,30 @@ Item {
         height: parent.height
         visible: true
 
-        ScrollView{
+        ListModel{
+            id: tLogsModel
+        }
+
+        Component{
+            id: tLogsDeligate
+            Text {
+                text: qsTr(tLogsLineItem)
+                font.pointSize: 10
+            }
+        }
+
+        ScrollView {
             id: telemLogMissionPageScrollView
             anchors.fill: parent
-            Text{
-                id: telemLogMissionPageTextArea
-                anchors.fill: parent
-                font.pointSize: 10
+            ListView{
+                id: tLogsListView
+                width: parent.width
+                model: tLogsModel
+                delegate: tLogsDeligate
+                clip: true
+                ScrollBar.horizontal: ScrollBar {}
+                flickableDirection: Flickable.HorizontalAndVerticalFlick
+                contentWidth: 1000
             }
         }
     }
