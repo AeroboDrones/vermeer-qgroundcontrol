@@ -76,6 +76,14 @@ public slots:
     void accessTokenTimedOut();
     void accessTokenStartTimer();
     void accessTokenStopTimer();
+
+    void heartbeatTimeOut();
+    void heartbeatStartTimer();
+    void heartbeatStopTimer();
+    void heartbeatRestartTimer();
+    void sendHeartbeatMsg(QVariant ipaddress, QVariant portNumber);
+    bool hasHeartBeatMsg(QVariant data);
+
     void bindSocket();
     void deleteRefreshToken();
     void sendingMissionTimeoutStart();
@@ -109,10 +117,13 @@ private:
     QTimer accessTokenTimer;
     QTimer checkInternetConnectionTimer;
     QTimer sendingMissionTimeout;
+    QTimer heartbeatConnectionTimer;
     int checkInternetConnectionIntervalSeconds{3};
     int sendingMissionTimeoutDelaySeconds{5};
+    int xavierConnectionTimeoutDelaySeconds{30};
     bool hasNoInternetPreviously{false};
     bool hasInternetPreviously{false};
+    bool isXavierConnected{false};
 };
 
 #endif // VERMEERFIREBASEMANAGER_H

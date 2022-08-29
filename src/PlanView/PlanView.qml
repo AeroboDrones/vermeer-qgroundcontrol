@@ -500,6 +500,14 @@ Item {
         showSettingsBtn.visible = false
     }
 
+    function vermeerShowXavierDisconnectBanner(){
+        xavierConnectionStatusWindow.visible = true
+    }
+
+    function vermeerHideXavierDisconnectBanner(){
+        xavierConnectionStatusWindow.visible = false
+    }
+
     Item {
         id:             panel
         anchors.fill:   parent
@@ -719,6 +727,21 @@ Item {
                 console.log(notificationMsg)
                 vTLogsModel.append({"vTlogLineItem":notificationMsg})
                 vTlogsListView.positionViewAtEnd()
+
+                var hasHeartBeatMsg = vermeerFirebaseManager.hasHeartBeatMsg(data)
+
+                if(true === hasHeartBeatMsg) {
+                    vermeerFirebaseManager.heartbeatRestartTimer()
+                    vermeerFirebaseManager.sendHeartbeatMsg(vermeerIpAddressTextField.text,vermeerPortTextField.text)
+                    vermeerHideXavierDisconnectBanner()
+                }
+            }
+
+            onDisplayMsgToQml: {
+                if("xavier_disconnected" === data){
+                    vermeerFirebaseManager.sendHeartbeatMsg(vermeerIpAddressTextField.text,vermeerPortTextField.text)
+                    vermeerShowXavierDisconnectBanner()
+                }
             }
         }
 
@@ -1038,6 +1061,22 @@ Item {
                     anchors.fill: parent
                     font.pointSize: 10
                 }
+            }
+        }
+
+        Rectangle {
+            id: xavierConnectionStatusWindow
+            height: parent.height * 0.03
+            width: parent.width * 0.60
+            x: parent.width * 0.05
+            y: parent.height * 0.60
+            visible: true
+            color: "#d7003f"
+            Text {
+                id: xavierConnectionStatusWindowText
+                anchors.centerIn: parent
+                font.pointSize: 30
+                text: qsTr("xavier is disconnected")
             }
         }
 
