@@ -25,6 +25,9 @@ VermeerFirebaseManager::VermeerFirebaseManager(QObject *parent)
 
     sendingMissionTimeout.setInterval(1000 * sendingMissionTimeoutDelaySeconds);
     connect(&sendingMissionTimeout,&QTimer::timeout,this,&VermeerFirebaseManager::sendSignalSendingMissionTimedOut);
+
+    heartbeatConnectionTimer.setInterval(1000 * xavierConnectionTimeoutDelaySeconds);
+    connect(&heartbeatConnectionTimer,&QTimer::timeout,this,&VermeerFirebaseManager::heartbeatTimeOut);
 }
 
 VermeerFirebaseManager::~VermeerFirebaseManager()
@@ -484,6 +487,66 @@ void VermeerFirebaseManager::accessTokenStartTimer()
 void VermeerFirebaseManager::accessTokenStopTimer()
 {
     accessTokenTimer.stop();
+}
+
+void VermeerFirebaseManager::heartbeatTimeOut()
+{
+    isXavierConnected = false;
+    emit(displayMsgToQml(QVariant("xavier_disconnected")));
+}
+
+void VermeerFirebaseManager::heartbeatStartTimer()
+{
+    heartbeatConnectionTimer.start();
+}
+
+void VermeerFirebaseManager::heartbeatStopTimer()
+{
+    heartbeatConnectionTimer.stop();
+}
+
+void VermeerFirebaseManager::heartbeatRestartTimer()
+{
+    heartbeatStopTimer();
+    heartbeatStartTimer();
+}
+
+void VermeerFirebaseManager::sendHeartbeatMsg(QVariant ipaddress, QVariant portNumber)
+{
+    QJsonObject heartbeatMsgJson;
+    if(false == isXavierConnected) {
+        heartbeatMsgJson["heartbeat"] = "disconnected";
+    } else if(true == isXavierConnected) {
+        heartbeatMsgJson["heartbeat"] = "connected";
+    }
+
+    QJsonDocument heartbeatMsgJsonDoc(heartbeatMsgJson);
+    QString heartbeatMsgString(heartbeatMsgJsonDoc.toJson(QJsonDocument::Compact));
+    QByteArray heartbeatMsgByteArray = heartbeatMsgString.toUtf8();
+    QNetworkDatagram datagram(heartbeatMsgByteArray,QHostAddress(ipaddress.toString()),portNumber.toInt());
+    socket.writeDatagram(datagram);
+}
+
+bool VermeerFirebaseManager::hasHeartBeatMsg(QVariant data)
+{
+    bool hasHeartBeatMsg{false};
+    QString notification(data.toString());
+    QJsonObject obj;
+    QJsonDocument doc = QJsonDocument::fromJson(notification.toUtf8());
+    if(!doc.isNull()){
+        if(doc.isObject()){
+            obj = doc.object();
+            if(obj.contains("msgType")) {
+                QString value = obj["msgType"].toString();
+                if("heartbeat" == value){
+                    hasHeartBeatMsg = true;
+                    isXavierConnected = true;
+                }
+            }
+        }
+    }
+
+    return hasHeartBeatMsg;
 }
 
 void VermeerFirebaseManager::_fetchFlightPlans(QString fetchFlightPlansUrl, QString accessToken,QString uID)
