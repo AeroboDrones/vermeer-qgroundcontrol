@@ -34,6 +34,7 @@ public:
 
 public:
     inline static bool isConnected;
+    inline static bool isXavierConnected;
 
 signals:
     void displayMsgToQml(QVariant data);
@@ -78,6 +79,14 @@ public slots:
     void accessTokenTimedOut();
     void accessTokenStartTimer();
     void accessTokenStopTimer();
+
+    void heartbeatTimeOut();
+    void heartbeatStartTimer();
+    void heartbeatStopTimer();
+    void heartbeatRestartTimer();
+    void sendHeartbeatMsg();
+    bool hasHeartBeatMsg(QVariant data);
+
     void bindSocket();
     void deleteRefreshToken();
     void sendingMissionTimeoutStart();
@@ -109,10 +118,12 @@ private:
     QTimer accessTokenTimer;
     QTimer checkInternetConnectionTimer;
     QTimer sendingMissionTimeout;
+    QTimer heartbeatConnectionTimer;
     int checkInternetConnectionIntervalSeconds{3};
     int sendingMissionTimeoutDelaySeconds{5};
     bool hasNoInternetPreviously{false};
     bool hasInternetPreviously{false};
+    int xavierConnectionTimeoutDelaySeconds{30};
 };
 
 #endif // VERMEERFIREBASEMANAGER_H

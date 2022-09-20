@@ -31,6 +31,18 @@ Item {
         color: "#161618"
     }
 
+    VermeerFirebaseManager {
+        id: vermeerFirebaseManager
+        onDisplayMsgToQml: {
+            console.log(data)
+            if ("xavier_disconnected" === data) {
+                console.log("xavier_disconnected")
+                vermeerMssionPageToolBarQml.vermeerShowXavierOfflineIcon()
+                vermeerFirebaseManager.sendHeartbeatMsg()
+            }
+        }
+    }
+
     // Mission Page Tool Bar
     VermeerMissionPageToolbar {
         id: vermeerMssionPageToolBarQml
@@ -86,6 +98,12 @@ Item {
 
         onHomePositionReceived: {
             vermeerMissionList.handleHomePositionReceived()
+        }
+
+        onHeartbeatMsgRecieved: {
+            vermeerFirebaseManager.heartbeatRestartTimer()
+            vermeerFirebaseManager.sendHeartbeatMsg()
+            vermeerMssionPageToolBarQml.vermeerShowXavierOnlineIcon()
         }
     }
 }

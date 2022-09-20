@@ -168,12 +168,10 @@ Item {
                 vermeerFirebaseManager.saveMissionListToMissionFile()
                 disableReloadPage()
             }
-
-            if ("invalidAccessToken"===data) {
+            else if ("invalidAccessToken"===data) {
                 console.log("invalid access token")
             }
-
-            if("accessTokenTimedOut"===data) {
+            else if("accessTokenTimedOut"===data) {
                 if(vermeerFirebaseManager.hasInternetConnection()) {
                     console.log("Access token timedout signing in with refresh token")
                     vermeerFirebaseManager.signInWithRefreshToken()
@@ -182,8 +180,7 @@ Item {
                     vermeerFirebaseManager.loadMissioListsFromMissionFile();
                 }
             }
-
-            if ("sendingMissionTimedOut" === data){
+            else if ("sendingMissionTimedOut" === data){
                 console.log("vermeerMissionList: sendingMissionTimedOut")
                 handleMissionUploadedUnsuccessfuly();
             }

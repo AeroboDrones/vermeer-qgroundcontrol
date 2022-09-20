@@ -36,6 +36,7 @@ Item {
     signal missionCompleted()
     signal missionCurrupted()
     signal homePositionReceived()
+    signal heartbeatMsgRecieved()
 
     VermeerFirebaseManager {
         id: vermeerFirebaseManager
@@ -43,6 +44,12 @@ Item {
             var notificationMsg = currentDate.toLocaleDateString() + ":" + currentDate.toLocaleTimeString() + ":" + data + "\n"
             tLogsModel.append({"tLogsLineItem":notificationMsg})
             tLogsListView.positionViewAtEnd()
+
+            var hasHeartBeatMsg = vermeerFirebaseManager.hasHeartBeatMsg(data)
+            if(true === hasHeartBeatMsg) {
+                console.log("Message has a heartbeat")
+                vermeerTelemLogMissionPage.heartbeatMsgRecieved()
+            }
         }
 
         // we are doing it here instead of the VermeerMissionList because the onMissionUdpReply signal seems to come here idk why yet...

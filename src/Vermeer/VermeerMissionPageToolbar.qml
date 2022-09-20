@@ -50,6 +50,17 @@ Rectangle {
         vermeerSignOutDisabledButton.visible = false
     }
 
+    function vermeerShowXavierOnlineIcon(){
+        console.log("vermeerShowXavierOnlineIcon")
+        xavierOnlineIcon.visible = true
+        xavierOfflineIcon.visible = false
+    }
+
+    function vermeerShowXavierOfflineIcon(){
+        xavierOnlineIcon.visible = false
+        xavierOfflineIcon.visible = true
+    }
+
     VermeerLogManager{
         id: vermeerLogManager
     }
@@ -112,7 +123,6 @@ Rectangle {
             height: parent.height
             width: parent.width
         }
-
     }
 
     Rectangle {
@@ -131,6 +141,46 @@ Rectangle {
             anchors.centerIn: parent
             height: parent.height
             width: parent.width
+        }
+    }
+
+    Rectangle {
+        id: xavierOnlineIcon
+        width: 100
+        height: 75
+        anchors.left: offlineWifiIcon.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: 50
+        color: "#161618"
+        visible: false
+
+        Rectangle {
+            id: xavierOnlineIconCircle
+            anchors.centerIn: parent
+            width: 100
+            height: 100
+            radius: width
+            color: "green"
+        }
+    }
+
+    Rectangle {
+        id: xavierOfflineIcon
+        width: 100
+        height: 75
+        anchors.left: offlineWifiIcon.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: 50
+        color: "#161618"
+        visible: true
+
+        Rectangle {
+            id: xavierOfflineIconCircle
+            anchors.centerIn: parent
+            width: 100
+            height: 100
+            radius: width
+            color: "red"
         }
     }
 
