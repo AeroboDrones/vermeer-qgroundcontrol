@@ -116,7 +116,7 @@ Item {
         height: parent.height
         visible: true
 
-        ListModel{
+        ListModel {
             id: tLogsModel
         }
 
@@ -131,7 +131,7 @@ Item {
         ScrollView {
             id: telemLogMissionPageScrollView
             anchors.fill: parent
-            ListView{
+            ListView {
                 id: tLogsListView
                 width: parent.width
                 model: tLogsModel
@@ -139,7 +139,7 @@ Item {
                 clip: true
                 ScrollBar.horizontal: ScrollBar {}
                 flickableDirection: Flickable.HorizontalAndVerticalFlick
-                contentWidth: 1000
+                contentWidth:  contentItem.childrenRect.width
             }
         }
     }

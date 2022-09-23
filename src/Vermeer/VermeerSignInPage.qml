@@ -121,11 +121,8 @@ Item {
         }
 
         vermeerFirebaseManager.setSignOutFlag(false)
-        vermeerEmailAddressTextInput.text = "czarbalangue@gmail.com"
-        vermeerPasswordTextInput.text = "aaaaaa"
-
-        //vermeerEmailAddressTextInput.text = vermeerFirebaseManager.getUserEmailAddress()
-        //vermeerPasswordTextInput.text = vermeerFirebaseManager.getUserPassword()
+        vermeerEmailAddressTextInput.text = vermeerFirebaseManager.getUserEmailAddress()
+        vermeerPasswordTextInput.text = vermeerFirebaseManager.getUserPassword()
     }
 
     Rectangle {
