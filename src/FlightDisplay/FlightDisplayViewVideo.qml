@@ -44,48 +44,6 @@ Item {
         id: vermeerFirebaseManager
     }
 
-
-    Rectangle {
-        id: vermeerToggleRectangle
-        width: 400
-        height: 60
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.rightMargin: 20
-        anchors.bottomMargin: 20
-        color:"#d7003f"
-        visible: true
-        z: 10
-
-         Text {
-            id: vermeerToggleRectangleText
-            text: qsTr("Toggle Video Source")
-            color: "white"
-            anchors.centerIn: parent
-         }
-
-         MouseArea {
-             id: vermeerToggleRectangleMouseArea
-             anchors.fill: parent
-             onPressed: {
-                 vermeerToggleRectangleText.color = "#d7003f"
-                 vermeerToggleRectangle.color = "white"
-             }
-             onReleased: {
-                 vermeerToggleRectangleText.color = "white"
-                 vermeerToggleRectangle.color = "#d7003f"
-                 vermeerFirebaseManager.toggleRtspLink(rtspIndex)
-                 rtspIndex++
-                 console.log("rtspIndex")
-                 console.log(rtspIndex)
-                 if(rtspIndex>=numberOfRtspUrls){
-                    rtspIndex = 0
-                 }
-             }
-         }
-
-    }
-
     Rectangle {
         id:             noVideo
         anchors.fill:   parent

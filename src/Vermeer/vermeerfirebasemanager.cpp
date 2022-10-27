@@ -110,7 +110,7 @@ void VermeerFirebaseManager::udpReadyRead()
         QNetworkDatagram datagram = socket.receiveDatagram();
         QString notificationJsonString = datagram.data();
         QJsonDocument doc = QJsonDocument::fromJson(notificationJsonString.toUtf8());
-        QJsonObject notificationJson = doc.object();
+        QJsonObject notificationJson = doc.object();        
         QString messagePayload = notificationJson["messagePayload"].toString();
         QString msg = "";
 
@@ -129,8 +129,6 @@ void VermeerFirebaseManager::udpReadyRead()
         else if("Home Position received. Ready to upload mission" == messagePayload) {
                 msg = "homePositionReceived";
         }
-        qInfo() << Q_FUNC_INFO << ": " << msg;
-
         emit(missionUdpReply(msg));
         emit(sendNotificationsToQml(notificationJsonString));
     }
@@ -161,16 +159,6 @@ void VermeerFirebaseManager::updateSetting(QVariant ipAddress, QVariant portNumb
     }
     else{
         emit(displayMsgToQml("InvalidIpAddress"));
-    }
-}
-
-void VermeerFirebaseManager::updateRtspUrls(QVariant rtspLink1, QVariant rtspLink2)
-{
-    if(!rtspLink1.toString().isEmpty() && !rtspLink2.toString().isEmpty()){
-        VermeerUser::setRtspLink1(rtspLink1.toString());
-        VermeerUser::setRtspLink2(rtspLink2.toString());
-    } else {
-        emit(displayMsgToQml("InvalidRtspUrls"));
     }
 }
 
@@ -293,17 +281,6 @@ void VermeerFirebaseManager::sendSignalSendingMissionTimedOut()
 {
     qInfo() << Q_FUNC_INFO;
     emit(displayMsgToQml("sendingMissionTimedOut"));
-}
-
-void VermeerFirebaseManager::toggleRtspLink(QVariant rtspIndex)
-{
-    int index = rtspIndex.toInt();
-    if(0 == index){
-        emit(displayMsgToQml("ToggleVideoSource1"));
-    }
-    else if (1 == index){
-        emit(displayMsgToQml("ToggleVideoSource2"));
-    }
 }
 
 void VermeerFirebaseManager::signInWithRefreshToken()
@@ -539,6 +516,89 @@ bool VermeerFirebaseManager::hasHeartBeatMsg(QVariant data)
     }
 
     return hasHeartBeatMsg;
+}
+
+QVariant VermeerFirebaseManager::getTlogs(QVariant data)
+{
+    QString tLogs{""};
+    QString notification(data.toString());
+    QJsonObject obj;
+    QJsonDocument doc = QJsonDocument::fromJson(notification.toUtf8());
+    if(!doc.isNull()){
+        if(doc.isObject()){
+            obj = doc.object();
+            if(obj.contains("messagePayload") && \
+                obj.contains("sourceNode") && \
+                obj.contains("timeStamp")) {
+                QString messagePayload = obj["messagePayload"].toString();
+                QString sourceDevice = obj["sourceNode"].toString();
+                QString timeStamp = obj["timeStamp"].toString();
+                tLogs = timeStamp + " : " + sourceDevice + " : " + messagePayload;
+            }
+            else {
+                QString missingKeys;
+                if(obj.contains("messagePayload")){
+                    missingKeys += "messagePayload,";
+                }
+                if(obj.contains("sourceNode")){
+                    missingKeys += "sourceNode,";
+                }
+                if(obj.contains("timeStamp")){
+                    missingKeys += "timeStamp";
+                }
+                QString msg = QString(Q_FUNC_INFO) + ": json is missing" + missingKeys;
+                emit(sendDebugInformation(msg));
+                qInfo() << msg;
+            }
+        }
+    }
+    return tLogs;
+}
+
+QVariant VermeerFirebaseManager::getMissionStatus()
+{
+    return VermeerUser::getMissionStatus();
+}
+
+void VermeerFirebaseManager::storeMissionAndNodeStatus(QVariant data)
+{
+    QString notification(data.toString());
+    QJsonObject obj;
+    QJsonDocument doc = QJsonDocument::fromJson(notification.toUtf8());
+    if(!doc.isNull()){
+        if(doc.isObject()){
+            obj = doc.object();
+            if(obj.contains("msgType") &&
+                obj.contains("status")){
+                QString msgType = obj["msgType"].toString();
+                QString status =  obj["status"].toString();
+                if("mission"== msgType){
+                    VermeerUser::setMissionStatus(status);
+                }
+
+                if("node"== msgType){
+                    VermeerUser::setNodeStatus(status);
+                }
+
+            } else {
+                QString msg = QString(Q_FUNC_INFO) + ": json does not contain msgType and status key";
+                emit(sendDebugInformation(msg));
+                qInfo() << msg;
+            }
+        }
+    }
+}
+
+QVariant VermeerFirebaseManager::getStatusButtonText()
+{
+    QString missionStatus = VermeerUser::getMissionStatus();
+    if("search" == missionStatus ||
+       "verify" == missionStatus ||
+       "investigate" == missionStatus||
+       "landing" == missionStatus){
+        missionStatus = "running";
+    }
+    return missionStatus;
 }
 
 void VermeerFirebaseManager::_fetchFlightPlans(QString fetchFlightPlansUrl, QString accessToken,QString uID)

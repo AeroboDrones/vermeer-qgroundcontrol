@@ -40,6 +40,7 @@ signals:
     void displayMsgToQml(QVariant data);
     void sendNotificationsToQml(QVariant data);
     void missionUdpReply(QVariant data);
+    void sendDebugInformation(QVariant data);
 
 public slots:
 
@@ -57,7 +58,6 @@ public slots:
     void fetchFlightPlans();
     void sendMission(QVariant missionIndex);
     void updateSetting(QVariant ipAddress, QVariant portNumber);
-    void updateRtspUrls(QVariant rtspLink1, QVariant rtspLink2);
     void saveRefreshToken();
     bool isRefreshTokenExist();
     bool isSettingValid();
@@ -70,7 +70,6 @@ public slots:
     void showLogPage();
     void showMissionPage();
     void sendSignalSendingMissionTimedOut();
-    void toggleRtspLink(QVariant rtspIndex);
     QVariant getDestinationIpAddress();
     QVariant getDestinationPortNumber();
     QVariant getUserEmailAddress();
@@ -86,6 +85,11 @@ public slots:
     void heartbeatRestartTimer();
     void sendHeartbeatMsg();
     bool hasHeartBeatMsg(QVariant data);
+
+    QVariant getTlogs(QVariant data);
+    QVariant getMissionStatus();
+    void storeMissionAndNodeStatus(QVariant data);
+    QVariant getStatusButtonText();
 
     void bindSocket();
     void deleteRefreshToken();

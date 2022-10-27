@@ -47,7 +47,6 @@ Item {
 
             var hasHeartBeatMsg = vermeerFirebaseManager.hasHeartBeatMsg(data)
             if(true === hasHeartBeatMsg) {
-                console.log("Message has a heartbeat")
                 vermeerTelemLogMissionPage.heartbeatMsgRecieved()
             }
         }

@@ -145,36 +145,22 @@ void VermeerUser::setInternetAccessReaquired(bool newInternetAccessReaquired)
     internetAccessReaquired = newInternetAccessReaquired;
 }
 
-const QString &VermeerUser::getRtspLink1()
+const QString &VermeerUser::getMissionStatus()
 {
-    return rtspLink1;
+    return missionStatus;
 }
 
-void VermeerUser::setRtspLink1(const QString &newRtspLink1)
+void VermeerUser::setMissionStatus(const QString &newMissionStatus)
 {
-    rtspLink1 = newRtspLink1;
+    missionStatus = newMissionStatus;
 }
 
-const QString &VermeerUser::getRtspLink2()
+const QString &VermeerUser::getNodeStatus()
 {
-    return rtspLink2;
+    return nodeStatus;
 }
 
-void VermeerUser::setRtspLink2(const QString &newRtspLink2)
+void VermeerUser::setNodeStatus(const QString &newNodeStatus)
 {
-    rtspLink2 = newRtspLink2;
+    nodeStatus = newNodeStatus;
 }
-
-QString VermeerUser::readRtspUrl1()
-{
-    return VermeerUser::rtspLink1;
-}
-
-QString VermeerUser::readRtspUrl2()
-{
-    return VermeerUser::rtspLink2;
-}
-
-
-
-

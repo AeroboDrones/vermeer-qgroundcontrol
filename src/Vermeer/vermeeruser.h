@@ -20,8 +20,6 @@ class VermeerUser : public QObject
     Q_OBJECT
     Q_PROPERTY(int numberOfMissions READ readNumberOfMissionItems)
     Q_PROPERTY(QString missionJsonString READ readMissionJsonSring)
-    Q_PROPERTY(QString rtspUrl1 READ readRtspUrl1)
-    Q_PROPERTY(QString rtspUrl2 READ readRtspUrl2)
 public:
     explicit VermeerUser(QObject *parent = nullptr);
 
@@ -63,14 +61,11 @@ public:
     static bool getInternetAccessReaquired();
     static void setInternetAccessReaquired(bool newInternetAccessReaquired);
 
-    static const QString &getRtspLink1();
-    static void setRtspLink1(const QString &newRtspLink1);
+    static const QString &getMissionStatus();
+    static void setMissionStatus(const QString &newMissionStatus);
 
-    static const QString &getRtspLink2();
-    static void setRtspLink2(const QString &newRtspLink2);
-
-    static QString readRtspUrl1();
-    static QString readRtspUrl2();
+    static const QString &getNodeStatus();
+    static void setNodeStatus(const QString &newNodeStatus);
 
 private:
     inline static QString email;
@@ -81,13 +76,16 @@ private:
     inline static QString refreshToken;
     inline static int numberOfMissions;
     inline static QJsonObject missionJson;
-    inline static QString destinationIpAddress{"192.168.144.100"};
+    //inline static QString destinationIpAddress{"192.168.144.100"};
+    inline static QString destinationIpAddress{"192.168.1.73"};
+
     inline static int destinationPortNumber{14555};
     inline static bool signOutButtonPressed;
     inline static bool isAccessTokenTimeOut;
     inline static bool internetAccessReaquired;
-    inline static QString rtspLink1{"rtsp://192.168.1.73:8584/vermeer1"};
-    inline static QString rtspLink2{"rtsp://192.168.1.73:8584/vermeer2"};
+
+    inline static QString missionStatus{""};
+    inline static QString nodeStatus{""};
 };
 
 #endif // VERMEERUSER_H

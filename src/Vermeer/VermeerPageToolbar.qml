@@ -22,13 +22,16 @@ import QGroundControl.FlightDisplay 1.0
 import QGroundControl.FlightMap     1.0
 
 Rectangle {
-    id: vermeerMssionPageToolBarQml
+    id: vermeerPageToolbar
     height: parent.height * 0.15
     width: parent.width
     color: "#161618"
 
     signal showLogPage()
     signal showMissionPage()
+    signal showFlightLogPage()
+    signal showMissionListPage()
+    signal showSettingsPage()
 
     function enableOnlineWifiIcon() {
         onlineWifiIcon.visible = true
@@ -51,7 +54,6 @@ Rectangle {
     }
 
     function vermeerShowXavierOnlineIcon(){
-        console.log("vermeerShowXavierOnlineIcon")
         xavierOnlineIcon.visible = true
         xavierOfflineIcon.visible = false
     }
@@ -59,6 +61,10 @@ Rectangle {
     function vermeerShowXavierOfflineIcon(){
         xavierOnlineIcon.visible = false
         xavierOfflineIcon.visible = true
+    }
+
+    function updateMissionStatusToolbar(){
+        missionStatus.text = vermeerFirebaseManager.getMissionStatus()
     }
 
     VermeerLogManager{
@@ -96,7 +102,7 @@ Rectangle {
     }
 
     Text {
-        id: vermeerMissionText
+        id: vermeerTittleToolbarText
         text: qsTr("Missions")
         color: "white"
         font.pointSize: 24
@@ -112,7 +118,7 @@ Rectangle {
         width: 5
         height: 80
         anchors.verticalCenter: parent.verticalCenter
-        anchors.left:vermeerMissionText.right
+        anchors.left:vermeerTittleToolbarText.right
         anchors.leftMargin: 15
         color: "white"
     }
@@ -150,7 +156,7 @@ Rectangle {
     }
 
     Rectangle {
-        id: xavierOnlineIconCircle
+        id: xavierOnlineIcon
         anchors.left: divider2.right
         anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: 15
@@ -185,7 +191,7 @@ Rectangle {
 
     Text {
         id: missionStatus
-        text: qsTr("Connected")
+        text: qsTr("")
         color: "white"
         font.pointSize: 12
         font.bold: true
@@ -329,11 +335,11 @@ Rectangle {
             anchors.fill: parent
             onClicked: {
                 vermeerLogManager.log("MissionPage: mission list button clicked")
-                //vermeerLoader.source = "VermeerSettingsPage.qml"
+                vermeerTittleToolbarText.text = "Missions"
+                vermeerPageToolbar.showMissionListPage()
             }
         }
     }
-
 
     Rectangle {
         id: vermeerFlightLogsButton
@@ -358,7 +364,8 @@ Rectangle {
             anchors.fill: parent
             onClicked: {
                 vermeerLogManager.log("MissionPage: flight logs button clicked")
-                //vermeerLoader.source = "VermeerSettingsPage.qml"
+                vermeerTittleToolbarText.text = "Flight Logs"
+                vermeerPageToolbar.showFlightLogPage()
             }
         }
     }
@@ -386,7 +393,8 @@ Rectangle {
             anchors.fill: parent
             onClicked: {
                 vermeerLogManager.log("MissionPage: setting button clicked")
-                //vermeerLoader.source = "VermeerSettingsPage.qml"
+                vermeerTittleToolbarText.text = "Settings"
+                vermeerPageToolbar.showSettingsPage()
             }
         }
     }

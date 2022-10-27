@@ -680,7 +680,7 @@ Item {
 
                     Text {
                         id: missionItemDelegateText
-                        font.pointSize: 20
+                        font.pointSize: 14
                         font.bold: true
                         color: "white"
                         text: qsTr(missionName)
@@ -698,6 +698,7 @@ Item {
                     anchors.rightMargin: 100
                     anchors.topMargin: 50
                     anchors.bottomMargin: 50
+                    radius: 20
 
                     Text {
                         id: uploadButtonText

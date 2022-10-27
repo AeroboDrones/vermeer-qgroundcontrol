@@ -24,6 +24,25 @@ import QGroundControl.FlightMap     1.0
 Item {
     id: vermeerMissionPageQml
 
+    function showVermeerFlightLogsPage(){
+        vermeerSettingsPage.visible = false
+        vermeerMissionList.visible = false
+        vermeerFlightLogsPage.visible = true
+    }
+
+    function showSettingsPage(){
+        vermeerSettingsPage.visible = true
+        vermeerMissionList.visible = false
+        vermeerFlightLogsPage.visible = false
+    }
+
+    function showMissionsListPage(){
+        vermeerSettingsPage.visible = false
+        vermeerMissionList.visible = true
+        vermeerFlightLogsPage.visible = false
+    }
+
+
     Rectangle {
         id: vermeerMissionPageBackground
         height: parent.height
@@ -37,26 +56,27 @@ Item {
             console.log(data)
             if ("xavier_disconnected" === data) {
                 console.log("xavier_disconnected")
-                vermeerMssionPageToolBarQml.vermeerShowXavierOfflineIcon()
+                vermeerPageToolbar.vermeerShowXavierOfflineIcon()
                 vermeerFirebaseManager.sendHeartbeatMsg()
             }
         }
     }
 
-    // Mission Page Tool Bar
-    VermeerMissionPageToolbar {
-        id: vermeerMssionPageToolBarQml
+    // Main Tool Bar
+    VermeerPageToolbar {
+        id: vermeerPageToolbar
         z: 1 // this is so that the upload button do not overlap on the tool bar
-        onShowLogPage: {
-            console.log("vermeerMissionPageQml: onShowLogPage ")
-            vermeerMissionList.visible = false;
-            vermeerTelemLogMissionPage.visible = true
+
+        onShowFlightLogPage: {
+            vermeerMissionPageQml.showVermeerFlightLogsPage()
         }
 
-        onShowMissionPage: {
-            console.log("vermeerMissionPageQml: onShowMissionPage ")
-            vermeerMissionList.visible = true;
-            vermeerTelemLogMissionPage.visible = false
+        onShowMissionListPage: {
+            vermeerMissionPageQml.showMissionsListPage()
+        }
+
+        onShowSettingsPage: {
+            vermeerMissionPageQml.showSettingsPage()
         }
     }
 
@@ -64,18 +84,18 @@ Item {
         id: vermeerMissionList
         anchors{
             right: parent.right
-            top: vermeerMssionPageToolBarQml.bottom
+            top: vermeerPageToolbar.bottom
             left: parent.left
             bottom: parent.bottom
         }
     }
 
-    VermeerTelemLogMissionPage {
-        id: vermeerTelemLogMissionPage
+    VermeerFlightLogsPage {
+        id: vermeerFlightLogsPage
         visible: false
-        anchors{
+        anchors {
             right: parent.right
-            top: vermeerMssionPageToolBarQml.bottom
+            top: vermeerPageToolbar.bottom
             left: parent.left
             bottom: parent.bottom
         }
@@ -103,7 +123,22 @@ Item {
         onHeartbeatMsgRecieved: {
             vermeerFirebaseManager.heartbeatRestartTimer()
             vermeerFirebaseManager.sendHeartbeatMsg()
-            vermeerMssionPageToolBarQml.vermeerShowXavierOnlineIcon()
+            vermeerPageToolbar.vermeerShowXavierOnlineIcon()
+        }
+
+        onUpdateMissionStatus: {
+            vermeerPageToolbar.updateMissionStatusToolbar()
+        }
+    }
+
+    VermeerSettingsPage {
+        id: vermeerSettingsPage
+        visible: false
+        anchors{
+            right: parent.right
+            top: vermeerPageToolbar.bottom
+            left: parent.left
+            bottom: parent.bottom
         }
     }
 }

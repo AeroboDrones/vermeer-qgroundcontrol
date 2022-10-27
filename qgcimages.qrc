@@ -203,5 +203,8 @@
         <file alias="VermeerReloadMissionCircle.png">src/Vermeer/reloadMissionCircle.png</file>
         <file alias="VermeerOfflineWifiIcon.png">src/Vermeer/vermeerOfflineWifi.png</file>
         <file alias="VermeerOnlineWifiIcon.png">src/Vermeer/vermeerOnlineWifi.png</file>
+        <file alias="wifiOnSymbol.png">src/Vermeer/wifiOnSymbol.png</file>
+        <file alias="wifiOnlineIcon.svg">src/Vermeer/wifiOnlineIcon.svg</file>
+        <file alias="wifiOfflineIcon.svg">src/Vermeer/wifiOfflineIcon.svg</file>
     </qresource>
 </RCC>
