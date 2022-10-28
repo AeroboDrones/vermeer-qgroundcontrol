@@ -65,6 +65,9 @@ Rectangle {
 
     function updateMissionStatusToolbar(){
         missionStatus.text = vermeerFirebaseManager.getMissionStatus()
+        if("Ready" === missionStatus.text){
+            missionStatus.text = "Ready to Fly"
+        }
     }
 
     VermeerLogManager{

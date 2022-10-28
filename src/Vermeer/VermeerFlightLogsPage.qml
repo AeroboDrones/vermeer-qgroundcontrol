@@ -54,7 +54,7 @@ Item {
             vermeerFirebaseManager.storeMissionAndNodeStatus(data)
             missionStatusText.text = vermeerFirebaseManager.getStatusButtonText()
 
-            if(missionStatusText.text === "ready"){
+            if(missionStatusText.text === "Ready"){
                 startMissionButton.visible = true
                 missionStatus.visible = false
             } else {
@@ -62,8 +62,20 @@ Item {
                 missionStatus.visible = true
             }
 
-            if(missionStatusText.text === "waiting"){
-                missionStatusText.text = "waiting for upload"
+            if(missionStatusText.text === "Waiting"){
+                missionStatusText.text = "Waiting for Mission"
+            }
+
+            if(missionStatusText.text === "Complete"){
+                missionStatusText.text = "Mission Complete"
+            }
+
+            if(missionStatusText.text === "Error"){
+                missionStatusText.color = "#D6003F"
+                missionStatus.color = "#25050B"
+            }else {
+                missionStatusText.color = "white"
+                missionStatus.color = "#D6003F"
             }
 
             vermeerFlightLogsPage.updateMissionStatus()
@@ -114,12 +126,20 @@ Item {
     function showTelemLogPage() {
         telemLogMissionPage.visible = true
         ulogPage.visible = false
+        nodeStatusPage.visible = false
     }
 
     function showUlogPage() {
         telemLogMissionPage.visible = false
         ulogPage.visible = true
+        nodeStatusPage.visible = false
         ulogPageTextArea.text = vermeerLogManager.readAllUlogs()
+    }
+
+    function showNodeStatusPage() {
+        nodeStatusPage.visible = true
+        ulogPage.visible = false
+        telemLogMissionPage.visible = false
     }
 
     function clearTelemLogPage(){
@@ -131,6 +151,22 @@ Item {
         ulogPageTextArea.text = ""
     }
 
+    function clearNodeStatuses(){
+        btMasterValue.text = ""
+        geolocatorValue.text = ""
+        nodeManagerValue.text = ""
+        pathPlannerValue.text = ""
+        dataPublisherValue.text = ""
+        detectorValue.text = ""
+        imageSourceNodeValue.text = ""
+        trackerValue.text = ""
+        perceptionManagerValue.text = ""
+        telemetryValue.text = ""
+        commLinkValue.text = ""
+        parameterDistributionValue.text = ""
+        mavrosValue.text = ""
+    }
+
     function clearLogsPage(){
         if(telemLogMissionPage.visible === true) {
             vermeerFlightLogsPage.clearTelemLogPage()
@@ -139,8 +175,11 @@ Item {
         if(ulogPage.visible === true) {
             vermeerFlightLogsPage.deleteUlogs()
         }
-    }
 
+        if(nodeStatusPage.visible === true){
+            vermeerFlightLogsPage.clearNodeStatuses()
+        }
+    }
 
     Rectangle {
         id: controlPannel
@@ -162,7 +201,7 @@ Item {
 
             Text {
                 id: startMissionButtonText
-                text: qsTr("start")
+                text: qsTr("Start")
                 anchors.centerIn: parent
                 color: "white"
                 font.pointSize: 12
@@ -267,6 +306,8 @@ Item {
                     tlogsButton.color = "white"
                     ulogsButtonText.color = "white"
                     ulogsButton.color = "#36363C"
+                    nodeStatusButtonText.color = "white"
+                    nodeStatusButton.color = "#36363C"
                     vermeerFlightLogsPage.showTelemLogPage()
                 }
             }
@@ -277,9 +318,8 @@ Item {
             width: 204
             height: 99
             radius: 12
-            anchors.right: parent.right
+            anchors.right: nodeStatusButton.left
             anchors.top: parent.top
-            anchors.rightMargin: 100
             anchors.topMargin: 50
             color: "#36363C"
 
@@ -299,7 +339,43 @@ Item {
                     tlogsButton.color = "#36363C"
                     ulogsButtonText.color = "#161618"
                     ulogsButton.color = "white"
+                    nodeStatusButtonText.color = "white"
+                    nodeStatusButton.color = "#36363C"
                     vermeerFlightLogsPage.showUlogPage()
+                }
+            }
+        }
+
+        Rectangle {
+            id: nodeStatusButton
+            width: 300
+            height: 99
+            radius: 12
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.rightMargin: 100
+            anchors.topMargin: 50
+            color: "#36363C"
+
+            Text {
+                id: nodeStatusButtonText
+                text: qsTr("Node Status")
+                anchors.centerIn: parent
+                color: "white"
+                font.pointSize: 12
+                font.bold: true
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onPressed: {
+                    tlogsButtonText.color = "white"
+                    tlogsButton.color = "#36363C"
+                    ulogsButtonText.color = "white"
+                    ulogsButton.color = "#36363C"
+                    nodeStatusButtonText.color = "#161618"
+                    nodeStatusButton.color = "white"
+                    vermeerFlightLogsPage.showNodeStatusPage()
                 }
             }
         }
@@ -363,6 +439,17 @@ Item {
                 font.bold: true
             }
         }
+    }
+
+    Rectangle {
+        id: nodeStatusPage
+        width: parent.width
+        height: parent.height
+        visible: false
+        anchors.top: controlPannel.bottom
+        color: "#282828"
+        radius: 20
+        z: -1
     }
 
 //    Rectangle {

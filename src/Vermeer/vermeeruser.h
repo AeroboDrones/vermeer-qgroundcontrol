@@ -64,8 +64,44 @@ public:
     static const QString &getMissionStatus();
     static void setMissionStatus(const QString &newMissionStatus);
 
-    static const QString &getNodeStatus();
-    static void setNodeStatus(const QString &newNodeStatus);
+    static const QString &getBtMasterNodeStatus();
+    static void setBtMasterNodeStatus(const QString &newBtMasterNodeStatus);
+
+    static const QString &getGeolocatorNodeStatus();
+    static void setGeolocatorNodeStatus(const QString &newGeolocatorNodeStatus);
+
+    static const QString &getNodeManagerNodeStatus();
+    static void setNodeManagerNodeStatus(const QString &newNodeManagerNodeStatus);
+
+    static const QString &getPathPlannerNodeStatus();
+    static void setPathPlannerNodeStatus(const QString &newPathPlannerNodeStatus);
+
+    static const QString &getDataPublisherNodeStatus();
+    static void setDataPublisherNodeStatus(const QString &newDataPublisherNodeStatus);
+
+    static const QString &getDetectorNodeStatus();
+    static void setDetectorNodeStatus(const QString &newDetectorNodeStatus);
+
+    static const QString &getImageSourceNodeNodeStatus();
+    static void setImageSourceNodeNodeStatus(const QString &newImageSourceNodeNodeStatus);
+
+    static const QString &getTrackerNodeStatus();
+    static void setTrackerNodeStatus(const QString &newTrackerNodeStatus);
+
+    static const QString &getPerceptionManagerNodeStatus();
+    static void setPerceptionManagerNodeStatus(const QString &newPerceptionManagerNodeStatus);
+
+    static const QString &getTelemetryNodeStatus();
+    static void setTelemetryNodeStatus(const QString &newTelemetryNodeStatus);
+
+    static const QString &getCommLinkNodeStatus();
+    static void setCommLinkNodeStatus(const QString &newCommLinkNodeStatus);
+
+    static const QString &getParameterDistributionNodeStatus();
+    static void setParameterDistributionNodeStatus(const QString &newParameterDistributionNodeStatus);
+
+    static const QString &getMavrosNodeStatus();
+    static void setMavrosNodeStatus(const QString &newMavrosNodeStatus);
 
 private:
     inline static QString email;
@@ -85,7 +121,22 @@ private:
     inline static bool internetAccessReaquired;
 
     inline static QString missionStatus{""};
-    inline static QString nodeStatus{""};
+
+    inline static QString btMasterNodeStatus{""};
+    inline static QString geolocatorNodeStatus{""};
+    inline static QString nodeManagerNodeStatus{""};
+    inline static QString pathPlannerNodeStatus{""};
+    inline static QString dataPublisherNodeStatus{""};
+    inline static QString detectorNodeStatus{""};
+    inline static QString imageSourceNodeNodeStatus{""};
+    inline static QString trackerNodeStatus{""};
+    inline static QString perceptionManagerNodeStatus{""};
+    inline static QString telemetryNodeStatus{""};
+    inline static QString commLinkNodeStatus{""};
+    inline static QString parameterDistributionNodeStatus{""};
+    inline static QString mavrosNodeStatus{""};
+
+
 };
 
 #endif // VERMEERUSER_H

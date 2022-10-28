@@ -155,12 +155,132 @@ void VermeerUser::setMissionStatus(const QString &newMissionStatus)
     missionStatus = newMissionStatus;
 }
 
-const QString &VermeerUser::getNodeStatus()
+const QString &VermeerUser::getBtMasterNodeStatus()
 {
-    return nodeStatus;
+    return btMasterNodeStatus;
 }
 
-void VermeerUser::setNodeStatus(const QString &newNodeStatus)
+void VermeerUser::setBtMasterNodeStatus(const QString &newBtMasterNodeStatus)
 {
-    nodeStatus = newNodeStatus;
+    btMasterNodeStatus = newBtMasterNodeStatus;
+}
+
+const QString &VermeerUser::getGeolocatorNodeStatus()
+{
+    return geolocatorNodeStatus;
+}
+
+void VermeerUser::setGeolocatorNodeStatus(const QString &newGeolocatorNodeStatus)
+{
+    geolocatorNodeStatus = newGeolocatorNodeStatus;
+}
+
+const QString &VermeerUser::getNodeManagerNodeStatus()
+{
+    return nodeManagerNodeStatus;
+}
+
+void VermeerUser::setNodeManagerNodeStatus(const QString &newNodeManagerNodeStatus)
+{
+    nodeManagerNodeStatus = newNodeManagerNodeStatus;
+}
+
+const QString &VermeerUser::getPathPlannerNodeStatus()
+{
+    return pathPlannerNodeStatus;
+}
+
+void VermeerUser::setPathPlannerNodeStatus(const QString &newPathPlannerNodeStatus)
+{
+    pathPlannerNodeStatus = newPathPlannerNodeStatus;
+}
+
+const QString &VermeerUser::getDataPublisherNodeStatus()
+{
+    return dataPublisherNodeStatus;
+}
+
+void VermeerUser::setDataPublisherNodeStatus(const QString &newDataPublisherNodeStatus)
+{
+    dataPublisherNodeStatus = newDataPublisherNodeStatus;
+}
+
+const QString &VermeerUser::getDetectorNodeStatus()
+{
+    return detectorNodeStatus;
+}
+
+void VermeerUser::setDetectorNodeStatus(const QString &newDetectorNodeStatus)
+{
+    detectorNodeStatus = newDetectorNodeStatus;
+}
+
+const QString &VermeerUser::getImageSourceNodeNodeStatus()
+{
+    return imageSourceNodeNodeStatus;
+}
+
+void VermeerUser::setImageSourceNodeNodeStatus(const QString &newImageSourceNodeNodeStatus)
+{
+    imageSourceNodeNodeStatus = newImageSourceNodeNodeStatus;
+}
+
+const QString &VermeerUser::getTrackerNodeStatus()
+{
+    return trackerNodeStatus;
+}
+
+void VermeerUser::setTrackerNodeStatus(const QString &newTrackerNodeStatus)
+{
+    trackerNodeStatus = newTrackerNodeStatus;
+}
+
+const QString &VermeerUser::getPerceptionManagerNodeStatus()
+{
+    return perceptionManagerNodeStatus;
+}
+
+void VermeerUser::setPerceptionManagerNodeStatus(const QString &newPerceptionManagerNodeStatus)
+{
+    perceptionManagerNodeStatus = newPerceptionManagerNodeStatus;
+}
+
+const QString &VermeerUser::getTelemetryNodeStatus()
+{
+    return telemetryNodeStatus;
+}
+
+void VermeerUser::setTelemetryNodeStatus(const QString &newTelemetryNodeStatus)
+{
+    telemetryNodeStatus = newTelemetryNodeStatus;
+}
+
+const QString &VermeerUser::getCommLinkNodeStatus()
+{
+    return commLinkNodeStatus;
+}
+
+void VermeerUser::setCommLinkNodeStatus(const QString &newCommLinkNodeStatus)
+{
+    commLinkNodeStatus = newCommLinkNodeStatus;
+}
+
+const QString &VermeerUser::getParameterDistributionNodeStatus()
+{
+    return parameterDistributionNodeStatus;
+}
+
+void VermeerUser::setParameterDistributionNodeStatus(const QString &newParameterDistributionNodeStatus)
+{
+    parameterDistributionNodeStatus = newParameterDistributionNodeStatus;
+}
+
+const QString &VermeerUser::getMavrosNodeStatus()
+{
+    return mavrosNodeStatus;
+}
+
+void VermeerUser::setMavrosNodeStatus(const QString &newMavrosNodeStatus)
+{
+    mavrosNodeStatus = newMavrosNodeStatus;
 }
