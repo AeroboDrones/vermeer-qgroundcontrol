@@ -114,16 +114,16 @@ void VermeerFirebaseManager::udpReadyRead()
         QString messagePayload = notificationJson["messagePayload"].toString();
         QString msg = "";
 
-        if("Mission already running, mission file ignored" == messagePayload) {
+        if("comm_link Received Mission JSON. Mission already running. Ignoring..." == messagePayload) {
                 msg  = "missionAlreadyRunning";
         }
-        else if("Received Mission JSON" == messagePayload) {
+        else if("comm_link Received Mission JSON..." == messagePayload) {
                 msg = "receivedMissionJson";
         }
-        else if("Mission Completed" == messagePayload) {
+        else if("comm_link Mission Complete." == messagePayload) {
                 msg = "missionCompleted";
         }
-        else if("Mission JSON Corrupted" == messagePayload) {
+        else if("comm_link unable to decode JSON message..." == messagePayload) {
                msg = "missionCurrupted";
         }
         else if("Home Position received. Ready to upload mission" == messagePayload) {
@@ -531,24 +531,35 @@ QVariant VermeerFirebaseManager::getTlogs(QVariant data)
                 obj.contains("sourceNode") && \
                 obj.contains("timeStamp")) {
                 QString messagePayload = obj["messagePayload"].toString();
-                QString sourceDevice = obj["sourceNode"].toString();
-                QString timeStamp = obj["timeStamp"].toString();
-                tLogs = timeStamp + " : " + sourceDevice + " : " + messagePayload;
-            }
-            else {
-                QString missingKeys;
-                if(obj.contains("messagePayload")){
-                    missingKeys += "messagePayload,";
+                if(!messagePayload.isEmpty()){
+                    QString sourceDevice = obj["sourceNode"].toString();
+                    QString timeStamp = obj["timeStamp"].toString();
+                    QString msgType = obj["msgType"].toString();
+                    tLogs = timeStamp + " : " + msgType + " : " + sourceDevice + " : " + messagePayload;
                 }
-                if(obj.contains("sourceNode")){
-                    missingKeys += "sourceNode,";
+            } else {
+                if(obj.contains("msgType")) {
+                   QString msgType  = obj["msgType"].toString();
+                   if("heartbeat" == msgType) {
+                    tLogs = obj["timeStamp"].toString() + ":" + "herelink recieved heartbeat";
+                   } else {
+                       QString missingKeys;
+                       if(false == obj.contains("messagePayload")){
+                           missingKeys += "messagePayload,";
+                       }
+                       if(false == obj.contains("sourceNode")){
+                           missingKeys += "sourceNode,";
+                       }
+                       if(false == obj.contains("timeStamp")){
+                           missingKeys += "timeStamp";
+                       }
+                       QString msg = "json is missing key: " + missingKeys;
+                       emit(sendDebugInformation(msg));
+                       qInfo() << msg;
+                   }
+                } else {
+                    qInfo() << QString(Q_FUNC_INFO) << ":" << "does not contain msgType" << notification;
                 }
-                if(obj.contains("timeStamp")){
-                    missingKeys += "timeStamp";
-                }
-                QString msg = QString(Q_FUNC_INFO) + ": json is missing" + missingKeys;
-                emit(sendDebugInformation(msg));
-                qInfo() << msg;
             }
         }
     }
@@ -578,17 +589,19 @@ void VermeerFirebaseManager::storeMissionAndNodeStatus(QVariant data)
                     QString status =  obj["status"].toString();
                     if("bt_master" == sourceNode){
                         VermeerUser::setBtMasterNodeStatus(status);
-                    } else if("geolocator" == sourceNode) {
+                    } else if("geolocator_node" == sourceNode) {
                         VermeerUser::setGeolocatorNodeStatus(status);
                     } else if("path_planner" == sourceNode) {
-                        VermeerUser::setParameterDistributionNodeStatus(status);
-                    } else if("data_publisher" == sourceNode) {
+                        VermeerUser::setPathPlannerNodeStatus(status);
+                    } else if("perception_data_publisher_node" == sourceNode) {
                         VermeerUser::setDataPublisherNodeStatus(status);
-                    } else if("detector" == sourceNode) {
+                    } else if("node_manager" == sourceNode){
+                        VermeerUser::setNodeManagerNodeStatus(status);
+                    } else if("detector_node" == sourceNode) {
                         VermeerUser::setDetectorNodeStatus(status);
                     } else if("image_source_node" == sourceNode) {
                         VermeerUser::setImageSourceNodeNodeStatus(status);
-                    }else if("tracker" == sourceNode) {
+                    }else if("tracker_node" == sourceNode) {
                         VermeerUser::setTrackerNodeStatus(status);
                     }else if("perception_manager" == sourceNode) {
                         VermeerUser::setPerceptionManagerNodeStatus(status);
@@ -600,10 +613,14 @@ void VermeerFirebaseManager::storeMissionAndNodeStatus(QVariant data)
                         VermeerUser::setParameterDistributionNodeStatus(status);
                     }else if("mavros" == sourceNode) {
                         VermeerUser::setMavrosNodeStatus(status);
+                    }else if("bot_health_pub" == sourceNode) {
+                        VermeerUser::setBotHeathStatus(status);
+                    }else {
+                        qInfo() << QString(Q_FUNC_INFO) << " : " << notification;
                     }
                 }
             } else {
-                QString msg = QString(Q_FUNC_INFO) + ": json does not contain msgType and status key";
+                QString msg = "json does not contain msgType and status key";
                 emit(sendDebugInformation(msg));
                 qInfo() << msg;
             }
@@ -620,6 +637,151 @@ QVariant VermeerFirebaseManager::getStatusButtonText()
         missionStatus = "Flying Mission";
     }
     return missionStatus;
+}
+
+void VermeerFirebaseManager::setStatusButtonText(QVariant status)
+{
+    VermeerUser::setMissionStatus(status.toString());
+}
+
+QVariant VermeerFirebaseManager::getBtMasterNodeStatus()
+{
+    return VermeerUser::getBtMasterNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getGeolocatorNodeStatus()
+{
+    return VermeerUser::getGeolocatorNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getNodeManagerNodeStatus()
+{
+    return VermeerUser::getNodeManagerNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getPathPlannerNodeStatus()
+{
+    return VermeerUser::getPathPlannerNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getDataPublisherNodeStatus()
+{
+    return VermeerUser::getDataPublisherNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getDetectorNodeStatus()
+{
+    return VermeerUser::getDetectorNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getImageSourceNodeStatus()
+{
+    return VermeerUser::getImageSourceNodeNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getTrackerNodeStatus()
+{
+    return VermeerUser::getTrackerNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getMavrosNodeStatus()
+{
+    return VermeerUser::getMavrosNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getPerceptionManagerNodeStatus()
+{
+    return VermeerUser::getPerceptionManagerNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getTelemetryNodeStatus()
+{
+    return VermeerUser::getTelemetryNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getCommLinkNodeStatus()
+{
+    return VermeerUser::getCommLinkNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getParameterDistributionNodeStatus()
+{
+    return VermeerUser::getParameterDistributionNodeStatus();
+}
+
+QVariant VermeerFirebaseManager::getBotHealthNodeStatus()
+{
+    return VermeerUser::getBotHeathStatus();
+}
+
+void VermeerFirebaseManager::setBtMasterNodeStatus(QVariant status)
+{
+    VermeerUser::setBtMasterNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setGeolocatorNodeStatus(QVariant status)
+{
+    VermeerUser::setGeolocatorNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setNodeManagerNodeStatus(QVariant status)
+{
+    VermeerUser::setNodeManagerNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setPathPlannerNodeStatus(QVariant status)
+{
+    VermeerUser::setPathPlannerNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setDataPublisherNodeStatus(QVariant status)
+{
+    VermeerUser::setDataPublisherNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setDetectorNodeStatus(QVariant status)
+{
+    VermeerUser::setDetectorNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setImageSourceNodeStatus(QVariant status)
+{
+    VermeerUser::setImageSourceNodeNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setTrackerNodeStatus(QVariant status)
+{
+    VermeerUser::setTrackerNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setMavrosNodeStatus(QVariant status)
+{
+    VermeerUser::setMavrosNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setPerceptionManagerNodeStatus(QVariant status)
+{
+    VermeerUser::setPerceptionManagerNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setTelemetryNodeStatus(QVariant status)
+{
+    VermeerUser::setTelemetryNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setCommLinkNodeStatus(QVariant status)
+{
+    VermeerUser::setCommLinkNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setParameterDistributionNodeStatus(QVariant status)
+{
+    VermeerUser::setParameterDistributionNodeStatus(status.toString());
+}
+
+void VermeerFirebaseManager::setBotHealthNodeStatus(QVariant status)
+{
+    VermeerUser::setBotHeathStatus(status.toString());
 }
 
 void VermeerFirebaseManager::_fetchFlightPlans(QString fetchFlightPlansUrl, QString accessToken,QString uID)

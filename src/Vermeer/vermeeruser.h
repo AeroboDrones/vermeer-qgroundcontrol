@@ -103,6 +103,9 @@ public:
     static const QString &getMavrosNodeStatus();
     static void setMavrosNodeStatus(const QString &newMavrosNodeStatus);
 
+    static const QString &getBotHeathStatus();
+    static void setBotHeathStatus(const QString &newBotHeathStatus);
+
 private:
     inline static QString email;
     inline static QString password;
@@ -112,8 +115,7 @@ private:
     inline static QString refreshToken;
     inline static int numberOfMissions;
     inline static QJsonObject missionJson;
-    //inline static QString destinationIpAddress{"192.168.144.100"};
-    inline static QString destinationIpAddress{"192.168.1.73"};
+    inline static QString destinationIpAddress{"192.168.144.100"};
 
     inline static int destinationPortNumber{14555};
     inline static bool signOutButtonPressed;
@@ -122,19 +124,20 @@ private:
 
     inline static QString missionStatus{""};
 
-    inline static QString btMasterNodeStatus{""};
-    inline static QString geolocatorNodeStatus{""};
-    inline static QString nodeManagerNodeStatus{""};
-    inline static QString pathPlannerNodeStatus{""};
-    inline static QString dataPublisherNodeStatus{""};
-    inline static QString detectorNodeStatus{""};
-    inline static QString imageSourceNodeNodeStatus{""};
-    inline static QString trackerNodeStatus{""};
-    inline static QString perceptionManagerNodeStatus{""};
-    inline static QString telemetryNodeStatus{""};
-    inline static QString commLinkNodeStatus{""};
-    inline static QString parameterDistributionNodeStatus{""};
-    inline static QString mavrosNodeStatus{""};
+    inline static QString btMasterNodeStatus{"No Response"};
+    inline static QString geolocatorNodeStatus{"No Response"};
+    inline static QString nodeManagerNodeStatus{"No Response"};
+    inline static QString pathPlannerNodeStatus{"No Response"};
+    inline static QString dataPublisherNodeStatus{"No Response"};
+    inline static QString detectorNodeStatus{"No Response"};
+    inline static QString imageSourceNodeNodeStatus{"No Response"};
+    inline static QString trackerNodeStatus{"No Response"};
+    inline static QString perceptionManagerNodeStatus{"No Response"};
+    inline static QString telemetryNodeStatus{"No Response"};
+    inline static QString commLinkNodeStatus{"No Response"};
+    inline static QString parameterDistributionNodeStatus{"No Response"};
+    inline static QString mavrosNodeStatus{"No Response"};
+    inline static QString botHeathStatus{"No Response"};
 
 
 };

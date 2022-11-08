@@ -284,3 +284,13 @@ void VermeerUser::setMavrosNodeStatus(const QString &newMavrosNodeStatus)
 {
     mavrosNodeStatus = newMavrosNodeStatus;
 }
+
+const QString &VermeerUser::getBotHeathStatus()
+{
+    return botHeathStatus;
+}
+
+void VermeerUser::setBotHeathStatus(const QString &newBotHeathStatus)
+{
+    botHeathStatus = newBotHeathStatus;
+}

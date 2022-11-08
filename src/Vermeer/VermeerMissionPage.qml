@@ -53,7 +53,6 @@ Item {
     VermeerFirebaseManager {
         id: vermeerFirebaseManager
         onDisplayMsgToQml: {
-            console.log(data)
             if ("xavier_disconnected" === data) {
                 console.log("xavier_disconnected")
                 vermeerPageToolbar.vermeerShowXavierOfflineIcon()

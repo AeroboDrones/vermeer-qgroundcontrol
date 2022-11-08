@@ -90,6 +90,37 @@ public slots:
     QVariant getMissionStatus();
     void storeMissionAndNodeStatus(QVariant data);
     QVariant getStatusButtonText();
+    void setStatusButtonText(QVariant status);
+
+    QVariant getBtMasterNodeStatus();
+    QVariant getGeolocatorNodeStatus();
+    QVariant getNodeManagerNodeStatus();
+    QVariant getPathPlannerNodeStatus();
+    QVariant getDataPublisherNodeStatus();
+    QVariant getDetectorNodeStatus();
+    QVariant getImageSourceNodeStatus();
+    QVariant getTrackerNodeStatus();
+    QVariant getMavrosNodeStatus();
+    QVariant getPerceptionManagerNodeStatus();
+    QVariant getTelemetryNodeStatus();
+    QVariant getCommLinkNodeStatus();
+    QVariant getParameterDistributionNodeStatus();
+    QVariant getBotHealthNodeStatus();
+
+    void setBtMasterNodeStatus(QVariant status);
+    void setGeolocatorNodeStatus(QVariant status);
+    void setNodeManagerNodeStatus(QVariant status);
+    void setPathPlannerNodeStatus(QVariant status);
+    void setDataPublisherNodeStatus(QVariant status);
+    void setDetectorNodeStatus(QVariant status);
+    void setImageSourceNodeStatus(QVariant status);
+    void setTrackerNodeStatus(QVariant status);
+    void setMavrosNodeStatus(QVariant status);
+    void setPerceptionManagerNodeStatus(QVariant status);
+    void setTelemetryNodeStatus(QVariant status);
+    void setCommLinkNodeStatus(QVariant status);
+    void setParameterDistributionNodeStatus(QVariant status);
+    void setBotHealthNodeStatus(QVariant status);
 
     void bindSocket();
     void deleteRefreshToken();
