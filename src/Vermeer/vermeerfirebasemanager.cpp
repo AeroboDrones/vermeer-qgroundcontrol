@@ -613,7 +613,7 @@ void VermeerFirebaseManager::storeMissionAndNodeStatus(QVariant data)
                         VermeerUser::setParameterDistributionNodeStatus(status);
                     }else if("mavros" == sourceNode) {
                         VermeerUser::setMavrosNodeStatus(status);
-                    }else if("bot_health_pub" == sourceNode) {
+                    }else if("bot_health" == sourceNode) {
                         VermeerUser::setBotHeathStatus(status);
                     }else {
                         qInfo() << QString(Q_FUNC_INFO) << " : " << notification;
