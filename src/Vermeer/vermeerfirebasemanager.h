@@ -9,6 +9,7 @@
 #define VERMEERFIREBASEMANAGER_H
 
 #include "vermeeruser.h"
+#include "Vehicle.h"
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -89,6 +90,13 @@ public slots:
     void sendingMissionTimeoutStart();
     void sendingMissionTimeoutStop();
     void sendMissionFromFile(QVariant filepath,QVariant ipaddress, QVariant port,QString missionName);
+
+    QVariant getVermissionItemListFromFile(QVariant vermeerMissionFilePath);
+    QJsonObject readJsonFile(QString jsonFilePath);
+    QString getMissionItemsJson(QJsonObject vermeerMissionContentJson);
+
+protected:
+    Vehicle* _activeVehicle         = nullptr;
 
 private:
 

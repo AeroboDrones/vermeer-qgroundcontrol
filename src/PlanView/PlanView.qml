@@ -64,6 +64,9 @@ Item {
     readonly property int       _layerRallyPoints:          3
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
 
+    // vermeer variables
+    property var vermeerButtonRefPoint: 0.10
+
     function mapCenter() {
         var coordinate = editorMap.center
         coordinate.latitude  = coordinate.latitude.toFixed(_decimalPlaces)
@@ -289,6 +292,20 @@ Item {
         }
     }
 
+    function insertVermeerMissionItem(coordinate,
+                                      missionIndex,
+                                      yawDeg,
+                                      loiterTimeS,
+                                      speedMs)
+    {
+        _missionController.insertVermeerMissionItem(coordinate,
+                                                    missionIndex,
+                                                    true,
+                                                    yawDeg,
+                                                    loiterTimeS,
+                                                    speedMs)
+    }
+
     function insertSimpleItemAfterCurrent(coordinate) {
         var nextIndex = _missionController.currentPlanViewVIIndex + 1
         _missionController.insertSimpleMissionItem(coordinate, nextIndex, true /* makeCurrentItem */)
@@ -375,17 +392,11 @@ Item {
     }
 
     function hideAllViews(){
-        vermeerTextInputForJsonFilePath.visible = false
         vermeerMissionListsView.visible = false
-        vTLogs.visible = false
-        vULogs.visible = false
-        vermeerIpAddress.visible = false
-        vermeerPort.visible = false
     }
 
     function _showMissionFilePathInput(){
         hideAllViews()
-        vermeerTextInputForJsonFilePath.visible = true
     }
 
     function _showMissionList(){
@@ -411,15 +422,10 @@ Item {
         // to be implemented if we it is needed
     }
 
-    function _showVermeerSettings(){
-        hideAllViews()
-        vermeerIpAddress.visible = true
-        vermeerPort.visible = true
-    }
-
     function handleMissionRefreshList() {
-        var missionFileNames = vermeerMissionFileManager.getFileNamesJsonArray(qsTr(jsonfilePathTextInputField.text))
-         var missionJson = JSON.parse(missionFileNames)
+        var downloadFilePath = vermeerMissionFileManager.getDownloadFilePath()
+        var missionFileNames = vermeerMissionFileManager.getFileNamesJsonArray(qsTr(downloadFilePath))
+        var missionJson = JSON.parse(missionFileNames)
         missionModel.clear()
         for (var missionJsonIndex in missionJson){
             missionModel.append({"missionName":missionJson[missionJsonIndex]["filename"]})
@@ -427,31 +433,11 @@ Item {
     }
 
     function vermeerShowAll(){
-        showMissionFilePath.visible = true
         showMissionList.visible = true
-        showVTlogs.visible = true
-        clearVTlogs.visible = true
-        showVUlogsBtn.visible = true
-        clearVUlogsBtn.visible = true
-        showSettingsBtn.visible = true
     }
 
     function vermeerHideAllBtns(){
-        showMissionFilePath.visible = false
         showMissionList.visible = false
-        showVTlogs.visible = false
-        clearVTlogs.visible = false
-        showVUlogsBtn.visible = false
-        clearVUlogsBtn.visible = false
-        showSettingsBtn.visible = false
-    }
-
-    function vermeerShowXavierDisconnectBanner(){
-        xavierConnectionStatusWindow.visible = true
-    }
-
-    function vermeerHideXavierDisconnectBanner(){
-        xavierConnectionStatusWindow.visible = false
     }
 
     Item {
@@ -651,47 +637,15 @@ Item {
             }
         }
 
-
-        // vermeer custom keyframe
-
-        VermeerSignInPage{
-            id: vermeerLogInPageClass
-            onDisplayNotification: {
-             //vermeerNotificationTextInput.text += currentDate.toLocaleDateString() +":"+ currentDate.toLocaleTimeString() + " : " + data + "\n"
-            }
-
-        }
-
         VermeerLogManager{
             id: vermeerLogManager
         }
 
         VermeerFirebaseManager{
             id: vermeerFirebaseManager
-            onSendNotificationsToQml:{
-                var notificationMsg = currentDate.toLocaleDateString() + ":" + currentDate.toLocaleTimeString() + ":" + data + "\n"
-                console.log(notificationMsg)
-                vTLogsModel.append({"vTlogLineItem":notificationMsg})
-                vTlogsListView.positionViewAtEnd()
-
-                var hasHeartBeatMsg = vermeerFirebaseManager.hasHeartBeatMsg(data)
-
-                if(true === hasHeartBeatMsg) {
-                    vermeerFirebaseManager.heartbeatRestartTimer()
-                    vermeerFirebaseManager.sendHeartbeatMsg(vermeerIpAddressTextField.text,vermeerPortTextField.text)
-                    vermeerHideXavierDisconnectBanner()
-                }
-            }
-
-            onDisplayMsgToQml: {
-                if("xavier_disconnected" === data){
-                    vermeerFirebaseManager.sendHeartbeatMsg(vermeerIpAddressTextField.text,vermeerPortTextField.text)
-                    vermeerShowXavierDisconnectBanner()
-                }
-            }
         }
 
-        VermeerMissionFileManager{
+        VermeerMissionFileManager {
             id: vermeerMissionFileManager
         }
 
@@ -699,7 +653,7 @@ Item {
             id: hideShowAllVermeerButton
             text: qsTr(_showAllVermeerButtonText)
             Layout.fillWidth:   true
-            x: parent.width * 0.70
+            x: parent.width * vermeerButtonRefPoint
             onPressed: {
                     handleHideShowAllVermeerButtonTextChange()
                     if(_vermeerShowAll === false){
@@ -713,23 +667,11 @@ Item {
         }
 
         QGCButton {
-            id:showMissionFilePath
-            text:               qsTr("Show mission file path")
-            Layout.fillWidth:   true
-            x: parent.width * 0.70
-            anchors.top: hideShowAllVermeerButton.bottom
-            visible: false
-            onPressed: {
-                _showMissionFilePathInput()
-            }
-        }
-
-        QGCButton {
             id: showMissionList
             text:               qsTr("Show Mission List")
             Layout.fillWidth:   true
-            x: parent.width * 0.70
-            anchors.top: showMissionFilePath.bottom
+            x: parent.width * vermeerButtonRefPoint
+            anchors.top: hideShowAllVermeerButton.bottom
             visible: false
             onPressed: {
                 _showMissionList()
@@ -738,122 +680,15 @@ Item {
             }
         }
 
-        QGCButton {
-            id: showVTlogs
-            text:               qsTr("Show VTLogs")
-            Layout.fillWidth:   true
-            x: parent.width * 0.70
-            anchors.top: showMissionList.bottom
-            visible: false
-            onClicked: {
-                _showVTLogs()
-            }
-        }
-
-        QGCButton {
-            id : clearVTlogs
-            text:               qsTr("Clear VTLogs")
-            Layout.fillWidth:   true
-            x: parent.width * 0.70
-            anchors.top: showVTlogs.bottom
-            visible: false
-            onClicked: {
-               _clearVTLogs()
-            }
-        }
-
-        QGCButton {
-            id: showVUlogsBtn
-            text:               qsTr("Show VULogs")
-            Layout.fillWidth:   true
-            x: parent.width * 0.70
-            anchors.top: clearVTlogs.bottom
-            visible: false
-            onClicked: {
-                _showVULogs()
-            }
-        }
-
-        QGCButton {
-            id: clearVUlogsBtn
-            text:               qsTr("Clear VULogs")
-            Layout.fillWidth:   true
-            x: parent.width * 0.70
-            anchors.top: showVUlogsBtn.bottom
-            visible: false
-            onClicked: {
-
-            }
-        }
-
-        QGCButton {
-            id: showSettingsBtn
-            text:               qsTr("Show Settings")
-            Layout.fillWidth:   true
-            x: parent.width * 0.70
-            anchors.top: clearVUlogsBtn.bottom
-            visible: false
-            onClicked: {
-                _showVermeerSettings()
-            }
-        }
-
-        Rectangle {
-            id: vermeerIpAddress
-            width: parent.width * 0.30
-            height: parent.height * 0.03
-            border.color: "gray"
-            border.width: 1
-            x: parent.width * 0.05
-            visible: false
-            TextArea {
-                id: vermeerIpAddressTextField
-                anchors.fill: parent
-                text: "192.168.1.180"
-                font.pointSize: 10
-            }
-        }
-
-        Rectangle {
-            id: vermeerPort
-            width: parent.width * 0.30
-            height: parent.height * 0.03
-            border.color: "gray"
-            border.width: 1
-            x: parent.width * 0.05
-            anchors.left: vermeerIpAddress.right
-            visible: false
-            TextArea {
-                id: vermeerPortTextField
-                anchors.fill: parent
-                text: "14555"
-                font.pointSize: 10
-            }
-        }
-
-        Rectangle {
-            id: vermeerTextInputForJsonFilePath
-            width: parent.width * 0.60
-            height: parent.height * 0.03
-            border.color: "gray"
-            border.width: 1
-            x: parent.width * 0.05
-            visible: false
-            TextArea {
-                id: jsonfilePathTextInputField
-                anchors.fill: parent
-                text: 'C:\\source\\Vermeer\\MIssionJsonFiles'
-                font.pointSize: 10
-            }
-        }
-
         Rectangle {
             id: vermeerMissionListsView
             height: parent.height * 0.50
-            width: parent.width * 0.60
-            x: parent.width * 0.05
+            width: parent.width * 0.50
+            x: parent.width * vermeerButtonRefPoint
             color: "#161618"
             visible: false
+            anchors.top: showMissionList.bottom
+            anchors.topMargin: 30
 
             ListModel{
                 id: missionModel
@@ -867,7 +702,7 @@ Item {
                     height: 200
                     Rectangle {
                         id: missionItemRectangle
-                        width: parent.width * 0.50
+                        width: parent.width * 0.60
                         height: parent.height
                         anchors.left: parent.left
                         anchors.top: parent.top
@@ -878,7 +713,7 @@ Item {
 
                         Text {
                             id: missionItemDelegateText
-                            font.pointSize: 20
+                            font.pointSize: 14
                             font.bold: true
                             color: "white"
                             text: qsTr(missionName)
@@ -893,14 +728,16 @@ Item {
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
                         color:"#d7003f"
-                        anchors.rightMargin: 100
+                        anchors.rightMargin: 50
                         anchors.topMargin: 50
                         anchors.bottomMargin: 50
+                        anchors.leftMargin: 50
+                        radius: 10
 
                         Text {
                             id: uploadButtonText
                             text: qsTr("Send Mission")
-                            font.pointSize: 15
+                            font.pointSize: 12
                             anchors.centerIn: parent
                             color: "white"
                             font.bold: true
@@ -927,12 +764,52 @@ Item {
                                 // do we need a loading screen?
                                 uploadButtonText.color = "white"
                                 uploadButton.color = "#d7003f"
-                                console.log("vermeerSendingMissionPage")
-                                var missionFilePath = jsonfilePathTextInputField.text
-                                var ipaddress = vermeerIpAddressTextField.text
-                                var portnumber = vermeerPortTextField.text
-                                console.log(missionFilePath)
-                                vermeerFirebaseManager.sendMissionFromFile(missionFilePath,ipaddress,portnumber,missionName)
+
+                                var downloadFilePath = vermeerMissionFileManager.getDownloadFilePath()
+                                var missionFilePath = downloadFilePath + "/" +missionName
+
+                                var listOfMissionItemsJsonString = vermeerFirebaseManager.getVermissionItemListFromFile(missionFilePath)
+                                var listOfMissionItemsJson = JSON.parse(listOfMissionItemsJsonString);
+
+                                for (var missionItemIndex in listOfMissionItemsJson) {
+                                    var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+
+                                    //                                "acceptanceRadiusM" : 0.0,
+                                    //                                "cameraAction" : 0,
+                                    //                                "cameraPhotoIntervalS" : 0.0,
+                                    //                                "gimbalPitchDeg" : -87.14296,
+                                    //                                "gimbalYawDeg" : 0.0,
+                                    //                                "isFlyThrough" : true,
+                                    //                                "latitudeDeg" : 35.388998757393544,
+                                    //                                "loiterTimeS" : 0.0,
+                                    //                                "longitudeDeg" : -120.5210497952243,
+                                    //                                "relativeAltitudeM" : 150.994675,
+                                    //                                "speedMs" : 7.0,
+                                    //                                "yawDeg" : 358.4598
+
+                                    var latitude = listOfMissionItemsJson[missionItemIndex]["latitudeDeg"]
+                                    var longitude = listOfMissionItemsJson[missionItemIndex]["longitudeDeg"]
+                                    var altitude = listOfMissionItemsJson[missionItemIndex]["relativeAltitudeM"]
+                                    var yawDeg = listOfMissionItemsJson[missionItemIndex]["yawDeg"]
+                                    var loiterTimeS = listOfMissionItemsJson[missionItemIndex]["loiterTimeS"]
+                                    var speedMs = listOfMissionItemsJson[missionItemIndex]["speedMs"]
+
+                                    coordinate.latitude = latitude
+                                    coordinate.longitude = longitude
+                                    coordinate.altitude = altitude
+
+                                    coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
+                                    coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
+                                    coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
+
+                                    insertVermeerMissionItem(coordinate,
+                                                             missionItemIndex,
+                                                             true,
+                                                             yawDeg,
+                                                             loiterTimeS,
+                                                             speedMs)
+                                }
+
                                 var logMsg = missionName + " upload button released"
                                 vermeerLogManager.log(logMsg)
                             }
@@ -957,72 +834,6 @@ Item {
                     model: missionModel
                     delegate: missionItemDelegate
                 }
-            }
-        }
-
-        Rectangle {
-            id: vTLogs
-            height: parent.height * 0.50
-            width: parent.width * 0.60
-            x: parent.width * 0.05
-            visible: false
-
-            ListModel{
-                id: vTLogsModel
-            }
-
-            Component {
-                id: vTLogsDeligate
-                Text {
-                    text : qsTr(vTlogLineItem)
-                    font.pointSize: 10
-                }
-            }
-
-            ScrollView{
-                id: vTLogsPageScrollView
-                anchors.fill: parent
-                ListView {
-                    id: vTlogsListView
-                    width: parent.width
-                    model: vTLogsModel
-                    delegate: vTLogsDeligate
-                }
-            }
-        }
-
-
-        Rectangle {
-            id: vULogs
-            height: parent.height * 0.50
-            width: parent.width * 0.60
-            x: parent.width * 0.05
-            visible: false
-
-            ScrollView{
-                id: vULogsScrollView
-                anchors.fill: parent
-                Text{
-                    id: vULogsScrollViewTextArea
-                    anchors.fill: parent
-                    font.pointSize: 10
-                }
-            }
-        }
-
-        Rectangle {
-            id: xavierConnectionStatusWindow
-            height: parent.height * 0.03
-            width: parent.width * 0.60
-            x: parent.width * 0.05
-            y: parent.height * 0.60
-            visible: true
-            color: "#d7003f"
-            Text {
-                id: xavierConnectionStatusWindowText
-                anchors.centerIn: parent
-                font.pointSize: 30
-                text: qsTr("xavier is disconnected")
             }
         }
 
