@@ -2,6 +2,7 @@
 #define VERMEERMISSIONFILEMANAGER_H
 
 #include <QObject>
+#include <QVariant>
 
 class VermeerMissionFileManager : public QObject
 {
@@ -13,6 +14,7 @@ signals:
 
 public slots:
     QString getFileNamesJsonArray(QString missionDirectoryPath);
+    QVariant getDownloadFilePath();
 
 
 };

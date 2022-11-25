@@ -455,6 +455,50 @@ void VermeerFirebaseManager::sendMissionFromFile(QVariant filepath,QVariant ipad
     }
 }
 
+QVariant VermeerFirebaseManager::getVermissionItemListFromFile(QVariant vermeerMissionFilePath)
+{
+    QVariant vermeerKeyFrameMissionItems;
+    QString fileName(vermeerMissionFilePath.toString());
+    QFile file(fileName);
+    if(!QFileInfo::exists(fileName)){
+        QString msg = vermeerMissionFilePath.toString() +  ": does not exist";
+        qInfo() << msg;
+    }
+    else {
+        QString jsonFilePath = vermeerMissionFilePath.toString();
+        QJsonObject jsonObject = readJsonFile(jsonFilePath);
+        QString keyframeMissionItemsJson = getMissionItemsJson(jsonObject);
+        vermeerKeyFrameMissionItems = QVariant(keyframeMissionItemsJson);
+    }
+    return vermeerKeyFrameMissionItems;
+}
+
+QJsonObject VermeerFirebaseManager::readJsonFile(QString jsonFilePath)
+{
+    QFile jsonFile(jsonFilePath);
+    QJsonDocument document;
+    if(jsonFile.open(QIODevice::ReadOnly)) {
+        QByteArray bytes = jsonFile.readAll();
+         jsonFile.close();
+         QJsonParseError jsonError;
+         document = QJsonDocument::fromJson( bytes, &jsonError );
+         if (jsonError.error != QJsonParseError::NoError) {
+             QString msg = "VermeerFirebaseManager::readJsonFile: QJsonDocument::fromJson Failed with: " + jsonError.errorString();
+             qInfo() << msg;
+         }
+    }
+    return document.object();
+}
+
+QString VermeerFirebaseManager::getMissionItemsJson(QJsonObject vermeerMissionContentJson)
+{
+    QJsonArray jsonArray = vermeerMissionContentJson["missionItems"].toArray();
+    QJsonDocument jsondoc;
+    jsondoc.setArray(jsonArray);
+    QString vermeerMissionItemsJsonString(jsondoc.toJson());
+    return vermeerMissionItemsJsonString;
+}
+
 void VermeerFirebaseManager::bindSocket()
 {
     qInfo() <<Q_FUNC_INFO << ": closing the socket";

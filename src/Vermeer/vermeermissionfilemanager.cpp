@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QStandardPaths>
 
 #include "vermeermissionfilemanager.h"
 
@@ -19,7 +20,6 @@ QString VermeerMissionFileManager::getFileNamesJsonArray(QString missionDirector
 {
     QString directoryPath(missionDirectoryPath);
     QDir directory(directoryPath);
-
     QJsonArray missionFileNames;
     QJsonDocument doc;
 
@@ -29,8 +29,14 @@ QString VermeerMissionFileManager::getFileNamesJsonArray(QString missionDirector
          missionFilenameJson.insert("filename",QJsonValue(missionFileName));
          missionFileNames.push_back(QJsonValue(missionFilenameJson));
      }
+
      doc.setArray(missionFileNames);
      QString missionFilenamesJsonString = doc.toJson();
-
      return missionFilenamesJsonString;
+}
+
+QVariant VermeerMissionFileManager::getDownloadFilePath()
+{
+    QString downloadsFolder = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    return QVariant(downloadsFolder);
 }
