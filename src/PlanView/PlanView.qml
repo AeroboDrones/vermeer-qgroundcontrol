@@ -66,6 +66,16 @@ Item {
 
     // vermeer variables
     property var vermeerButtonRefPoint: 0.10
+    property var  vermeerMissionItemIndex: 0
+    property var  vermeerNumberOfMIssionItems: 0
+
+    function incrementVermeerMissionItemIndex() {
+        vermeerMissionItemIndex++
+    }
+
+    function resetVermeerMissionItemIndex() {
+        vermeerMissionItemIndex = 1
+    }
 
     function mapCenter() {
         var coordinate = editorMap.center
@@ -293,17 +303,24 @@ Item {
     }
 
     function insertVermeerMissionItem(coordinate,
-                                      missionIndex,
-                                      yawDeg,
-                                      loiterTimeS,
-                                      speedMs)
+                                                                  yawDeg,
+                                                                  loiterTimeS,
+                                                                  speedMs)
     {
-        _missionController.insertVermeerMissionItem(coordinate,
-                                                    missionIndex,
-                                                    true,
-                                                    yawDeg,
-                                                    loiterTimeS,
-                                                    speedMs)
+        _missionController.insertVermeerMissionItemWaypoint(coordinate,
+                                                                                                    vermeerMissionItemIndex,
+                                                                                                    true,
+                                                                                                    yawDeg,
+                                                                                                     loiterTimeS)
+        incrementVermeerMissionItemIndex()
+
+//    not being deleted just in case we need this....
+//    if having the holdTime in waypoint meets the loiterMs requirements then this should be deleted
+//        _missionController.insertVermeerMissionItemLoiterTime(coordinate,
+//                                                                                                            vermeerMissionItemIndex,
+//                                                                                                            true,
+//                                                                                                            loiterTimeS)
+//         incrementVermeerMissionItemIndex()
     }
 
     function insertSimpleItemAfterCurrent(coordinate) {
@@ -393,10 +410,12 @@ Item {
 
     function hideAllViews(){
         vermeerMissionListsView.visible = false
+        vermeerMissionFilePath.visible = false
     }
 
-    function _showMissionFilePathInput(){
+    function _showMissionFilePath(){
         hideAllViews()
+        vermeerMissionFilePath.visible = true
     }
 
     function _showMissionList(){
@@ -423,8 +442,7 @@ Item {
     }
 
     function handleMissionRefreshList() {
-        var downloadFilePath = vermeerMissionFileManager.getDownloadFilePath()
-        var missionFileNames = vermeerMissionFileManager.getFileNamesJsonArray(qsTr(downloadFilePath))
+        var missionFileNames = vermeerMissionFileManager.getFileNamesJsonArray(qsTr(vermeerMissionFilePathText.text))
         var missionJson = JSON.parse(missionFileNames)
         missionModel.clear()
         for (var missionJsonIndex in missionJson){
@@ -432,12 +450,14 @@ Item {
         }
     }
 
-    function vermeerShowAll(){
+    function vermeerShowAll() {
         showMissionList.visible = true
+        showMissionFilePath.visible = true
     }
 
-    function vermeerHideAllBtns(){
+    function vermeerHideAllBtns() {
         showMissionList.visible = false
+        showMissionFilePath.visible = false
     }
 
     Item {
@@ -668,7 +688,7 @@ Item {
 
         QGCButton {
             id: showMissionList
-            text:               qsTr("Show Mission List")
+            text: qsTr("Show Mission List")
             Layout.fillWidth:   true
             x: parent.width * vermeerButtonRefPoint
             anchors.top: hideShowAllVermeerButton.bottom
@@ -680,6 +700,34 @@ Item {
             }
         }
 
+        QGCButton {
+            id: showMissionFilePath
+            text:  qsTr("Set mission file path")
+            Layout.fillWidth:   true
+            x: parent.width * vermeerButtonRefPoint
+            anchors.top: showMissionList.bottom
+            visible: false
+            onPressed: {
+                _showMissionFilePath()
+            }
+        }
+
+        Rectangle {
+            id: vermeerMissionFilePath
+            height: parent.height * 0.05
+            width: parent.width * 0.50
+            x: parent.width * vermeerButtonRefPoint
+            visible: false
+            anchors.top: showMissionFilePath.bottom
+            anchors.topMargin: 30
+            TextArea {
+                id: vermeerMissionFilePathText
+                height: parent.height
+                width: parent.width
+                text: qsTr("Replace file path")
+            }
+        }
+
         Rectangle {
             id: vermeerMissionListsView
             height: parent.height * 0.50
@@ -687,10 +735,10 @@ Item {
             x: parent.width * vermeerButtonRefPoint
             color: "#161618"
             visible: false
-            anchors.top: showMissionList.bottom
+            anchors.top: showMissionFilePath.bottom
             anchors.topMargin: 30
 
-            ListModel{
+            ListModel {
                 id: missionModel
             }
 
@@ -765,49 +813,40 @@ Item {
                                 uploadButtonText.color = "white"
                                 uploadButton.color = "#d7003f"
 
-                                var downloadFilePath = vermeerMissionFileManager.getDownloadFilePath()
-                                var missionFilePath = downloadFilePath + "/" +missionName
-
+                                var missionFilePath = vermeerMissionFilePathText.text + "/" +missionName
                                 var listOfMissionItemsJsonString = vermeerFirebaseManager.getVermissionItemListFromFile(missionFilePath)
                                 var listOfMissionItemsJson = JSON.parse(listOfMissionItemsJsonString);
+
+                                // method to find number of elements in json array
+                                 for (var index in listOfMissionItemsJson) {
+                                    vermeerNumberOfMIssionItems = index
+                                 }
 
                                 for (var missionItemIndex in listOfMissionItemsJson) {
                                     var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
 
-                                    //                                "acceptanceRadiusM" : 0.0,
-                                    //                                "cameraAction" : 0,
-                                    //                                "cameraPhotoIntervalS" : 0.0,
-                                    //                                "gimbalPitchDeg" : -87.14296,
-                                    //                                "gimbalYawDeg" : 0.0,
-                                    //                                "isFlyThrough" : true,
-                                    //                                "latitudeDeg" : 35.388998757393544,
-                                    //                                "loiterTimeS" : 0.0,
-                                    //                                "longitudeDeg" : -120.5210497952243,
-                                    //                                "relativeAltitudeM" : 150.994675,
-                                    //                                "speedMs" : 7.0,
-                                    //                                "yawDeg" : 358.4598
+                                    // access the last index first then work your way down
+                                    var accessIndex = vermeerNumberOfMIssionItems - missionItemIndex
 
-                                    var latitude = listOfMissionItemsJson[missionItemIndex]["latitudeDeg"]
-                                    var longitude = listOfMissionItemsJson[missionItemIndex]["longitudeDeg"]
-                                    var altitude = listOfMissionItemsJson[missionItemIndex]["relativeAltitudeM"]
-                                    var yawDeg = listOfMissionItemsJson[missionItemIndex]["yawDeg"]
-                                    var loiterTimeS = listOfMissionItemsJson[missionItemIndex]["loiterTimeS"]
-                                    var speedMs = listOfMissionItemsJson[missionItemIndex]["speedMs"]
+                                    var latitude = listOfMissionItemsJson[accessIndex]["latitudeDeg"]
+                                    var longitude = listOfMissionItemsJson[accessIndex]["longitudeDeg"]
+                                    var altitude = listOfMissionItemsJson[accessIndex]["relativeAltitudeM"]
+                                    var yawDeg = listOfMissionItemsJson[accessIndex]["yawDeg"]
+                                    var loiterTimeS = listOfMissionItemsJson[accessIndex]["loiterTimeS"]
+                                    var speedMs = listOfMissionItemsJson[accessIndex]["speedMs"]
 
                                     coordinate.latitude = latitude
                                     coordinate.longitude = longitude
                                     coordinate.altitude = altitude
-
                                     coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
                                     coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
                                     coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
 
-                                    insertVermeerMissionItem(coordinate,
-                                                             missionItemIndex,
-                                                             true,
-                                                             yawDeg,
-                                                             loiterTimeS,
-                                                             speedMs)
+                                   resetVermeerMissionItemIndex()
+                                   insertVermeerMissionItem(coordinate,
+                                                                             yawDeg,
+                                                                             loiterTimeS,
+                                                                             speedMs)
                                 }
 
                                 var logMsg = missionName + " upload button released"

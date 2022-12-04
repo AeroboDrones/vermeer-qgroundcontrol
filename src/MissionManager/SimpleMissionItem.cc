@@ -295,6 +295,21 @@ void SimpleMissionItem::save(QJsonArray&  missionItems)
     }
 }
 
+void SimpleMissionItem::setDesiredYaw(float yawDegrees)
+{
+    _missionItem.setParam4(yawDegrees);
+}
+
+void SimpleMissionItem::setHoldTime(int timeS)
+{
+  _missionItem.setParam1(timeS);
+}
+
+void SimpleMissionItem::setWaypointLoiterTime(float loiterTimeS)
+{
+    _missionItem.setParam1(loiterTimeS);
+}
+
 bool SimpleMissionItem::load(QTextStream &loadStream)
 {
     bool success;
@@ -862,7 +877,7 @@ void SimpleMissionItem::setCoordinate(const QGeoCoordinate& coordinate)
         _missionItem.setParam5(coordinate.latitude());
         _missionItem.setParam6(coordinate.longitude());
         // for vermeer
-        qInfo() << "SimpleMissionItem::setCoordinate: " << coordinate.altitude();
+        qInfo() << "SimpleMissionItem::setCoordinate: setting altittude " << coordinate.altitude();
         _missionItem.setParam7(coordinate.altitude());
     }
 }

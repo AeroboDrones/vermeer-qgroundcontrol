@@ -136,6 +136,11 @@ public:
     int  lastSequenceNumber (void) const final;
     void save               (QJsonArray&  missionItems) final;
 
+    // vermeer specific
+    void setDesiredYaw(float yawDegrees) ;
+    void setHoldTime(int timeS);
+    void setWaypointLoiterTime(float loiterTimeS);
+
 signals:
     void commandChanged             (int command);
     void friendlyEditAllowedChanged (bool friendlyEditAllowed);

@@ -351,14 +351,23 @@ VisualMissionItem* MissionController::_insertSimpleMissionItemWorker(QGeoCoordin
     return newItem;
 }
 
-VisualMissionItem *MissionController::_insertVermeerMissionItem(QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex,
-                                                                bool makeCurrentItem,double yawDeg,double loiterTimeS,int speedMs)
+VisualMissionItem *MissionController::insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem, double loiterTime)
 {
-    int sequenceNumber = _nextSequenceNumber();
+    return _insertVermeerMissionItemLoiterTime(coordinate,MAV_CMD_NAV_LOITER_TIME ,visualItemIndex,makeCurrentItem,loiterTime);
+}
+
+VisualMissionItem *MissionController::_insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate,
+                                                                                                                                        MAV_CMD command,
+                                                                                                                                        int visualItemIndex,
+                                                                                                                                        bool makeCurrentItem,
+                                                                                                                                        double loiterTimeS)
+{
+    //int sequenceNumber = _nextSequenceNumber();
     SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
-    newItem->setSequenceNumber(sequenceNumber);
+    newItem->setSequenceNumber(visualItemIndex);
     newItem->setCoordinate(coordinate);
     newItem->setCommand(command);
+    newItem->setWaypointLoiterTime(loiterTimeS);
     _initVisualItem(newItem);
 
     if (newItem->specifiesAltitude()) {
@@ -393,9 +402,58 @@ VisualMissionItem *MissionController::_insertVermeerMissionItem(QGeoCoordinate c
     return newItem;
 }
 
-VisualMissionItem *MissionController::insertVermeerMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem, double yawDeg, double loiterTimeS, int speedMs)
+VisualMissionItem *MissionController::insertVermeerMissionItemWaypoint(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem, double yawDeg,int holdTimeS)
 {
-    return _insertVermeerMissionItem(coordinate,MAV_CMD_NAV_WAYPOINT,visualItemIndex,makeCurrentItem,yawDeg,loiterTimeS,speedMs);
+    return _insertVermeerMissionItemWaypoint(coordinate,MAV_CMD_NAV_WAYPOINT,visualItemIndex,makeCurrentItem,yawDeg,holdTimeS);
+}
+
+VisualMissionItem *MissionController::_insertVermeerMissionItemWaypoint(QGeoCoordinate coordinate,
+                                                                                                                                            MAV_CMD command,
+                                                                                                                                            int visualItemIndex,
+                                                                                                                                            bool makeCurrentItem,
+                                                                                                                                            double yawDeg,
+                                                                                                                                            int holdTimeS)
+{
+    int sequenceNumber = _nextSequenceNumber();
+    SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
+    newItem->setSequenceNumber(sequenceNumber);
+    //newItem->setSequenceNumber(visualItemIndex);
+    newItem->setCoordinate(coordinate);
+    newItem->setCommand(command);
+    newItem->setDesiredYaw(yawDeg);
+    newItem->setHoldTime(holdTimeS);
+    _initVisualItem(newItem);
+
+    if (newItem->specifiesAltitude()) {
+        if (!qgcApp()->toolbox()->missionCommandTree()->isLandCommand(command)) {
+            double                              prevAltitude;
+            QGroundControlQmlGlobal::AltMode    prevAltMode;
+
+            if (_findPreviousAltitude(visualItemIndex, &prevAltitude, &prevAltMode)) {
+                newItem->altitude()->setRawValue(prevAltitude);
+                if (globalAltitudeMode() == QGroundControlQmlGlobal::AltitudeModeMixed) {
+                    // We are in mixed altitude modes, so copy from previous. Otherwise alt mode will be set from global setting.
+                    newItem->setAltitudeMode(static_cast<QGroundControlQmlGlobal::AltMode>(prevAltMode));
+                }
+            }
+        }
+    }
+    if (visualItemIndex == -1) {
+        _visualItems->append(newItem);
+    } else {
+        _visualItems->insert(visualItemIndex, newItem);
+    }
+
+    // We send the click coordinate through here to be able to set the planned home position from the user click location if needed
+    _recalcAllWithCoordinate(coordinate);
+
+    if (makeCurrentItem) {
+        setCurrentPlanViewSeqNum(newItem->sequenceNumber(), true);
+    }
+
+    _firstItemAdded();
+
+    return newItem;
 }
 
 VisualMissionItem* MissionController::insertSimpleMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem)
