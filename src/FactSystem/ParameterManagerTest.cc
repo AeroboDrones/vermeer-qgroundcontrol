@@ -211,9 +211,9 @@ void ParameterManagerTest::_FTPChangeParam()
     QSignalSpy spyProgress(vehicle->parameterManager(), SIGNAL(loadProgressChanged(float)));
     Fact* fact = vehicle->parameterManager()->getParameter(MAV_COMP_ID_AUTOPILOT1, "THR_MIN");
     QVERIFY(fact);
-    float value = fact->rawValue().toFloat();
+    double value = fact->rawValue().toFloat();
     QCOMPARE(value, 0.0);
-    float testvalue = 0.87;
+    double testvalue = 0.87;
     QVariant sendv = testvalue;
     fact->setRawValue(sendv); // This should trigger a parameter upload to the vehicle
     /* That should set the progress to 0.5 and then back to 0 */

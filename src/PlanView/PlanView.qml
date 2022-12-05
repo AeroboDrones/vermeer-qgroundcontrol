@@ -388,10 +388,6 @@ Item {
         }
     }
 
-    property string    _hideAllVermeerButtonText: qsTr("Show All")
-    property string    _showAllVermeerButtonText: qsTr("Hide All")
-
-
     property string    _hideAllVermeerButtonText: qsTr("Hide All")
     property string    _showAllVermeerButtonText: qsTr("Show All")
     property bool      _vermeerShowAll: false
