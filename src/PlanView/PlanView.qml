@@ -312,6 +312,10 @@ Item {
                                                                                                     true,
                                                                                                     yawDeg,
                                                                                                      loiterTimeS)
+
+        _missionController.insertVermeerMissionItemChangeSpeed(vermeerMissionItemIndex,
+                                                                                                           true,
+                                                                                                           speedMs)
         incrementVermeerMissionItemIndex()
 
 //    not being deleted just in case we need this....

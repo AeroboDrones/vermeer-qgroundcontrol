@@ -140,6 +140,7 @@ public:
     void setDesiredYaw(float yawDegrees) ;
     void setHoldTime(int timeS);
     void setWaypointLoiterTime(float loiterTimeS);
+    void setSpeed(double speedMs);
 
 signals:
     void commandChanged             (int command);

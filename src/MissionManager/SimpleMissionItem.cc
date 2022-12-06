@@ -310,6 +310,15 @@ void SimpleMissionItem::setWaypointLoiterTime(float loiterTimeS)
     _missionItem.setParam1(loiterTimeS);
 }
 
+void SimpleMissionItem::setSpeed(double speedMs)
+{
+    // NOTES:
+    //https://mavlink.io/en/messages/common.html#MAV_CMD_DO_CHANGE_SPEED
+    _missionItem.setParam1(1);
+    _missionItem.setParam2(speedMs);
+    _missionItem.setParam3(-1);
+}
+
 bool SimpleMissionItem::load(QTextStream &loadStream)
 {
     bool success;

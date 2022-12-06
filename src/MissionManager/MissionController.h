@@ -135,6 +135,15 @@ public:
                                                             double yawDeg = 0.0,
                                                             int holdTimeS = 0);
 
+    /// Add a new simple mission item to the list
+    ///     @param coordinate: Coordinate for item
+    ///     @param visualItemIndex: index to insert at, -1 for end of list
+    ///     @param makeCurrentItem: true: Make this item the current item
+    /// @return Newly created item
+    Q_INVOKABLE VisualMissionItem* insertVermeerMissionItemChangeSpeed( int visualItemIndex,
+                                                            bool makeCurrentItem = false,
+                                                            double speedMs = 0.0);
+
     /// Add a new vermeer mission item to the list
     ///     @param coordinate: Coordinate for item
     ///     @param visualItemIndex: index to insert at, -1 for end of list
@@ -371,6 +380,7 @@ private:
     VisualMissionItem*      _insertSimpleMissionItemWorker      (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem);
     VisualMissionItem*      _insertVermeerMissionItemWaypoint             (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double yawDeg,int holdTimeS);
     VisualMissionItem*      _insertVermeerMissionItemLoiterTime           (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double loiterTimeS);
+    VisualMissionItem*      _insertVermeerMissionItemChangeSpeed      (MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double speedMs);
     void                    _insertComplexMissionItemWorker     (const QGeoCoordinate& mapCenterCoordinate, ComplexMissionItem* complexItem, int visualItemIndex, bool makeCurrentItem);
     bool                    _isROIBeginItem                     (SimpleMissionItem* simpleItem);
     bool                    _isROICancelItem                    (SimpleMissionItem* simpleItem);

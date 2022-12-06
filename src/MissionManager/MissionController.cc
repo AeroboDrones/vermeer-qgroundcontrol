@@ -402,6 +402,52 @@ VisualMissionItem *MissionController::_insertVermeerMissionItemLoiterTime(QGeoCo
     return newItem;
 }
 
+
+VisualMissionItem *MissionController::insertVermeerMissionItemChangeSpeed(int visualItemIndex, bool makeCurrentItem, double speedMs)
+{
+    return _insertVermeerMissionItemChangeSpeed(MAV_CMD_DO_CHANGE_SPEED,visualItemIndex,makeCurrentItem,speedMs);
+}
+
+VisualMissionItem *MissionController::_insertVermeerMissionItemChangeSpeed(MAV_CMD command, int visualItemIndex, bool makeCurrentItem, double speedMs)
+{
+    int sequenceNumber = _nextSequenceNumber();
+    SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
+    newItem->setSequenceNumber(sequenceNumber);
+    //newItem->setSequenceNumber(visualItemIndex);
+    newItem->setCommand(command);
+    newItem->setSpeed(speedMs);
+    _initVisualItem(newItem);
+
+    if (newItem->specifiesAltitude()) {
+        if (!qgcApp()->toolbox()->missionCommandTree()->isLandCommand(command)) {
+            double                              prevAltitude;
+            QGroundControlQmlGlobal::AltMode    prevAltMode;
+
+            if (_findPreviousAltitude(visualItemIndex, &prevAltitude, &prevAltMode)) {
+                newItem->altitude()->setRawValue(prevAltitude);
+                if (globalAltitudeMode() == QGroundControlQmlGlobal::AltitudeModeMixed) {
+                    // We are in mixed altitude modes, so copy from previous. Otherwise alt mode will be set from global setting.
+                    newItem->setAltitudeMode(static_cast<QGroundControlQmlGlobal::AltMode>(prevAltMode));
+                }
+            }
+        }
+    }
+    if (visualItemIndex == -1) {
+        _visualItems->append(newItem);
+    } else {
+        _visualItems->insert(visualItemIndex, newItem);
+    }
+
+    if (makeCurrentItem) {
+        setCurrentPlanViewSeqNum(newItem->sequenceNumber(), true);
+    }
+
+    _firstItemAdded();
+
+    return newItem;
+}
+
+
 VisualMissionItem *MissionController::insertVermeerMissionItemWaypoint(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem, double yawDeg,int holdTimeS)
 {
     return _insertVermeerMissionItemWaypoint(coordinate,MAV_CMD_NAV_WAYPOINT,visualItemIndex,makeCurrentItem,yawDeg,holdTimeS);
