@@ -357,7 +357,6 @@ Item {
         _missionController.insertLandItem(mapCenter(), nextIndex, true /* makeCurrentItem */)
     }
 
-
     function selectNextNotReady() {
         var foundCurrent = false
         for (var i=0; i<_missionController.visualItems.count; i++) {
@@ -421,6 +420,7 @@ Item {
     function _showMissionList(){
         hideAllViews()
         vermeerMissionListsView.visible = true
+        vermeerMissionFileManager.saveMissionFilePath(vermeerMissionFilePathText.text)
     }
 
     function _showVTLogs(){
@@ -724,7 +724,11 @@ Item {
                 id: vermeerMissionFilePathText
                 height: parent.height
                 width: parent.width
-                text: qsTr("Replace file path")
+                text: qsTr("replace file path")
+            }
+
+            Component.onCompleted: {
+                vermeerMissionFilePathText.text = vermeerMissionFileManager.getMissionFilePath()
             }
         }
 

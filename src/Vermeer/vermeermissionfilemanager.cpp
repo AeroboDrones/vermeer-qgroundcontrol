@@ -40,3 +40,27 @@ QVariant VermeerMissionFileManager::getDownloadFilePath()
     QString downloadsFolder = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     return QVariant(downloadsFolder);
 }
+
+void VermeerMissionFileManager::saveMissionFilePath(QVariant missionFilePath)
+{
+    QFile missionFilePathFile(QDir::currentPath() + QDir::separator() + missionFilePathFilename);
+    if(missionFilePathFile.open(QFile::WriteOnly)){
+        QTextStream logStream(&missionFilePathFile);
+        logStream << missionFilePath.toString();
+    }
+    missionFilePathFile.close();
+}
+
+QVariant VermeerMissionFileManager::getMissionFilePath()
+{
+    QFile missionFilePathFile(QDir::currentPath() + QDir::separator() + missionFilePathFilename);
+    QString missionFilePathString{"replace with mission file path"};
+    if(missionFilePathFile.exists()) {
+        if(missionFilePathFile.open(QIODevice::ReadOnly)) {
+            missionFilePathString = missionFilePathFile.readAll();
+        }
+    } else {
+        qInfo() << Q_FUNC_INFO << ": " << missionFilePathFilename << " does not exist";
+    }
+    return missionFilePathString;
+}

@@ -15,8 +15,11 @@ signals:
 public slots:
     QString getFileNamesJsonArray(QString missionDirectoryPath);
     QVariant getDownloadFilePath();
+    void saveMissionFilePath(QVariant missionFilePath);
+    QVariant getMissionFilePath();
 
-
+private:
+    QString missionFilePathFilename{"missionFilePath.txt"};
 };
 
 #endif // VERMEERMISSIONFILEMANAGER_H
