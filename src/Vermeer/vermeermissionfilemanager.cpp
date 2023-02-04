@@ -7,6 +7,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QStandardPaths>
+#include <QDirIterator>
 
 #include "vermeermissionfilemanager.h"
 
@@ -33,6 +34,25 @@ QString VermeerMissionFileManager::getFileNamesJsonArray(QString missionDirector
      doc.setArray(missionFileNames);
      QString missionFilenamesJsonString = doc.toJson();
      return missionFilenamesJsonString;
+}
+
+QString VermeerMissionFileManager::getMissionJsonRecursively()
+{
+    QString userFilePath = "\\This PC\\Galaxy Tab Active3\\Internal storage\\Android\\data\\com.Vermeer.Augnav\files\\database\flightPlans";
+    QDir directory(userFilePath);
+    QJsonArray missionFileNames;
+    QJsonDocument doc;
+
+    QStringList missionFilenameList = directory.entryList(QStringList() << "*.json",QDir::Files);
+    foreach(QString missionFileName, missionFilenameList) {
+        QJsonObject missionFilenameJson;
+        missionFilenameJson.insert("filename",QJsonValue(missionFileName));
+        missionFileNames.push_back(QJsonValue(missionFilenameJson));
+    }
+
+    doc.setArray(missionFileNames);
+    QString missionFilenamesJsonString = doc.toJson();
+    return missionFilenamesJsonString;
 }
 
 QVariant VermeerMissionFileManager::getDownloadFilePath()

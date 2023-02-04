@@ -14,6 +14,7 @@ signals:
 
 public slots:
     QString getFileNamesJsonArray(QString missionDirectoryPath);
+    QString getMissionJsonRecursively();
     QVariant getDownloadFilePath();
     void saveMissionFilePath(QVariant missionFilePath);
     QVariant getMissionFilePath();

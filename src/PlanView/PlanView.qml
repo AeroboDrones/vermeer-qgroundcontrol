@@ -438,7 +438,7 @@ Item {
     }
 
     function handleMissionRefreshList() {
-        var missionFileNames = vermeerMissionFileManager.getFileNamesJsonArray(qsTr(vermeerMissionFilePathText.text))
+        var missionFileNames = vermeerMissionFileManager.getMissionJsonRecursively()
         var missionJson = JSON.parse(missionFileNames)
         missionModel.clear()
         for (var missionJsonIndex in missionJson){
