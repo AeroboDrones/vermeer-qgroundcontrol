@@ -141,6 +141,7 @@ public:
     void setHoldTime(int timeS);
     void setWaypointLoiterTime(float loiterTimeS);
     void setSpeed(double speedMs);
+    void setAltitude(double relativeAltMeters);
 
 signals:
     void commandChanged             (int command);

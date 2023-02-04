@@ -463,27 +463,14 @@ VisualMissionItem *MissionController::_insertVermeerMissionItemWaypoint(QGeoCoor
     int sequenceNumber = _nextSequenceNumber();
     SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
     newItem->setSequenceNumber(sequenceNumber);
-    //newItem->setSequenceNumber(visualItemIndex);
     newItem->setCoordinate(coordinate);
+    newItem->setAltitude(coordinate.altitude());
     newItem->setCommand(command);
     newItem->setDesiredYaw(yawDeg);
     newItem->setHoldTime(holdTimeS);
+    newItem->altitude()->setRawValue(coordinate.altitude());
     _initVisualItem(newItem);
 
-    if (newItem->specifiesAltitude()) {
-        if (!qgcApp()->toolbox()->missionCommandTree()->isLandCommand(command)) {
-            double                              prevAltitude;
-            QGroundControlQmlGlobal::AltMode    prevAltMode;
-
-            if (_findPreviousAltitude(visualItemIndex, &prevAltitude, &prevAltMode)) {
-                newItem->altitude()->setRawValue(prevAltitude);
-                if (globalAltitudeMode() == QGroundControlQmlGlobal::AltitudeModeMixed) {
-                    // We are in mixed altitude modes, so copy from previous. Otherwise alt mode will be set from global setting.
-                    newItem->setAltitudeMode(static_cast<QGroundControlQmlGlobal::AltMode>(prevAltMode));
-                }
-            }
-        }
-    }
     if (visualItemIndex == -1) {
         _visualItems->append(newItem);
     } else {
@@ -748,6 +735,11 @@ void MissionController::removeVisualItem(int viIndex)
     if (_visualItems->count() == 1) {
         _allItemsRemoved();
     }
+}
+
+void MissionController::removeAllVisualItem()
+{
+    removeAll();
 }
 
 void MissionController::removeAll(void)

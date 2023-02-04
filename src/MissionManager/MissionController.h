@@ -113,6 +113,7 @@ public:
     Q_PROPERTY(QGroundControlQmlGlobal::AltMode globalAltitudeModeDefault  READ globalAltitudeModeDefault  NOTIFY globalAltitudeModeChanged)                               ///< Default to use for newly created items
 
     Q_INVOKABLE void removeVisualItem(int viIndex);
+    Q_INVOKABLE void removeAllVisualItem();
 
     /// Add a new simple mission item to the list
     ///     @param coordinate: Coordinate for item

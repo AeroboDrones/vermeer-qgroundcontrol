@@ -317,14 +317,10 @@ Item {
                                                                                                            true,
                                                                                                            speedMs)
         incrementVermeerMissionItemIndex()
+    }
 
-//    not being deleted just in case we need this....
-//    if having the holdTime in waypoint meets the loiterMs requirements then this should be deleted
-//        _missionController.insertVermeerMissionItemLoiterTime(coordinate,
-//                                                                                                            vermeerMissionItemIndex,
-//                                                                                                            true,
-//                                                                                                            loiterTimeS)
-//         incrementVermeerMissionItemIndex()
+    function removeAllMissionItems() {
+        _missionController.removeAllVisualItem()
     }
 
     function insertSimpleItemAfterCurrent(coordinate) {
@@ -811,9 +807,10 @@ Item {
 
                                 var logMsg = missionName + " upload button pressed"
                                 vermeerLogManager.log(logMsg)
+
+                                  removeAllMissionItems()
                             }
                             onReleased: {
-                                // do we need a loading screen?
                                 uploadButtonText.color = "white"
                                 uploadButton.color = "#d7003f"
 
@@ -1134,6 +1131,8 @@ Item {
                             _missionController.removeVisualItem(removeVIIndex)
                             if (removeVIIndex >= _missionController.visualItems.count) {
                                 removeVIIndex--
+                                var msg = " removing mission item" + removeVIIndex
+                                console.log(msg)
                             }
                         }
                         onSelectNextNotReadyItem:   selectNextNotReady()

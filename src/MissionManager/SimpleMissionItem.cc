@@ -319,6 +319,11 @@ void SimpleMissionItem::setSpeed(double speedMs)
     _missionItem.setParam3(-1);
 }
 
+void SimpleMissionItem::setAltitude(double relativeAltMeters)
+{
+     _missionItem.setParam7(relativeAltMeters);
+}
+
 bool SimpleMissionItem::load(QTextStream &loadStream)
 {
     bool success;
@@ -886,8 +891,8 @@ void SimpleMissionItem::setCoordinate(const QGeoCoordinate& coordinate)
         _missionItem.setParam5(coordinate.latitude());
         _missionItem.setParam6(coordinate.longitude());
         // for vermeer
-        qInfo() << "SimpleMissionItem::setCoordinate: setting altittude " << coordinate.altitude();
-        _missionItem.setParam7(coordinate.altitude());
+        //        qInfo() << "SimpleMissionItem::setCoordinate: setting altittude " << coordinate.altitude();
+        //        _missionItem.setParam7(coordinate.altitude());
     }
 }
 
