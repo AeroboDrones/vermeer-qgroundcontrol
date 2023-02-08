@@ -438,6 +438,11 @@ Item {
     }
 
     function handleMissionRefreshList() {
+
+        //var whatIsThis = vermeerMissionFileManager.getMissionJsonRecursively()
+        // /storage/emulated/0/Android/data/org.mavlink.qgroundcontrol/files/database/flightPlans
+        // "\\This PC\\Galaxy Tab Active3\\Internal storage\\Android\\data\\com.Vermeer.Augnav\files\\database\flightPlans";
+
         var missionFileNames = vermeerMissionFileManager.getMissionJsonRecursively()
         var missionJson = JSON.parse(missionFileNames)
         missionModel.clear()
@@ -696,37 +701,37 @@ Item {
             }
         }
 
-        QGCButton {
-            id: showMissionFilePath
-            text:  qsTr("Set mission file path")
-            Layout.fillWidth:   true
-            x: parent.width * vermeerButtonRefPoint
-            anchors.top: showMissionList.bottom
-            visible: false
-            onPressed: {
-                _showMissionFilePath()
-            }
-        }
+//        QGCButton {
+//            id: showMissionFilePath
+//            text:  qsTr("Set mission file path")
+//            Layout.fillWidth:   true
+//            x: parent.width * vermeerButtonRefPoint
+//            anchors.top: showMissionList.bottom
+//            visible: false
+//            onPressed: {
+//                _showMissionFilePath()
+//            }
+//        }
 
-        Rectangle {
-            id: vermeerMissionFilePath
-            height: parent.height * 0.05
-            width: parent.width * 0.50
-            x: parent.width * vermeerButtonRefPoint
-            visible: false
-            anchors.top: showMissionFilePath.bottom
-            anchors.topMargin: 30
-            TextArea {
-                id: vermeerMissionFilePathText
-                height: parent.height
-                width: parent.width
-                text: qsTr("replace file path")
-            }
+//        Rectangle {
+//            id: vermeerMissionFilePath
+//            height: parent.height * 0.05
+//            width: parent.width * 0.50
+//            x: parent.width * vermeerButtonRefPoint
+//            visible: false
+//            anchors.top: showMissionFilePath.bottom
+//            anchors.topMargin: 30
+//            TextArea {
+//                id: vermeerMissionFilePathText
+//                height: parent.height
+//                width: parent.width
+//                text: qsTr("replace file path")
+//            }
 
-            Component.onCompleted: {
-                vermeerMissionFilePathText.text = vermeerMissionFileManager.getMissionFilePath()
-            }
-        }
+//            Component.onCompleted: {
+//                vermeerMissionFilePathText.text = vermeerMissionFileManager.getMissionFilePath()
+//            }
+//        }
 
         Rectangle {
             id: vermeerMissionListsView
@@ -814,7 +819,8 @@ Item {
                                 uploadButtonText.color = "white"
                                 uploadButton.color = "#d7003f"
 
-                                var missionFilePath = vermeerMissionFilePathText.text + "/" +missionName
+                                //var missionFilePath = vermeerMissionFilePathText.text + "/" +missionName
+                                var missionFilePath = missionName
                                 var listOfMissionItemsJsonString = vermeerFirebaseManager.getVermissionItemListFromFile(missionFilePath)
                                 var listOfMissionItemsJson = JSON.parse(listOfMissionItemsJsonString);
 
