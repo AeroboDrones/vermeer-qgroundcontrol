@@ -439,11 +439,7 @@ Item {
 
     function handleMissionRefreshList() {
 
-        //var whatIsThis = vermeerMissionFileManager.getMissionJsonRecursively()
-        // /storage/emulated/0/Android/data/org.mavlink.qgroundcontrol/files/database/flightPlans
-        // "\\This PC\\Galaxy Tab Active3\\Internal storage\\Android\\data\\com.Vermeer.Augnav\files\\database\flightPlans";
-
-        var missionFileNames = vermeerMissionFileManager.getMissionJsonRecursively()
+        var missionFileNames = vermeerMissionFileManager.getMissionFilenamesRecursively()
         var missionJson = JSON.parse(missionFileNames)
         missionModel.clear()
         for (var missionJsonIndex in missionJson){
@@ -819,8 +815,7 @@ Item {
                                 uploadButtonText.color = "white"
                                 uploadButton.color = "#d7003f"
 
-                                //var missionFilePath = vermeerMissionFilePathText.text + "/" +missionName
-                                var missionFilePath = missionName
+                                var missionFilePath = vermeerMissionFileManager.getAbsoluteFilePathFromMisionFilename(missionName)
                                 var listOfMissionItemsJsonString = vermeerFirebaseManager.getVermissionItemListFromFile(missionFilePath)
                                 var listOfMissionItemsJson = JSON.parse(listOfMissionItemsJsonString);
 

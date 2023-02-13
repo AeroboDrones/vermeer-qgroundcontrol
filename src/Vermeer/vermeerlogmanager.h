@@ -30,6 +30,7 @@ public slots:
     void log(QString logMessage);
     QString readAllUlogs();
     bool isFileExist();
+    void logToDownloadFolder(QString logMessage);
 
 private:
     QString filename{"VermeerUserLogs.txt"};
