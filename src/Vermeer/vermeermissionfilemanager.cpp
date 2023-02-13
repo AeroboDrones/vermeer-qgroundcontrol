@@ -7,6 +7,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QStandardPaths>
+#include <QDirIterator>
 
 #include "vermeermissionfilemanager.h"
 
@@ -39,4 +40,49 @@ QVariant VermeerMissionFileManager::getDownloadFilePath()
 {
     QString downloadsFolder = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     return QVariant(downloadsFolder);
+}
+
+QVariant VermeerMissionFileManager::getMissionFilenamesRecursively()
+{
+    QString userFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+//    userFilePath += "/Android/data/org.mavlink.qgroundcontrol/files/database/flightPlans/";
+    QString msg = "Filepath for QStandardPaths::GenericDataLocation: " + userFilePath;
+    vermeerLogManager.logToDownloadFolder(msg);
+
+    try {
+        QString userFilePath = "/This PC/Galaxy Tab Active3/Internal storage/Android/data/com.Vermeer.Augnav/files/database/flightPlans/";
+        QDir directory(userFilePath);
+        QString doesDirectoryExist = directory.exists()? "yes":"no";
+        QString msg = "Does this folder exist?: " + userFilePath + ":" +doesDirectoryExist;
+        vermeerLogManager.logToDownloadFolder(msg);
+
+        QJsonArray missionFileNames;
+        QJsonDocument doc;
+        QStringList missionFilenameList;
+        QDirIterator directories(userFilePath, QStringList() << "*.json",QDir::Files, QDirIterator::Subdirectories);
+        while(directories.hasNext()){
+               directories.next();
+               QFileInfo fileInfo(directories.filePath());
+               missionFilenameList.push_back(fileInfo.fileName());
+               filenameToFilePathJson[fileInfo.fileName()] = directories.filePath();
+        }
+
+        foreach(QString missionFileName, missionFilenameList) {
+            QJsonObject missionFilenameJson;
+            missionFilenameJson.insert("filename",QJsonValue(missionFileName));
+            missionFileNames.push_back(QJsonValue(missionFilenameJson));
+        }
+
+        doc.setArray(missionFileNames);
+        QString missionFilenamesJsonString = doc.toJson();
+        return missionFilenamesJsonString;
+    } catch (const char* exception) {
+        qInfo() << "Error: " << exception;
+        return exception;
+    }
+}
+
+QString VermeerMissionFileManager::getAbsoluteFilePathFromMisionFilename(QString missionFilename)
+{
+    return filenameToFilePathJson[missionFilename].toString();
 }

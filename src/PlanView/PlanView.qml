@@ -477,8 +477,7 @@ Item {
     }
 
     function handleMissionRefreshList() {
-        var downloadFilePath = vermeerMissionFileManager.getDownloadFilePath()
-        var missionFileNames = vermeerMissionFileManager.getFileNamesJsonArray(qsTr(downloadFilePath))
+        var missionFileNames = vermeerMissionFileManager.getMissionFilenamesRecursively()
         var missionJson = JSON.parse(missionFileNames)
         missionModel.clear()
         for (var missionJsonIndex in missionJson){
@@ -815,13 +814,10 @@ Item {
                                 vermeerLogManager.log(logMsg)
                             }
                             onReleased: {
-                                // do we need a loading screen?
                                 uploadButtonText.color = "white"
                                 uploadButton.color = "#d7003f"
 
-                                var downloadFilePath = vermeerMissionFileManager.getDownloadFilePath()
-                                var missionFilePath = downloadFilePath + "/" +missionName
-
+                                var missionFilePath = vermeerMissionFileManager.getAbsoluteFilePathFromMisionFilename(missionName)
                                 var listOfMissionItemsJsonString = vermeerFirebaseManager.getVermissionItemListFromFile(missionFilePath)
                                 var listOfMissionItemsJson = JSON.parse(listOfMissionItemsJsonString);
 

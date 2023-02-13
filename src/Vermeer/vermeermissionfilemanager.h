@@ -3,6 +3,11 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
+#include "Vermeer/vermeerlogmanager.h"
 
 class VermeerMissionFileManager : public QObject
 {
@@ -10,12 +15,20 @@ class VermeerMissionFileManager : public QObject
 public:
     explicit VermeerMissionFileManager(QObject *parent = nullptr);
 
+    QJsonObject filenameToFilePathJson;
+
+
+
 signals:
 
 public slots:
     QString getFileNamesJsonArray(QString missionDirectoryPath);
     QVariant getDownloadFilePath();
+    QVariant getMissionFilenamesRecursively();
+    QString getAbsoluteFilePathFromMisionFilename(QString missionFilename);
 
+private:
+    VermeerLogManager vermeerLogManager;
 
 };
 

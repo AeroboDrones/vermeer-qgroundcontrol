@@ -2,6 +2,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QDateTime>
+#include <QStandardPaths>
 
 
 #include "vermeerlogmanager.h"
@@ -52,4 +53,19 @@ bool VermeerLogManager::isFileExist()
 {
     QFile vermeerUserLogs(QDir::currentPath() + QDir::separator() + filename);
     return vermeerUserLogs.exists();
+}
+
+void VermeerLogManager::logToDownloadFolder(QString logMessage)
+{
+    QDateTime dateTime = dateTime.currentDateTime();
+
+    QString downloadsFolder = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+
+    QFile vermeerDebug(downloadsFolder + QDir::separator() + "vermeerDebug.txt");
+    if(vermeerDebug.open(QFile::Append)){
+        QTextStream logStream(&vermeerDebug);
+        logStream << dateTime.toString("yyyy-MM-dd HH:mm:ss")<< ": " << logMessage << Qt::endl;
+    }
+    qInfo() << Q_FUNC_INFO << " : " << logMessage;
+    vermeerDebug.close();
 }
