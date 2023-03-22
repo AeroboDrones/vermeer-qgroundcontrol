@@ -45,26 +45,30 @@ QVariant VermeerMissionFileManager::getDownloadFilePath()
 QVariant VermeerMissionFileManager::getMissionFilenamesRecursively()
 {
     QString userFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-//    userFilePath += "/Android/data/org.mavlink.qgroundcontrol/files/database/flightPlans/";
-    QString msg = "Filepath for QStandardPaths::GenericDataLocation: " + userFilePath;
-    vermeerLogManager.logToDownloadFolder(msg);
+    userFilePath += "/com.Vermeer.Augnav/files/database/flightPlans";
 
     try {
-        QString userFilePath = "/This PC/Galaxy Tab Active3/Internal storage/Android/data/com.Vermeer.Augnav/files/database/flightPlans/";
-        QDir directory(userFilePath);
-        QString doesDirectoryExist = directory.exists()? "yes":"no";
-        QString msg = "Does this folder exist?: " + userFilePath + ":" +doesDirectoryExist;
-        vermeerLogManager.logToDownloadFolder(msg);
-
         QJsonArray missionFileNames;
         QJsonDocument doc;
         QStringList missionFilenameList;
         QDirIterator directories(userFilePath, QStringList() << "*.json",QDir::Files, QDirIterator::Subdirectories);
         while(directories.hasNext()){
                directories.next();
-               QFileInfo fileInfo(directories.filePath());
-               missionFilenameList.push_back(fileInfo.fileName());
-               filenameToFilePathJson[fileInfo.fileName()] = directories.filePath();
+
+               QString missionJsonString;
+               QFile file(directories.filePath());
+               if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                   QTextStream in(&file);
+                   missionJsonString = in.readAll();
+                   file.close();
+               }
+
+               QJsonDocument missionJsonDocument = QJsonDocument::fromJson(missionJsonString.toUtf8());
+               QJsonObject missionJsonObject = missionJsonDocument.object();
+               QString missionName = missionJsonObject.value("name").toString();
+
+               filenameToFilePathJson[missionName] = directories.filePath();
+               missionFilenameList.push_back(missionName);
         }
 
         foreach(QString missionFileName, missionFilenameList) {

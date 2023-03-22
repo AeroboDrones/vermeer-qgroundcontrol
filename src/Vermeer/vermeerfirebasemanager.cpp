@@ -492,11 +492,20 @@ QJsonObject VermeerFirebaseManager::readJsonFile(QString jsonFilePath)
 
 QString VermeerFirebaseManager::getMissionItemsJson(QJsonObject vermeerMissionContentJson)
 {
-    QJsonArray jsonArray = vermeerMissionContentJson["missionItems"].toArray();
-    QJsonDocument jsondoc;
-    jsondoc.setArray(jsonArray);
-    QString vermeerMissionItemsJsonString(jsondoc.toJson());
-    return vermeerMissionItemsJsonString;
+    try{
+        QJsonDocument jsondoc;
+        QJsonValue nestedValue = vermeerMissionContentJson.value("route");
+        if(nestedValue.isObject()){
+            QJsonObject nestedObject = nestedValue.toObject();
+            QJsonArray mavsdkWaypointsArray = nestedObject.value("mavsdkWaypoints").toArray(); // assuming the array key is "arrayKey"
+            jsondoc.setArray(mavsdkWaypointsArray);
+        }
+        QString vermeerMissionItemsJsonString(jsondoc.toJson());
+        return vermeerMissionItemsJsonString;
+    } catch (const char* exception) {
+        qInfo() << "Error: " << exception;
+        return exception;
+    }
 }
 
 void VermeerFirebaseManager::bindSocket()

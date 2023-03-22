@@ -816,7 +816,6 @@ Item {
                             onReleased: {
                                 uploadButtonText.color = "white"
                                 uploadButton.color = "#d7003f"
-
                                 var missionFilePath = vermeerMissionFileManager.getAbsoluteFilePathFromMisionFilename(missionName)
                                 var listOfMissionItemsJsonString = vermeerFirebaseManager.getVermissionItemListFromFile(missionFilePath)
                                 var listOfMissionItemsJson = JSON.parse(listOfMissionItemsJsonString);
