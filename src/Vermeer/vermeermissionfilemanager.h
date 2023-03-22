@@ -13,10 +13,7 @@ class VermeerMissionFileManager : public QObject
     Q_OBJECT
 public:
     explicit VermeerMissionFileManager(QObject *parent = nullptr);
-
     QJsonObject filenameToFilePathJson;
-
-
 
 signals:
 
