@@ -303,19 +303,20 @@ Item {
     }
 
     function insertVermeerMissionItem(coordinate,
-                                                                  yawDeg,
-                                                                  loiterTimeS,
-                                                                  speedMs)
+                                          yawDeg,
+                                          loiterTimeS,
+                                          speedMs)
     {
         _missionController.insertVermeerMissionItemWaypoint(coordinate,
-                                                                                                    vermeerMissionItemIndex,
-                                                                                                    true,
-                                                                                                    yawDeg,
-                                                                                                     loiterTimeS)
+                                                            vermeerMissionItemIndex,
+                                                            true,
+                                                            yawDeg,
+                                                             loiterTimeS)
 
         _missionController.insertVermeerMissionItemChangeSpeed(vermeerMissionItemIndex,
-                                                                                                           true,
-                                                                                                           speedMs)
+                                                                               true,
+                                                                               speedMs)
+
         incrementVermeerMissionItemIndex()
     }
 
@@ -403,20 +404,30 @@ Item {
         }
     }
 
+    function sendVermeerMissionItemToVehicle()
+    {
+        _planMasterController.sendToVehicle()
+    }
+
+    function reloadVermeerMissionItemFromVehicle()
+    {
+        _planMasterController.loadFromVehicle()
+    }
+
     function hideAllViews(){
         vermeerMissionListsView.visible = false
-        vermeerMissionFilePath.visible = false
+        //vermeerMissionFilePath.visible = false
     }
 
     function _showMissionFilePath(){
         hideAllViews()
-        vermeerMissionFilePath.visible = true
+        //vermeerMissionFilePath.visible = true
     }
 
     function _showMissionList(){
         hideAllViews()
         vermeerMissionListsView.visible = true
-        vermeerMissionFileManager.saveMissionFilePath(vermeerMissionFilePathText.text)
+        //vermeerMissionFileManager.saveMissionFilePath(vermeerMissionFilePathText.text)
     }
 
     function _showVTLogs(){
@@ -449,12 +460,12 @@ Item {
 
     function vermeerShowAll() {
         showMissionList.visible = true
-        showMissionFilePath.visible = true
+        //showMissionFilePath.visible = true
     }
 
     function vermeerHideAllBtns() {
         showMissionList.visible = false
-        showMissionFilePath.visible = false
+        //showMissionFilePath.visible = false
     }
 
     Item {
@@ -736,7 +747,7 @@ Item {
             x: parent.width * vermeerButtonRefPoint
             color: "#161618"
             visible: false
-            anchors.top: showMissionFilePath.bottom
+            anchors.top: showMissionList.bottom
             anchors.topMargin: 30
 
             ListModel {
@@ -747,7 +758,7 @@ Item {
                 id: missionItemDelegate
                 Item {
                     id: missionItemBlock
-                    width: parent.width
+                    width: vermeerMissionListsView.width
                     height: 200
                     Rectangle {
                         id: missionItemRectangle
@@ -845,14 +856,27 @@ Item {
 
                                    resetVermeerMissionItemIndex()
                                    insertVermeerMissionItem(coordinate,
-                                                                             yawDeg,
-                                                                             loiterTimeS,
-                                                                             speedMs)
+                                                             yawDeg,
+                                                             loiterTimeS,
+                                                             speedMs)
                                 }
+
+                                sendVermeerMissionItemToVehicle()
+                                relaodMissionFromVehicleTimer.running = true
 
                                 var logMsg = missionName + " upload button released"
                                 vermeerLogManager.log(logMsg)
                             }
+                        }
+                    }
+
+                    Timer {
+                        id: relaodMissionFromVehicleTimer
+                        interval: 2500 // 1 second delay
+                        running: false // not running by default
+                        repeat: false // only trigger once
+                        onTriggered: {
+                            reloadVermeerMissionItemFromVehicle()
                         }
                     }
 

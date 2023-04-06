@@ -38,11 +38,8 @@ QString VermeerMissionFileManager::getFileNamesJsonArray(QString missionDirector
 
 QString VermeerMissionFileManager::getMissionJsonRecursively()
 {
-    //QString userFilePath = "\\This PC\\Galaxy Tab Active3\\Internal storage\\Android\\data\\com.Vermeer.Augnav\files\\database\flightPlans";
-
     QString userFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
     userFilePath += "/Android/data/org.mavlink.qgroundcontrol/files/database/flightPlans/";
-
     QDir directory(userFilePath);
     QJsonArray missionFileNames;
     QJsonDocument doc;
@@ -56,8 +53,6 @@ QString VermeerMissionFileManager::getMissionJsonRecursively()
     }
 
     foreach(QString missionFileName, missionFilenameList) {
-
-        qInfo() << missionFileName;
         QJsonObject missionFilenameJson;
         missionFilenameJson.insert("filename",QJsonValue(missionFileName));
         missionFileNames.push_back(QJsonValue(missionFilenameJson));
@@ -107,7 +102,7 @@ QVariant VermeerMissionFileManager::getMissionFilePath()
 QVariant VermeerMissionFileManager::getMissionFilenamesRecursively()
 {
     QString userFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    userFilePath += "/com.Vermeer.Augnav/files/database/flightPlans";
+    userFilePath += "/com.Vermeer.Augnav/database/topLevelMissions";
 
     try {
         QJsonArray missionFileNames;

@@ -357,10 +357,10 @@ VisualMissionItem *MissionController::insertVermeerMissionItemLoiterTime(QGeoCoo
 }
 
 VisualMissionItem *MissionController::_insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate,
-                                                                                                                                        MAV_CMD command,
-                                                                                                                                        int visualItemIndex,
-                                                                                                                                        bool makeCurrentItem,
-                                                                                                                                        double loiterTimeS)
+                                                                                MAV_CMD command,
+                                                                                int visualItemIndex,
+                                                                                bool makeCurrentItem,
+                                                                                double loiterTimeS)
 {
     //int sequenceNumber = _nextSequenceNumber();
     SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
@@ -432,6 +432,7 @@ VisualMissionItem *MissionController::_insertVermeerMissionItemChangeSpeed(MAV_C
             }
         }
     }
+
     if (visualItemIndex == -1) {
         _visualItems->append(newItem);
     } else {
@@ -454,11 +455,11 @@ VisualMissionItem *MissionController::insertVermeerMissionItemWaypoint(QGeoCoord
 }
 
 VisualMissionItem *MissionController::_insertVermeerMissionItemWaypoint(QGeoCoordinate coordinate,
-                                                                                                                                            MAV_CMD command,
-                                                                                                                                            int visualItemIndex,
-                                                                                                                                            bool makeCurrentItem,
-                                                                                                                                            double yawDeg,
-                                                                                                                                            int holdTimeS)
+                                                                        MAV_CMD command,
+                                                                        int visualItemIndex,
+                                                                        bool makeCurrentItem,
+                                                                        double yawDeg,
+                                                                        int holdTimeS)
 {
     int sequenceNumber = _nextSequenceNumber();
     SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
