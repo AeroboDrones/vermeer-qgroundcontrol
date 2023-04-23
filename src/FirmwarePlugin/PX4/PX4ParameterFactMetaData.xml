@@ -1604,7 +1604,7 @@
     </parameter>
     <parameter name="EKF2_AID_MASK" default="0" type="INT32">
       <short_desc>Integer bitmask controlling data fusion and aiding methods</short_desc>
-      <long_desc>Set bits in the following positions to enable: 0 : Deprecated, use EKF2_GPS_CTRL instead 1 : Set to true to use optical flow data if available 2 : Deprecated, use EKF2_IMU_CTRL instead 3 : Deprecated, use EKF2_EV_CTRL instead 4 : Deprecated, use EKF2_EV_CTRL instead 5 : Set to true to enable multi-rotor drag specific force fusion 6 : Deprecated, use EKF2_EV_CTRL instead 7 : Deprecated, use EKF2_GPS_CTRL instead 3 : Deprecated, use EKF2_EV_CTRL instead</long_desc>
+      <long_desc>Set bits in the following positions to enable: 0 : Deprecated, use EKF2_GPS_CTRL instead 1 : Set to true to use optical flow data if available 2 : Deprecated, use EKF2_IMU_CTRL instead 3 : Deprecated, use EKF2_EV_CTRL instead 4 : Deprecated, use EKF2_EV_CTRL instead 5 : Set to true to enable multi-rotor drag specific force fusion 6 : Deprecated, use EKF2_EV_CTRL instead 7 : Deprecated, use EKF2_GPS_CTRL instead 8 : Deprecated, use EKF2_EV_CTRL instead</long_desc>
       <min>0</min>
       <max>511</max>
       <reboot_required>true</reboot_required>
@@ -3646,7 +3646,7 @@
       <short_desc>Protocol for Main GPS</short_desc>
       <long_desc>Select the GPS protocol over serial. Auto-detection will probe all protocols, and thus is a bit slower.</long_desc>
       <min>0</min>
-      <max>6</max>
+      <max>7</max>
       <reboot_required>true</reboot_required>
       <values>
         <value code="0">Auto detect</value>
@@ -3656,6 +3656,7 @@
         <value code="4">Emlid Reach</value>
         <value code="5">Femtomes</value>
         <value code="6">NMEA (generic)</value>
+        <value code="7">Septentrio (SBF)</value>
       </values>
     </parameter>
     <parameter name="GPS_2_GNSS" default="0" type="INT32">
@@ -3698,6 +3699,15 @@
         <value code="1">Full communication</value>
         <value code="2">RTCM output (PPK)</value>
       </values>
+    </parameter>
+    <parameter name="GPS_PITCH_OFFSET" default="0." type="FLOAT">
+      <short_desc>Pitch offset for dual antenna GPS</short_desc>
+      <long_desc>Vertical offsets can be compensated for by adjusting the Pitch offset (Septentrio). Note that this can be interpreted as the "roll" angle in case the antennas are aligned along the perpendicular axis. This occurs in situations where the two antenna ARPs may not be exactly at the same height in the vehicle reference frame. Since pitch is defined as the right-handed rotation about the vehicle Y axis, a situation where the main antenna is mounted lower than the aux antenna (assuming the default antenna setup) will result in a positive pitch.</long_desc>
+      <min>-90</min>
+      <max>90</max>
+      <unit>deg</unit>
+      <decimal>3</decimal>
+      <reboot_required>true</reboot_required>
     </parameter>
     <parameter name="GPS_SAT_INFO" default="0" type="INT32" boolean="true">
       <short_desc>Enable sat info (if available)</short_desc>
@@ -3760,7 +3770,7 @@
       <min>0</min>
       <max>360</max>
       <unit>deg</unit>
-      <decimal>0</decimal>
+      <decimal>3</decimal>
       <reboot_required>true</reboot_required>
     </parameter>
     <parameter name="PPS_CAP_ENABLE" default="0" type="INT32" boolean="true">
@@ -4482,10 +4492,12 @@
     <parameter name="MODAL_IO_RPM_MAX" default="15000" type="INT32">
       <short_desc>UART ESC RPM Max</short_desc>
       <long_desc>Maximum RPM for ESC</long_desc>
+      <unit>rpm</unit>
     </parameter>
     <parameter name="MODAL_IO_RPM_MIN" default="5500" type="INT32">
       <short_desc>UART ESC RPM Min</short_desc>
       <long_desc>Minimum RPM for ESC</long_desc>
+      <unit>rpm</unit>
     </parameter>
     <parameter name="MODAL_IO_SDIR1" default="0" type="INT32">
       <short_desc>UART ESC ID 1 Spin Direction Flag</short_desc>
@@ -10398,9 +10410,9 @@
       <decimal>2</decimal>
       <increment>0.1</increment>
     </parameter>
-    <parameter name="VT_B_TRANS_DUR" default="4.0" type="FLOAT">
-      <short_desc>Duration of a back transition</short_desc>
-      <long_desc>Time in seconds used for a back transition</long_desc>
+    <parameter name="VT_B_TRANS_DUR" default="10.0" type="FLOAT">
+      <short_desc>Maximum duration of a back transition</short_desc>
+      <long_desc>Time in seconds used for a back transition maximally. Transition is also declared over if the groundspeed drops below MPC_XY_CRUISE.</long_desc>
       <min>0.1</min>
       <max>20.00</max>
       <unit>s</unit>
@@ -10413,14 +10425,6 @@
       <min>0.0</min>
       <max>20.0</max>
       <unit>s</unit>
-    </parameter>
-    <parameter name="VT_B_TRANS_THR" default="0.0" type="FLOAT">
-      <short_desc>Target throttle value for the transition to hover flight</short_desc>
-      <long_desc>standard vtol: pusher tailsitter, tiltrotor: main throttle</long_desc>
-      <min>-1</min>
-      <max>1</max>
-      <decimal>2</decimal>
-      <increment>0.01</increment>
     </parameter>
     <parameter name="VT_ELEV_MC_LOCK" default="1" type="INT32" boolean="true">
       <short_desc>Lock control surfaces in hover</short_desc>
