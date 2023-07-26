@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QByteArray>
+#include <QTcpSocket>
 
 #include "vermeerfirebasemanager.h"
 #include "vermeermissionlistmanager.h"
@@ -453,6 +454,46 @@ void VermeerFirebaseManager::sendMissionFromFile(QVariant filepath,QVariant ipad
         QString msg = "Connect first";
         qInfo() << msg;
     }
+}
+
+void VermeerFirebaseManager::sendEisJsonFile(QVariant filepath, QVariant ipaddress,QVariant missionName)
+{
+    QString ipAddress(ipaddress.toString());
+    int portNumber = 5555;
+    QFile file(filepath.toString());
+    if(!QFileInfo::exists(filepath.toString())){
+        QString msg = filepath.toString() + "\n: does not exist";
+        qInfo() << msg;
+        emit(sendToPlanView(msg));
+        return;
+    }
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QString msg = "Failed to open file";
+        qInfo() << msg;
+        emit(sendToPlanView(msg));
+        return;
+    }
+
+    QTextStream in(&file);
+    QString jsonString = in.readAll();
+    file.close();
+
+    QTcpSocket socket;
+    socket.connectToHost(ipaddress.toString(), portNumber);
+    if (!socket.waitForConnected(5000)) {
+        QString msg = "Failed to connect to \n payload pc: " + ipaddress.toString();
+        qDebug() << msg;
+        emit(sendToPlanView(msg));
+        return;
+    }
+
+    QByteArray jsonData = jsonString.toUtf8();
+    socket.write(jsonData);
+    socket.waitForBytesWritten(5000);
+    socket.close();
+    QString msg = missionName.toString() + " file was \nsent successfuly";
+    emit(sendToPlanView(msg));
 }
 
 QVariant VermeerFirebaseManager::getVermissionItemListFromFile(QVariant vermeerMissionFilePath)

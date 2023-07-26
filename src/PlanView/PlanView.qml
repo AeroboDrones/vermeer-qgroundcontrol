@@ -14,6 +14,7 @@ import QtLocation       5.3
 import QtPositioning    5.3
 import QtQuick.Layouts  1.2
 import QtQuick.Window   2.2
+import QtQuick.Controls 2.0
 
 import QGroundControl                   1.0
 import QGroundControl.FlightMap         1.0
@@ -65,7 +66,7 @@ Item {
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
 
     // vermeer variables
-    property var vermeerButtonRefPoint: 0.10
+    property var vermeerButtonRefPoint: 0.40
     property var  vermeerMissionItemIndex: 0
     property var  vermeerNumberOfMIssionItems: 0
 
@@ -307,11 +308,17 @@ Item {
                                           loiterTimeS,
                                           speedMs)
     {
+
+        _missionController.insertVermeerMissionItemLoiterTime(coordinate,
+                                                              vermeerMissionItemIndex,
+                                                              true,
+                                                              loiterTimeS)
+
         _missionController.insertVermeerMissionItemWaypoint(coordinate,
                                                             vermeerMissionItemIndex,
                                                             true,
                                                             yawDeg,
-                                                             loiterTimeS)
+                                                             0)
 
         _missionController.insertVermeerMissionItemChangeSpeed(vermeerMissionItemIndex,
                                                                                true,
@@ -393,17 +400,6 @@ Item {
     property bool      _vermeerShowAll: false
     property date currentDate: new Date()
 
-    function handleHideShowAllVermeerButtonTextChange(){
-        if(hideShowAllVermeerButton.text === _hideAllVermeerButtonText){
-            hideShowAllVermeerButton.text = _showAllVermeerButtonText
-            _vermeerShowAll = false
-        }
-        else if(hideShowAllVermeerButton.text === _showAllVermeerButtonText){
-            hideShowAllVermeerButton.text = _hideAllVermeerButtonText
-            _vermeerShowAll = true
-        }
-    }
-
     function sendVermeerMissionItemToVehicle()
     {
         _planMasterController.sendToVehicle()
@@ -416,18 +412,11 @@ Item {
 
     function hideAllViews(){
         vermeerMissionListsView.visible = false
-        //vermeerMissionFilePath.visible = false
-    }
-
-    function _showMissionFilePath(){
-        hideAllViews()
-        //vermeerMissionFilePath.visible = true
     }
 
     function _showMissionList(){
         hideAllViews()
         vermeerMissionListsView.visible = true
-        //vermeerMissionFileManager.saveMissionFilePath(vermeerMissionFilePathText.text)
     }
 
     function _showVTLogs(){
@@ -444,10 +433,6 @@ Item {
         vULogs.visible = true
     }
 
-    function _clearVULogs(){
-        // to be implemented if we it is needed
-    }
-
     function handleMissionRefreshList() {
 
         var missionFileNames = vermeerMissionFileManager.getMissionFilenamesRecursively()
@@ -458,14 +443,16 @@ Item {
         }
     }
 
+    function clearNotificationWindow(){
+        notificationWindowTextArea.text = ""
+    }
+
     function vermeerShowAll() {
         showMissionList.visible = true
-        //showMissionFilePath.visible = true
     }
 
     function vermeerHideAllBtns() {
         showMissionList.visible = false
-        //showMissionFilePath.visible = false
     }
 
     Item {
@@ -671,6 +658,10 @@ Item {
 
         VermeerFirebaseManager{
             id: vermeerFirebaseManager
+            onSendToPlanView: {
+                console.log(data)
+                notificationWindowTextArea.text = data.toString()
+            }
         }
 
         VermeerMissionFileManager {
@@ -678,228 +669,324 @@ Item {
         }
 
         QGCButton {
-            id: hideShowAllVermeerButton
-            text: qsTr(_showAllVermeerButtonText)
+            id: showVermeerMissionPage
+            text: qsTr("Vermeer Mission Page")
             Layout.fillWidth:   true
             x: parent.width * vermeerButtonRefPoint
             onPressed: {
-                    handleHideShowAllVermeerButtonTextChange()
-                    if(_vermeerShowAll === false){
-                        vermeerHideAllBtns()
-                        hideAllViews()
-                    }
-                    else if(_vermeerShowAll === true) {
-                        vermeerShowAll()
-                    }
-                }
-        }
-
-        QGCButton {
-            id: showMissionList
-            text: qsTr("Show Mission List")
-            Layout.fillWidth:   true
-            x: parent.width * vermeerButtonRefPoint
-            anchors.top: hideShowAllVermeerButton.bottom
-            visible: false
-            onPressed: {
-                _showMissionList()
-                console.log("refreshMissionListBtn pressed")
+                vermeerMissionPage.visible = true
                 handleMissionRefreshList()
+                notificationWindowTextArea.text = "Notification Window"
             }
         }
 
-//        QGCButton {
-//            id: showMissionFilePath
-//            text:  qsTr("Set mission file path")
-//            Layout.fillWidth:   true
-//            x: parent.width * vermeerButtonRefPoint
-//            anchors.top: showMissionList.bottom
-//            visible: false
-//            onPressed: {
-//                _showMissionFilePath()
-//            }
-//        }
-
-//        Rectangle {
-//            id: vermeerMissionFilePath
-//            height: parent.height * 0.05
-//            width: parent.width * 0.50
-//            x: parent.width * vermeerButtonRefPoint
-//            visible: false
-//            anchors.top: showMissionFilePath.bottom
-//            anchors.topMargin: 30
-//            TextArea {
-//                id: vermeerMissionFilePathText
-//                height: parent.height
-//                width: parent.width
-//                text: qsTr("replace file path")
-//            }
-
-//            Component.onCompleted: {
-//                vermeerMissionFilePathText.text = vermeerMissionFileManager.getMissionFilePath()
-//            }
-//        }
-
-        Rectangle {
-            id: vermeerMissionListsView
-            height: parent.height * 0.50
-            width: parent.width * 0.50
-            x: parent.width * vermeerButtonRefPoint
-            color: "#161618"
+        Rectangle{
+            id: vermeerMissionPage
+            height: parent.height
+            width: parent.width
+            z: 1
+            color:"#262626"
             visible: false
-            anchors.top: showMissionList.bottom
-            anchors.topMargin: 30
 
-            ListModel {
-                id: missionModel
+            Rectangle {
+                id: backToMissionButton
+                width: 200
+                height: 100
+                anchors.right: parent.right
+                anchors.top: parent.top
+                color:"#d7003f"
+                anchors.rightMargin: 50
+                anchors.topMargin: 50
+                anchors.bottomMargin: 50
+                anchors.leftMargin: 50
+                radius: 10
+
+                Text {
+                    id: backToMissionButtonText
+                    text: qsTr("Back")
+                    font.pointSize: 12
+                    anchors.centerIn: parent
+                    color: "white"
+                    font.bold: true
+                }
+
+                MouseArea {
+                    id: backToMissionButtonMouseArea
+                    anchors.fill: parent
+                    onPressed: {
+                        backToMissionButtonText.color = "#d7003f"
+                        backToMissionButton.color = "white"
+
+                        // I am binding to the broadcast everytime I send a mission
+                        // I get weird behavior when I bind on the constructor
+                        // So I explicitly disconnect then bind
+                        // binding to local host allows us to recieve the notification
+                        // from the drone side
+                        //vermeerFirebaseManager.bindSocket()
+
+                        console.log("backToMissionButtonMouseArea pressed")
+                        clearNotificationWindow()
+                    }
+                    onReleased: {
+                        backToMissionButtonText.color = "white"
+                        backToMissionButton.color = "#d7003f"
+                        vermeerMissionPage.visible = false
+                        console.log("backToMissionButtonMouseArea rleased")
+                    }
+
+                }
             }
 
-            Component {
-                id: missionItemDelegate
-                Item {
-                    id: missionItemBlock
-                    width: vermeerMissionListsView.width
-                    height: 200
-                    Rectangle {
-                        id: missionItemRectangle
-                        width: parent.width * 0.60
-                        height: parent.height
-                        anchors.left: parent.left
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.leftMargin: 100
-                        anchors.topMargin:70
-                        color: Qt.rgba(0,0,0,0)
 
-                        Text {
-                            id: missionItemDelegateText
-                            font.pointSize: 14
-                            font.bold: true
-                            color: "white"
-                            text: qsTr(missionName)
-                        }
-                    }
+            Rectangle{
+                id:vermeerMissionPageTittle
+                width: parent.width * 0.30
+                height: 200
+                color: "#262626"
+                anchors.top: parent.top
+                anchors.leftMargin: 200
 
-                    Rectangle {
-                        id: uploadButton
-                        width: 200
-                        height: 50
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        color:"#d7003f"
-                        anchors.rightMargin: 50
-                        anchors.topMargin: 50
-                        anchors.bottomMargin: 50
-                        anchors.leftMargin: 50
-                        radius: 10
+                Text {
+                    id: vermeerMissionPageTittleText
+                    text: qsTr("MISSIONS")
+                    font.pointSize: 30
+                    anchors.centerIn: parent
+                    color: "white"
+                    font.bold: true
+                }
+            }
 
-                        Text {
-                            id: uploadButtonText
-                            text: qsTr("Send Mission")
-                            font.pointSize: 12
-                            anchors.centerIn: parent
-                            color: "white"
-                            font.bold: true
-                        }
+            Rectangle {
+                id: vermeerMissionListsView
+                height: parent.height * 0.70
+                width: parent.width * 0.50
+                x: parent.width * 0.10
+                color: "#161618"
+                anchors.top: vermeerMissionPageTittle.bottom
 
-                        MouseArea {
-                            id: uploadButtonMouseArea
-                            anchors.fill: parent
-                            onPressed: {
-                                uploadButtonText.color = "#d7003f"
-                                uploadButton.color = "white"
+                ListModel {
+                    id: missionModel
+                }
 
-                                // I am binding to the broadcast everytime I send a mission
-                                // I get weird behavior when I bind on the constructor
-                                // So I explicitly disconnect then bind
-                                // binding to local host allows us to recieve the notification
-                                // from the drone side
-                                vermeerFirebaseManager.bindSocket()
+                Component {
+                    id: missionItemDelegate
+                    Item {
+                        id: missionItemBlock
+                        width: vermeerMissionListsView.width
+                        height: 200
+                        Rectangle {
+                            id: missionItemRectangle
+                            width: parent.width * 0.60
+                            height: parent.height
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            anchors.leftMargin: 100
+                            anchors.topMargin:70
+                            color: Qt.rgba(0,0,0,0)
 
-                                var logMsg = missionName + " upload button pressed"
-                                vermeerLogManager.log(logMsg)
-
-                                  removeAllMissionItems()
+                            Text {
+                                id: missionItemDelegateText
+                                font.pointSize: 14
+                                font.bold: true
+                                color: "white"
+                                text: qsTr(missionName)
                             }
-                            onReleased: {
-                                uploadButtonText.color = "white"
-                                uploadButton.color = "#d7003f"
-                                var missionFilePath = vermeerMissionFileManager.getAbsoluteFilePathFromMisionFilename(missionName)
-                                var listOfMissionItemsJsonString = vermeerFirebaseManager.getVermissionItemListFromFile(missionFilePath)
-                                var listOfMissionItemsJson = JSON.parse(listOfMissionItemsJsonString);
+                        }
 
-                                // method to find number of elements in json array
-                                 for (var index in listOfMissionItemsJson) {
-                                    vermeerNumberOfMIssionItems = index
-                                 }
+                        Rectangle {
+                            id: uploadButton
+                            width: 200
+                            height: 50
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            color:"#d7003f"
+                            anchors.rightMargin: 50
+                            anchors.topMargin: 50
+                            anchors.bottomMargin: 50
+                            anchors.leftMargin: 50
+                            radius: 10
 
-                                for (var missionItemIndex in listOfMissionItemsJson) {
-                                    var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+                            Text {
+                                id: uploadButtonText
+                                text: qsTr("Send Mission")
+                                font.pointSize: 12
+                                anchors.centerIn: parent
+                                color: "white"
+                                font.bold: true
+                            }
 
-                                    // access the last index first then work your way down
-                                    var accessIndex = vermeerNumberOfMIssionItems - missionItemIndex
+                            MouseArea {
+                                id: uploadButtonMouseArea
+                                anchors.fill: parent
+                                onPressed: {
+                                    uploadButtonText.color = "#d7003f"
+                                    uploadButton.color = "white"
 
-                                    var latitude = listOfMissionItemsJson[accessIndex]["latitudeDeg"]
-                                    var longitude = listOfMissionItemsJson[accessIndex]["longitudeDeg"]
-                                    var altitude = listOfMissionItemsJson[accessIndex]["relativeAltitudeM"]
-                                    var yawDeg = listOfMissionItemsJson[accessIndex]["yawDeg"]
-                                    var loiterTimeS = listOfMissionItemsJson[accessIndex]["loiterTimeS"]
-                                    var speedMs = listOfMissionItemsJson[accessIndex]["speedMs"]
+                                    // I am binding to the broadcast everytime I send a mission
+                                    // I get weird behavior when I bind on the constructor
+                                    // So I explicitly disconnect then bind
+                                    // binding to local host allows us to recieve the notification
+                                    // from the drone side
+                                    //vermeerFirebaseManager.bindSocket()
 
-                                    coordinate.latitude = latitude
-                                    coordinate.longitude = longitude
-                                    coordinate.altitude = altitude
-                                    coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
-                                    coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
-                                    coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
+                                    var logMsg = missionName + " upload button pressed"
+                                    vermeerLogManager.log(logMsg)
 
-                                   resetVermeerMissionItemIndex()
-                                   insertVermeerMissionItem(coordinate,
-                                                             yawDeg,
-                                                             loiterTimeS,
-                                                             speedMs)
+                                    removeAllMissionItems()
+                                    clearNotificationWindow()
                                 }
+                                onReleased: {
+                                    uploadButtonText.color = "white"
+                                    uploadButton.color = "#d7003f"
+                                    var missionFilePath = vermeerMissionFileManager.getAbsoluteFilePathFromMisionFilename(missionName)
+                                    var listOfMissionItemsJsonString = vermeerFirebaseManager.getVermissionItemListFromFile(missionFilePath)
+                                    var listOfMissionItemsJson = JSON.parse(listOfMissionItemsJsonString);
 
-                                sendVermeerMissionItemToVehicle()
-                                relaodMissionFromVehicleTimer.running = true
+                                    // method to find number of elements in json array
+                                     for (var index in listOfMissionItemsJson) {
+                                        vermeerNumberOfMIssionItems = index
+                                     }
 
-                                var logMsg = missionName + " upload button released"
-                                vermeerLogManager.log(logMsg)
+                                    for (var missionItemIndex in listOfMissionItemsJson) {
+                                        var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+
+                                        // access the last index first then work your way down
+                                        var accessIndex = vermeerNumberOfMIssionItems - missionItemIndex
+
+                                        var latitude = listOfMissionItemsJson[accessIndex]["latitudeDeg"]
+                                        var longitude = listOfMissionItemsJson[accessIndex]["longitudeDeg"]
+                                        var altitude = listOfMissionItemsJson[accessIndex]["relativeAltitudeM"]
+                                        var yawDeg = listOfMissionItemsJson[accessIndex]["yawDeg"]
+                                        var loiterTimeS = listOfMissionItemsJson[accessIndex]["loiterTimeS"]
+                                        var speedMs = listOfMissionItemsJson[accessIndex]["speedMs"]
+
+                                        coordinate.latitude = latitude
+                                        coordinate.longitude = longitude
+                                        coordinate.altitude = altitude
+                                        coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
+                                        coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
+                                        coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
+
+                                       resetVermeerMissionItemIndex()
+                                       insertVermeerMissionItem(coordinate,
+                                                                 yawDeg,
+                                                                 loiterTimeS,
+                                                                 speedMs)
+                                    }
+
+                                    sendVermeerMissionItemToVehicle()
+                                    relaodMissionFromVehicleTimer.running = true
+                                    vermeerFirebaseManager.sendEisJsonFile(missionFilePath,payloadPCIpAddressValueTextField.text,missionName)
+
+                                    var logMsg = missionName + " upload button released"
+                                    vermeerLogManager.log(logMsg)
+                                    console.log(logMsg)
+                                }
                             }
                         }
-                    }
 
-                    Timer {
-                        id: relaodMissionFromVehicleTimer
-                        interval: 2500 // 1 second delay
-                        running: false // not running by default
-                        repeat: false // only trigger once
-                        onTriggered: {
-                            reloadVermeerMissionItemFromVehicle()
+                        Timer {
+                            id: relaodMissionFromVehicleTimer
+                            interval: 2500 // 1 second delay
+                            running: false // not running by default
+                            repeat: false // only trigger once
+                            onTriggered: {
+                                reloadVermeerMissionItemFromVehicle()
+                            }
+                        }
+
+                        Rectangle {
+                            id: line
+                            width: parent.width
+                            height: 5
+                            anchors.bottom: parent.bottom
+                            color:"#262626"
                         }
                     }
+                }
 
-                    Rectangle {
-                        id: line
+                ScrollView {
+                    anchors.fill: parent
+                    ListView {
+                        id: missionItemListView
                         width: parent.width
-                        height: 5
-                        anchors.bottom: parent.bottom
-                        color:"#262626"
+                        model: missionModel
+                        delegate: missionItemDelegate
                     }
                 }
             }
 
-            ScrollView {
-                anchors.fill: parent
-                ListView {
-                    id: missionItemListView
-                    width: parent.width
-                    model: missionModel
-                    delegate: missionItemDelegate
+            Rectangle{
+                id: payloadPCIpAddressTittle
+                width: parent.width * 0.20
+                height: 100
+                anchors.top: vermeerMissionPageTittle.bottom
+                anchors.left: vermeerMissionListsView.right
+                anchors.leftMargin: 20
+                color: "#262626"
+
+                Text {
+                    id: payloadPCIpAddressText
+                    text: qsTr("Payload PC IP Address")
+                    font.pointSize: 18
+                    anchors.left: payloadPCIpAddressTittle.left
+                    color: "white"
+                    font.bold: true
+                }
+            }
+
+            Rectangle{
+                id: payloadPCIpAddressValue
+                width: parent.width * 0.20
+                height: 100
+                anchors.top: payloadPCIpAddressTittle.bottom
+                anchors.left: vermeerMissionListsView.right
+                color: "#262626"
+                anchors.leftMargin: 20
+
+                TextField{
+                    id: payloadPCIpAddressValueTextField
+                    anchors.fill: parent
+                    text: "192.168.1.104"
+                    font.pointSize: 18
+                    color: "white"
+                    background: Rectangle {
+                        color: "#262626"
+                        radius: 5
+                        border.width: 1
+                        border.color: "white"
+                    }
+
+                }
+            }
+
+            Rectangle{
+                id: notificationWindow
+                width: parent.width * 0.20
+                height: 600
+                anchors.top: payloadPCIpAddressValue.bottom
+                anchors.left: vermeerMissionListsView.right
+                anchors.topMargin: 200
+                anchors.leftMargin: 20
+                color: "#262626"
+                border.color: "white"
+                border.width: 1
+                radius: 5
+
+                TextArea {
+                    id:notificationWindowTextArea
+                    wrapMode: TextArea.Wrap
+                    text: "Notification Window"
+                    color: "white"
+                    font.pointSize: 18
+                    readOnly: true
+                    anchors.centerIn: parent
                 }
             }
         }
+
 
         //-----------------------------------------------------------
         // Left tool strip

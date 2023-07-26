@@ -362,12 +362,13 @@ VisualMissionItem *MissionController::_insertVermeerMissionItemLoiterTime(QGeoCo
                                                                                 bool makeCurrentItem,
                                                                                 double loiterTimeS)
 {
-    //int sequenceNumber = _nextSequenceNumber();
+    int sequenceNumber = _nextSequenceNumber();
     SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
-    newItem->setSequenceNumber(visualItemIndex);
+    newItem->setSequenceNumber(sequenceNumber);
     newItem->setCoordinate(coordinate);
     newItem->setCommand(command);
     newItem->setWaypointLoiterTime(loiterTimeS);
+    newItem->altitude()->setRawValue(coordinate.altitude());
     _initVisualItem(newItem);
 
     if (newItem->specifiesAltitude()) {
@@ -410,10 +411,9 @@ VisualMissionItem *MissionController::insertVermeerMissionItemChangeSpeed(int vi
 
 VisualMissionItem *MissionController::_insertVermeerMissionItemChangeSpeed(MAV_CMD command, int visualItemIndex, bool makeCurrentItem, double speedMs)
 {
-    int sequenceNumber = _nextSequenceNumber();
+    //int sequenceNumber = _nextSequenceNumber();
     SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
-    newItem->setSequenceNumber(sequenceNumber);
-    //newItem->setSequenceNumber(visualItemIndex);
+    newItem->setSequenceNumber(visualItemIndex);
     newItem->setCommand(command);
     newItem->setSpeed(speedMs);
     _initVisualItem(newItem);

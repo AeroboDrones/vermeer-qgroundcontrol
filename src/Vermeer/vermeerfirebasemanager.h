@@ -40,6 +40,7 @@ signals:
     void displayMsgToQml(QVariant data);
     void sendNotificationsToQml(QVariant data);
     void missionUdpReply(QVariant data);
+    void sendToPlanView(QVariant data);
 
 public slots:
 
@@ -90,13 +91,11 @@ public slots:
     void sendingMissionTimeoutStart();
     void sendingMissionTimeoutStop();
     void sendMissionFromFile(QVariant filepath,QVariant ipaddress, QVariant port,QString missionName);
+    void sendEisJsonFile(QVariant filepath,QVariant ipaddress,QVariant missionName);
 
     QVariant getVermissionItemListFromFile(QVariant vermeerMissionFilePath);
     QJsonObject readJsonFile(QString jsonFilePath);
     QString getMissionItemsJson(QJsonObject vermeerMissionContentJson);
-
-protected:
-    Vehicle* _activeVehicle         = nullptr;
 
 private:
 
