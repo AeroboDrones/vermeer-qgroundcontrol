@@ -15,6 +15,7 @@ import QtPositioning    5.3
 import QtQuick.Layouts  1.2
 import QtQuick.Window   2.2
 import QtQuick.Controls 2.0
+import QtQuick.LocalStorage 2.0
 
 import QGroundControl                   1.0
 import QGroundControl.FlightMap         1.0
@@ -29,6 +30,7 @@ import QGroundControl.Airspace          1.0
 import QGroundControl.Airmap            1.0
 
 import Qt.labs.folderlistmodel          2.15
+
 
 Item {
     id: _root
@@ -66,9 +68,10 @@ Item {
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
 
     // vermeer variables
-    property var vermeerButtonRefPoint: 0.40
-    property var  vermeerMissionItemIndex: 0
-    property var  vermeerNumberOfMIssionItems: 0
+    property real vermeerButtonRefPoint: 0.40
+    property int  vermeerMissionItemIndex: 0
+    property int  vermeerNumberOfMIssionItems: 0
+    property string vermeerEisPayloadIpAddressKey: "vermeerEisPayloadIpAddressKey"
 
     function incrementVermeerMissionItemIndex() {
         vermeerMissionItemIndex++
@@ -312,7 +315,8 @@ Item {
         _missionController.insertVermeerMissionItemLoiterTime(coordinate,
                                                               vermeerMissionItemIndex,
                                                               true,
-                                                              loiterTimeS)
+                                                              loiterTimeS,
+                                                              yawDeg)
 
         _missionController.insertVermeerMissionItemWaypoint(coordinate,
                                                             vermeerMissionItemIndex,
@@ -453,6 +457,38 @@ Item {
 
     function vermeerHideAllBtns() {
         showMissionList.visible = false
+    }
+
+    function saveSetting(key, value) {
+        var db = LocalStorage.openDatabaseSync("MyDatabase", "", "MyDescription", 1000000);
+        db.transaction(function(tx) {
+            tx.executeSql('INSERT OR REPLACE INTO settings VALUES (?, ?)', [key, value]);
+        });
+    }
+
+    function loadSetting(key) {
+        var db = LocalStorage.openDatabaseSync("MyDatabase", "", "MyDescription", 1000000);
+        var res = "";
+        db.transaction(function(tx) {
+            var rs = tx.executeSql('SELECT value FROM settings WHERE key=?', [key]);
+            if (rs.rows.length > 0) {
+                res = rs.rows.item(0).value;
+            } else {
+                res = "undefined"; // or whatever you want as default value
+            }
+        });
+        return res;
+    }
+
+    function isValidIP(ip) {
+        // Simple IP address validation. Modify as per requirements.
+        var blocks = ip.split(".");
+        if (blocks.length === 4) {
+            return blocks.every(function(block) {
+                return parseInt(block, 10) >= 0 && parseInt(block, 10) <= 255;
+            });
+        }
+        return false;
     }
 
     Item {
@@ -677,6 +713,23 @@ Item {
                 vermeerMissionPage.visible = true
                 handleMissionRefreshList()
                 notificationWindowTextArea.text = "Notification Window"
+
+                // create database
+                var db = LocalStorage.openDatabaseSync("MyDatabase", "", "MyDescription", 1000000);
+                db.transaction(function(tx) {
+                    tx.executeSql('CREATE TABLE IF NOT EXISTS settings(key TEXT UNIQUE, value TEXT)');
+                });
+
+                try {
+                    db = LocalStorage.openDatabaseSync("MyDatabase", "", "MyDescription", 1000000);
+                    if (db) {
+                        console.log("Database opened or created successfully.");
+                    }
+                } catch (err) {
+                    console.log("Error while opening or creating the database:", err);
+                }
+
+                var currentIpAddress = loadSetting(vermeerEisPayloadIpAddressKey)
             }
         }
 
@@ -878,7 +931,8 @@ Item {
 
                                     sendVermeerMissionItemToVehicle()
                                     relaodMissionFromVehicleTimer.running = true
-                                    vermeerFirebaseManager.sendEisJsonFile(missionFilePath,payloadPCIpAddressValueTextField.text,missionName)
+                                    var currentPayloadIpAddress = loadSetting(vermeerEisPayloadIpAddressKey)
+                                    vermeerFirebaseManager.sendEisJsonFile(missionFilePath,currentPayloadIpAddress,missionName)
 
                                     var logMsg = missionName + " upload button released"
                                     vermeerLogManager.log(logMsg)
@@ -949,7 +1003,7 @@ Item {
                 TextField{
                     id: payloadPCIpAddressValueTextField
                     anchors.fill: parent
-                    text: "192.168.1.104"
+                    text: loadSetting(vermeerEisPayloadIpAddressKey)
                     font.pointSize: 18
                     color: "white"
                     background: Rectangle {
@@ -959,6 +1013,45 @@ Item {
                         border.color: "white"
                     }
 
+                }
+            }
+
+            Rectangle {
+                id: payloadPCIpaddressUpdateBtn
+                width: parent.width * 0.20
+                height: 100
+                anchors.left: vermeerMissionListsView.right
+                anchors.top: payloadPCIpAddressValue.bottom
+                color:"#d7003f"
+                anchors.rightMargin: 50
+                anchors.topMargin: 50
+                anchors.bottomMargin: 50
+                anchors.leftMargin: 20
+                radius: 10
+
+                Text {
+                    id: payloadPCIpaddressUpdateBtnText
+                    text: qsTr("Update Ip Address")
+                    font.pointSize: 12
+                    anchors.centerIn: parent
+                    color: "white"
+                    font.bold: true
+                }
+
+                MouseArea {
+                    id: payloadPCIpaddressUpdateBtnMouseArea
+                    anchors.fill: parent
+                    onPressed: {
+                        payloadPCIpaddressUpdateBtnText.color = "#d7003f"
+                        payloadPCIpaddressUpdateBtn.color = "white"
+                    }
+                    onReleased: {
+                        payloadPCIpaddressUpdateBtnText.color = "white"
+                        payloadPCIpaddressUpdateBtn.color = "#d7003f"
+                        saveSetting(vermeerEisPayloadIpAddressKey,payloadPCIpAddressValueTextField.text)
+                        var currentIpAddress = loadSetting(vermeerEisPayloadIpAddressKey)
+                        notificationWindowTextArea.text = "IP address updated to : \n" + currentIpAddress
+                    }
                 }
             }
 
@@ -976,13 +1069,18 @@ Item {
                 radius: 5
 
                 TextArea {
-                    id:notificationWindowTextArea
+                    id: notificationWindowTextArea
+                    anchors.fill: parent
+                    anchors.margins: 10
                     wrapMode: TextArea.Wrap
                     text: "Notification Window"
                     color: "white"
                     font.pointSize: 18
                     readOnly: true
-                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter  // Center horizontally
+                    verticalAlignment: Text.AlignVCenter    // Center vertically
+                    padding: 5
+                    clip: true
                 }
             }
         }

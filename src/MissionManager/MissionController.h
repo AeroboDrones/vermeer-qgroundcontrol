@@ -123,7 +123,8 @@ public:
     Q_INVOKABLE VisualMissionItem* insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate,
                                                             int visualItemIndex,
                                                             bool makeCurrentItem = false,
-                                                            double loiterTime = 0.0);
+                                                            double loiterTime = 0.0,
+                                                            double yawDeg = 0.0);
 
     /// Add a new simple mission item to the list
     ///     @param coordinate: Coordinate for item
@@ -380,7 +381,7 @@ private:
     void                    _addTimeDistance                    (bool vtolInHover, double hoverTime, double cruiseTime, double extraTime, double distance, int seqNum);
     VisualMissionItem*      _insertSimpleMissionItemWorker      (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem);
     VisualMissionItem*      _insertVermeerMissionItemWaypoint             (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double yawDeg,int holdTimeS);
-    VisualMissionItem*      _insertVermeerMissionItemLoiterTime           (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double loiterTimeS);
+    VisualMissionItem*      _insertVermeerMissionItemLoiterTime           (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double loiterTimeS,double yawDeg);
     VisualMissionItem*      _insertVermeerMissionItemChangeSpeed      (MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double speedMs);
     void                    _insertComplexMissionItemWorker     (const QGeoCoordinate& mapCenterCoordinate, ComplexMissionItem* complexItem, int visualItemIndex, bool makeCurrentItem);
     bool                    _isROIBeginItem                     (SimpleMissionItem* simpleItem);

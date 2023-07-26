@@ -351,22 +351,24 @@ VisualMissionItem* MissionController::_insertSimpleMissionItemWorker(QGeoCoordin
     return newItem;
 }
 
-VisualMissionItem *MissionController::insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem, double loiterTime)
+VisualMissionItem *MissionController::insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem, double loiterTime,double yawDeg)
 {
-    return _insertVermeerMissionItemLoiterTime(coordinate,MAV_CMD_NAV_LOITER_TIME ,visualItemIndex,makeCurrentItem,loiterTime);
+    return _insertVermeerMissionItemLoiterTime(coordinate,MAV_CMD_NAV_LOITER_TIME ,visualItemIndex,makeCurrentItem,loiterTime,yawDeg);
 }
 
 VisualMissionItem *MissionController::_insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate,
                                                                                 MAV_CMD command,
                                                                                 int visualItemIndex,
                                                                                 bool makeCurrentItem,
-                                                                                double loiterTimeS)
+                                                                                double loiterTimeS,
+                                                                                double yawDeg)
 {
     int sequenceNumber = _nextSequenceNumber();
     SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
     newItem->setSequenceNumber(sequenceNumber);
     newItem->setCoordinate(coordinate);
     newItem->setCommand(command);
+    newItem->setDesiredYaw(yawDeg);
     newItem->setWaypointLoiterTime(loiterTimeS);
     newItem->altitude()->setRawValue(coordinate.altitude());
     _initVisualItem(newItem);
