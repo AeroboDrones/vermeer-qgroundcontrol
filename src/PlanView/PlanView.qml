@@ -312,11 +312,6 @@ Item {
                                           speedMs)
     {
 
-        _missionController.insertVermeerMissionItemLoiterTime(coordinate,
-                                                              vermeerMissionItemIndex,
-                                                              true,
-                                                              loiterTimeS,
-                                                              yawDeg)
 
         _missionController.insertVermeerMissionItemWaypoint(coordinate,
                                                             vermeerMissionItemIndex,
@@ -328,6 +323,11 @@ Item {
                                                                                true,
                                                                                speedMs)
 
+        incrementVermeerMissionItemIndex()
+
+        _missionController.insertVermeerMissionItemDelay(vermeerMissionItemIndex,
+                                                         true,
+                                                         loiterTimeS)
         incrementVermeerMissionItemIndex()
     }
 

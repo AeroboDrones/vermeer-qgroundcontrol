@@ -120,6 +120,15 @@ public:
     ///     @param visualItemIndex: index to insert at, -1 for end of list
     ///     @param makeCurrentItem: true: Make this item the current item
     /// @return Newly created item
+    Q_INVOKABLE VisualMissionItem* insertVermeerMissionItemDelay(int visualItemIndex,
+                                                                bool makeCurrentItem = false,
+                                                                int delaySec = 0.0);
+
+    /// Add a new simple mission item to the list
+    ///     @param coordinate: Coordinate for item
+    ///     @param visualItemIndex: index to insert at, -1 for end of list
+    ///     @param makeCurrentItem: true: Make this item the current item
+    /// @return Newly created item
     Q_INVOKABLE VisualMissionItem* insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate,
                                                             int visualItemIndex,
                                                             bool makeCurrentItem = false,
@@ -383,6 +392,7 @@ private:
     VisualMissionItem*      _insertVermeerMissionItemWaypoint             (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double yawDeg,int holdTimeS);
     VisualMissionItem*      _insertVermeerMissionItemLoiterTime           (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double loiterTimeS,double yawDeg);
     VisualMissionItem*      _insertVermeerMissionItemChangeSpeed      (MAV_CMD command, int visualItemIndex, bool makeCurrentItem,double speedMs);
+    VisualMissionItem*      _insertVermeerMissionItemDelay      (MAV_CMD command, int visualItemIndex, bool makeCurrentItem,int delaySec);
     void                    _insertComplexMissionItemWorker     (const QGeoCoordinate& mapCenterCoordinate, ComplexMissionItem* complexItem, int visualItemIndex, bool makeCurrentItem);
     bool                    _isROIBeginItem                     (SimpleMissionItem* simpleItem);
     bool                    _isROICancelItem                    (SimpleMissionItem* simpleItem);

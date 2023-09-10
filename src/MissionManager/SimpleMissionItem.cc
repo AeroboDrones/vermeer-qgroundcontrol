@@ -310,6 +310,12 @@ void SimpleMissionItem::setWaypointLoiterTime(float loiterTimeS)
     _missionItem.setParam1(loiterTimeS);
 }
 
+
+void SimpleMissionItem::setNavDelay(int delaySec)
+{
+    _missionItem.setParam1(delaySec);
+}
+
 void SimpleMissionItem::setSpeed(double speedMs)
 {
     // NOTES:
@@ -321,7 +327,12 @@ void SimpleMissionItem::setSpeed(double speedMs)
 
 void SimpleMissionItem::setAltitude(double relativeAltMeters)
 {
-     _missionItem.setParam7(relativeAltMeters);
+    _missionItem.setParam7(relativeAltMeters);
+}
+
+void SimpleMissionItem::setHeadingRequired(int value)
+{
+    _missionItem.setParam2(value);
 }
 
 bool SimpleMissionItem::load(QTextStream &loadStream)

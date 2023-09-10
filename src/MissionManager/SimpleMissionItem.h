@@ -142,6 +142,8 @@ public:
     void setWaypointLoiterTime(float loiterTimeS);
     void setSpeed(double speedMs);
     void setAltitude(double relativeAltMeters);
+    void setHeadingRequired(int value);
+    void setNavDelay(int delaySec);
 
 signals:
     void commandChanged             (int command);

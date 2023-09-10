@@ -351,6 +351,54 @@ VisualMissionItem* MissionController::_insertSimpleMissionItemWorker(QGeoCoordin
     return newItem;
 }
 
+VisualMissionItem *MissionController::insertVermeerMissionItemDelay(int visualItemIndex, bool makeCurrentItem, int delaySec)
+{
+    return _insertVermeerMissionItemDelay(MAV_CMD_NAV_DELAY ,visualItemIndex,makeCurrentItem,delaySec);
+}
+
+VisualMissionItem *MissionController::_insertVermeerMissionItemDelay(MAV_CMD command,
+                                                                    int visualItemIndex,
+                                                                    bool makeCurrentItem,
+                                                                    int delaySec)
+{
+    int sequenceNumber = _nextSequenceNumber();
+    SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
+    newItem->setSequenceNumber(sequenceNumber);
+    newItem->setCommand(command);
+    newItem->setNavDelay(delaySec);
+    _initVisualItem(newItem);
+
+    if (newItem->specifiesAltitude()) {
+        if (!qgcApp()->toolbox()->missionCommandTree()->isLandCommand(command)) {
+            double                              prevAltitude;
+            QGroundControlQmlGlobal::AltMode    prevAltMode;
+
+            if (_findPreviousAltitude(visualItemIndex, &prevAltitude, &prevAltMode)) {
+                newItem->altitude()->setRawValue(prevAltitude);
+                if (globalAltitudeMode() == QGroundControlQmlGlobal::AltitudeModeMixed) {
+                    // We are in mixed altitude modes, so copy from previous. Otherwise alt mode will be set from global setting.
+                    newItem->setAltitudeMode(static_cast<QGroundControlQmlGlobal::AltMode>(prevAltMode));
+                }
+            }
+        }
+    }
+    if (visualItemIndex == -1) {
+        _visualItems->append(newItem);
+    } else {
+        _visualItems->insert(visualItemIndex, newItem);
+    }
+
+
+    if (makeCurrentItem) {
+        setCurrentPlanViewSeqNum(newItem->sequenceNumber(), true);
+    }
+
+    _firstItemAdded();
+
+    return newItem;
+}
+
+
 VisualMissionItem *MissionController::insertVermeerMissionItemLoiterTime(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem, double loiterTime,double yawDeg)
 {
     return _insertVermeerMissionItemLoiterTime(coordinate,MAV_CMD_NAV_LOITER_TIME ,visualItemIndex,makeCurrentItem,loiterTime,yawDeg);
@@ -368,8 +416,8 @@ VisualMissionItem *MissionController::_insertVermeerMissionItemLoiterTime(QGeoCo
     newItem->setSequenceNumber(sequenceNumber);
     newItem->setCoordinate(coordinate);
     newItem->setCommand(command);
-    newItem->setDesiredYaw(yawDeg);
     newItem->setWaypointLoiterTime(loiterTimeS);
+    newItem->setHeadingRequired(0);
     newItem->altitude()->setRawValue(coordinate.altitude());
     _initVisualItem(newItem);
 
